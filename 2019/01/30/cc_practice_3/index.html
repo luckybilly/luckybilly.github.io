@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="前言jsBridge是作为js和java之间通信的桥梁，本身它的职责只是完成通信。 本文不是介绍js与java通信过程的实现，你可以使用第三方库（如：JsBridge），也可以自己来实现，或者用addJavascriptInterface，都可以。本文的侧重点是如何让我们的jsBridge不那么臃肿，实现得更优雅，更利于维护。 但在实际封装过程中，会发现需要我们需要解决很多耦合的问题：  js调用">
+<meta name="keywords" content="组件化,开源项目,Android">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CC框架实践(3): 让jsBridge更优雅">
+<meta property="og:url" content="http://qibilly.com/2019/01/30/cc_practice_3/index.html">
+<meta property="og:site_name" content="Billy学技术">
+<meta property="og:description" content="前言jsBridge是作为js和java之间通信的桥梁，本身它的职责只是完成通信。 本文不是介绍js与java通信过程的实现，你可以使用第三方库（如：JsBridge），也可以自己来实现，或者用addJavascriptInterface，都可以。本文的侧重点是如何让我们的jsBridge不那么臃肿，实现得更优雅，更利于维护。 但在实际封装过程中，会发现需要我们需要解决很多耦合的问题：  js调用">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2017/12/25/1608ca156a8b8517?w=559&h=446&f=png&s=16869">
+<meta property="og:updated_time" content="2019-04-29T14:13:33.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="CC框架实践(3): 让jsBridge更优雅">
+<meta name="twitter:description" content="前言jsBridge是作为js和java之间通信的桥梁，本身它的职责只是完成通信。 本文不是介绍js与java通信过程的实现，你可以使用第三方库（如：JsBridge），也可以自己来实现，或者用addJavascriptInterface，都可以。本文的侧重点是如何让我们的jsBridge不那么臃肿，实现得更优雅，更利于维护。 但在实际封装过程中，会发现需要我们需要解决很多耦合的问题：  js调用">
+<meta name="twitter:image" content="https://user-gold-cdn.xitu.io/2017/12/25/1608ca156a8b8517?w=559&h=446&f=png&s=16869">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://qibilly.com/2019/01/30/cc_practice_3/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>CC框架实践(3): 让jsBridge更优雅 | Billy学技术</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Billy学技术</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://qibilly.com/2019/01/30/cc_practice_3/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="齐翊">
+      <meta itemprop="description" content="Android组件化 开源框架 CC/Gloading/PreLoader">
+      <meta itemprop="image" content="https://avatars3.githubusercontent.com/u/4155835?s=460&v=4">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Billy学技术">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">CC框架实践(3): 让jsBridge更优雅
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-01-30 16:30:03" itemprop="dateCreated datePublished" datetime="2019-01-30T16:30:03+08:00">2019-01-30</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-04-29 22:13:33" itemprop="dateModified" datetime="2019-04-29T22:13:33+08:00">2019-04-29</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Android-CC框架实践/" itemprop="url" rel="index"><span itemprop="name">Android-CC框架实践</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+              
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+            
+                <span class="post-meta-item-text">评论数：</span>
+                <a href="/2019/01/30/cc_practice_3/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count gitment-comments-count" data-xid="/2019/01/30/cc_practice_3/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>jsBridge是作为js和java之间通信的桥梁，本身它的职责只是完成通信。</p>
+<p>本文不是介绍js与java通信过程的实现，你可以使用第三方库（<a href="https://github.com/lzyzsd/JsBridge" target="_blank" rel="noopener">如：JsBridge</a>），也可以自己来实现，或者用addJavascriptInterface，都可以。本文的侧重点是如何让我们的jsBridge不那么臃肿，实现得更优雅，更利于维护。</p>
+<p>但在实际封装过程中，会发现需要我们需要解决很多耦合的问题：</p>
+<ul>
+<li>js调用的功能在其他module中，如何调用到这些功能，如何向jsbridge注册这些功能？</li>
+<li>jsbridge依赖了太多module，怎么解耦？</li>
+<li>当js调用的功能是打开其它页面获取该页面处理后的结果并回调给js，怎么破？ onResume? startActivityForResult? 一个常见的场景是：打开登录界面，登录成功后将用户信息回调给js。你是不是想过这样做？<ul>
+<li>jsBridge中封装一个Activity/Fragment</li>
+<li>用startActivityForResult的方式来打开登录页面</li>
+<li>在onActivityResult方法中从登录界面设置的result中获取用户登录的信息（或者onResume或EventBus方式来获取返回值）</li>
+<li>然后将用户信息回调给js</li>
+</ul>
+</li>
+</ul>
+<p><em>将具体的业务逻辑写在jsBridge模块中，本身就是一个灾难，而且随着业务类型的增加，最后这个Activity/Fragment会变得非常臃肿，而且难以复用</em></p>
+<h3 id="CC框架下如何让jsBridge更优雅？"><a href="#CC框架下如何让jsBridge更优雅？" class="headerlink" title="CC框架下如何让jsBridge更优雅？"></a>CC框架下如何让jsBridge更优雅？</h3><p>CC框架为所有组件提供了统一的调用入口和回调结果格式。</p>
+<p>所以，在CC框架下，js调用native变得很简单：</p>
+<ul>
+<li>jsBridge仅暴露一个接口给js，那就是组件调用接口</li>
+<li>js调用jsBridge的接口，将组件调用所需的参数传给jsBridge</li>
+<li>jsBridge将参数透传去调用功能组件（所有功能实现均在各个组件内部完成）</li>
+<li>jsBridge中接收到调用结果后，将结果转换成json回调给js</li>
+</ul>
+<p>流程图：</p>
+<p><img src="https://user-gold-cdn.xitu.io/2017/12/25/1608ca156a8b8517?w=559&amp;h=446&amp;f=png&amp;s=16869" alt="jsBridge调用流程"></p>
+<p>JsBridge的核心代码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JsBridge</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> WeakReference&lt;WebView&gt; webViewWeakReference;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">JsBridge</span><span class="params">(WebView webView)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.webViewWeakReference = <span class="keyword">new</span> WeakReference&lt;WebView&gt;(webView);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@JavascriptInterface</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">callNativeCC</span><span class="params">(String componentName, String actionName, String dataJson, <span class="keyword">final</span> String callbackId)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">final</span> WebView webView = webViewWeakReference.get();</span><br><span class="line">        <span class="keyword">if</span> (webView == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        Map&lt;String, Object&gt; params = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">if</span> (!TextUtils.isEmpty(dataJson)) &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                JSONObject json = <span class="keyword">new</span> JSONObject(dataJson);</span><br><span class="line">                params = JsonUtil.toMap(json); <span class="comment">//参数列表</span></span><br><span class="line">            &#125; <span class="keyword">catch</span> (JSONException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//统一使用这种方式进行CC调用，不用关心具体组件是如何实现的</span></span><br><span class="line">        CC cc = CC.obtainBuilder(componentName)</span><br><span class="line">            .steActionName(actionName)</span><br><span class="line">            .setContext(webView.getContext()) <span class="comment">//可用于startActivity等需要Context的功能</span></span><br><span class="line">            .setParams(params)</span><br><span class="line">            .build();</span><br><span class="line">        <span class="keyword">if</span> (TextUtils.isEmpty(jsCallbackId)) &#123;</span><br><span class="line">            cc.callAsync(); <span class="comment">//无需回调结果给js</span></span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            cc.callAsyncCallbackOnMainThread(<span class="keyword">new</span> IComponentCallback() &#123;</span><br><span class="line">                <span class="meta">@Override</span></span><br><span class="line">                <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onResult</span><span class="params">(CC cc, CCResult result)</span> </span>&#123;</span><br><span class="line">              <span class="comment">//将结果回调给js</span></span><br><span class="line">                    webView.loadUrl(<span class="string">"javascript: callback("</span> + callbackId + <span class="string">","</span> + result + <span class="string">")"</span>); </span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>是不是超级简单？ demo可参考<a href="https://github.com/luckybilly/CC/blob/master/demo_component_jsbridge/src/main/java/com/billy/cc/demo/component/jsbridge/BridgeWebViewHelper.java" target="_blank" rel="noopener">这里</a></p>
+<p>这样做的好处有：</p>
+<ol>
+<li>jsbridge回归初心：只是作为一个桥梁。</li>
+<li>jsBridge支持的功能更全面，app内部几乎所有组件的功能都可以给js调用，而无需添加额外的代码</li>
+<li>业务完全在组件内部实现，jsbridge跟组件之间无耦合</li>
+<li>无论功能是同步实现的还是异步回调实现的，中间需要经历什么样的流程，对于js和jsBridge来说调用方式完全一样。</li>
+<li>支持组件的按需依赖：jsBridge不再是全家桶，给多个app使用时，各app可以按需选择需要支持js调用的组件，添加gradle依赖到主module的依赖列表中即可。</li>
+<li>同一个组件在不同的app内可以有不同的实现，但需要保持接口协议一致，例如：不同app可以有自己特定的登录组件</li>
+<li>后续添加新功能给js调用时，只要功能提供方实现一下，js中去调用即可，jsbridge组件无需修改</li>
+</ol>
+<h3 id="Tips"><a href="#Tips" class="headerlink" title="Tips"></a>Tips</h3><h4 id="1-有些功能必须要在onActivityResult中接收结果，如何在组件内部实现而不影响jsBridge？"><a href="#1-有些功能必须要在onActivityResult中接收结果，如何在组件内部实现而不影响jsBridge？" class="headerlink" title="1. 有些功能必须要在onActivityResult中接收结果，如何在组件内部实现而不影响jsBridge？"></a>1. 有些功能必须要在onActivityResult中接收结果，如何在组件内部实现而不影响jsBridge？</h4><p>确实有些功能必须要在onActivityResult中接收结果，例如：调用系统的选择联系人、从系统相册选择图片等。</p>
+<p>其实，不止是onActivityResult，还有获取权限的回调onRequestPermissionsResult</p>
+<p>这些功能在组件内部实现时，可以在组件中通过创建一个透明的Activity或Fragment来实现结果的接收，然后将结果发送给调用方: <code>CC.sendCCResult(callId, result);</code></p>
+<font color="blue">推荐使用Fragment方式实现</font>
+
+<p>具体实现方式可参考如下开源库：</p>
+<ul>
+<li><p>透明Activity方式实现的权限申请库:<a href="https://github.com/yanzhenjie/AndPermission" target="_blank" rel="noopener">AndPermission</a>, 参考类：<a href="https://github.com/yanzhenjie/AndPermission/blob/master/permission/src/main/java/com/yanzhenjie/permission/PermissionActivity.java" target="_blank" rel="noopener">PermissionActivity.java</a></p>
+</li>
+<li><p>Fragment方式实现的权限申请库: <a href="https://github.com/tbruyelle/RxPermissions" target="_blank" rel="noopener">RxPermissions</a>,参考类：<a href="https://github.com/tbruyelle/RxPermissions/blob/master/lib/src/main/java/com/tbruyelle/rxpermissions/RxPermissions.java" target="_blank" rel="noopener">RxPermissions.java</a>  </p>
+</li>
+</ul>
+<h4 id="2-js调用的有些功能需要用户登录后才能用，如何加入登录条件判断？"><a href="#2-js调用的有些功能需要用户登录后才能用，如何加入登录条件判断？" class="headerlink" title="2. js调用的有些功能需要用户登录后才能用，如何加入登录条件判断？"></a>2. js调用的有些功能需要用户登录后才能用，如何加入登录条件判断？</h4><p>按照组件化开发的思想，是否需要登录才能用应由各组件自行判断。</p>
+<p>需要在组件内部完成登录状态校验、打开登录界面、登录完成后再执行组件实际功能。</p>
+<p>具体实现可参考： <a href="#/practice_1">先登录再跳转到目标界面</a></p>
+<h4 id="3-没有使用CC框架的情况下，如何让jsBridge实现类似效果？"><a href="#3-没有使用CC框架的情况下，如何让jsBridge实现类似效果？" class="headerlink" title="3. 没有使用CC框架的情况下，如何让jsBridge实现类似效果？"></a>3. 没有使用CC框架的情况下，如何让jsBridge实现类似效果？</h4><p>在没有使用CC框架的情况下，也可以实现类似效果的。思路如下：</p>
+<ol>
+<li><p>在工程的Common基础库中定义一套接口，例如： IJsCall/IJsCallback</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">IJsCall</span> </span>&#123;</span><br><span class="line">    <span class="function">String <span class="title">name</span><span class="params">()</span></span>; <span class="comment">//功能的名称，供js调用</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">handleJsCall</span><span class="params">(JSONObject params, IJsCallback callback)</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">IJsCallback</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">callback</span><span class="params">(String result)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在所有需要注册给js调用的组件中实现IJsCall接口，实现具体的业务逻辑</p>
+</li>
+<li>在jsBridge中创建一个IJsCall的管理类JsCallMananger，示例代码：</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JsCallManager</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Map&lt;String, IJsCall&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String DEFAULT_RESULT = <span class="string">"&#123;\"success\":false&#125;"</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">init</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">//用于IJsCall自动注册到list</span></span><br><span class="line">        <span class="comment">//使用AutoRegister插件将生成如下代码：</span></span><br><span class="line">        <span class="comment">// registerJsCall(new JsCallA());</span></span><br><span class="line">        <span class="comment">// registerJsCall(new JsCallB());</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">registerJsCall</span><span class="params">(IJsCall call)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (call != <span class="keyword">null</span>) &#123;</span><br><span class="line">            map.put(call.name(), call);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onJsCall</span><span class="params">(String name, JSONObject json, IJsCallback callback)</span> </span>&#123;</span><br><span class="line">        IJsCall jsCall = map.get(name);</span><br><span class="line">        <span class="keyword">if</span> (jsCall != <span class="keyword">null</span>) &#123;</span><br><span class="line">            jsCall.handleJsCall(json, callback);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            callback.callback(DEFAULT_RESULT);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="4">
+<li>使用AutoRegister来完成IJsCall接口的自动注册, <a href="https://github.com/luckybilly/AutoRegister" target="_blank" rel="noopener">Github源码</a></li>
+<li>在jsBridge中只暴露一个接口给js调用</li>
+<li>在jsBridge中调用JsCallManager.onJsCall方法来实现统一的功能调用</li>
+</ol>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>本文介绍了在CC框架下用组件调用的方式让jsBridge实现跟具体业务完全解耦。并给出了非CC框架环境下实现类似效果的思路。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+      <div>
+        <div id="reward-container">
+  <div>请作者喝咖啡~</div>
+  <button id="reward-button" disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+
+    
+      
+      
+        
+      
+      <div style="display: inline-block">
+        <img src="/images/shoukuan_wechat.png" alt="齐翊 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+      
+      
+        
+      
+      <div style="display: inline-block">
+        <img src="/images/shoukuan_alipay.png" alt="齐翊 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/组件化/" rel="tag"># 组件化</a>
+          
+            <a href="/tags/开源项目/" rel="tag"># 开源项目</a>
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/01/30/article-componentize-gradually/" rel="prev" title="使用CC进行渐进式组件化改造">
+                使用CC进行渐进式组件化改造 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://avatars3.githubusercontent.com/u/4155835?s=460&v=4" alt="齐翊">
+            
+              <p class="site-author-name" itemprop="name">齐翊</p>
+              <div class="site-description motion-element" itemprop="description">Android组件化 开源框架 CC/Gloading/PreLoader</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">7</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">5</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/luckybilly" title="GitHub &rarr; https://github.com/luckybilly" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:qiyilike@163.com" title="E-Mail &rarr; mailto:qiyilike@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://twitter.com/lucky_billy_05" title="Twitter &rarr; https://twitter.com/lucky_billy_05" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://juejin.im/user/5a0af10c6fb9a045186a423f/posts" title="juejin &rarr; https://juejin.im/user/5a0af10c6fb9a045186a423f/posts" rel="noopener" target="_blank"><i class="fa fa-fw fa-spinner"></i>juejin</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CC框架下如何让jsBridge更优雅？"><span class="nav-number">2.</span> <span class="nav-text">CC框架下如何让jsBridge更优雅？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Tips"><span class="nav-number">3.</span> <span class="nav-text">Tips</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-有些功能必须要在onActivityResult中接收结果，如何在组件内部实现而不影响jsBridge？"><span class="nav-number">3.1.</span> <span class="nav-text">1. 有些功能必须要在onActivityResult中接收结果，如何在组件内部实现而不影响jsBridge？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-js调用的有些功能需要用户登录后才能用，如何加入登录条件判断？"><span class="nav-number">3.2.</span> <span class="nav-text">2. js调用的有些功能需要用户登录后才能用，如何加入登录条件判断？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-没有使用CC框架的情况下，如何让jsBridge实现类似效果？"><span class="nav-number">3.3.</span> <span class="nav-text">3. 没有使用CC框架的情况下，如何让jsBridge实现类似效果？</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">齐翊</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.0"></script>
+
+  <script src="/js/motion.js?v=7.1.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.0"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.0"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.0"></script>
+<script src="/js/post-details.js?v=7.1.0"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.0"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+    <!-- LOCAL: You can save these files to your site and update links -->
+
+  
+  <script src="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/gitmint.browser.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/default.css">
+<!-- END LOCAL -->
+
+<script>
+  function renderGitment() {
+    var gitment = new Gitmint({
+      id: window.location.pathname,
+      owner: 'luckybilly# MUST HAVE, Your Github Username',
+      repo: 'luckybilly.github.io# MUST HAVE, The name of the repo you use to store Gitment comments',
+      
+        lang: '' || navigator.language || navigator.systemLanguage || navigator.userLanguage,
+      
+      oauth: {
+      
+      
+        client_secret: '8c3ab2fab44d17832cef8807a6424e687a547e13# EITHER this or proxy_gateway, Github access secret token for the Gitment',
+      
+        client_id: '91f7f5b19d003a84ea17# MUST HAVE, Github client id for the Gitment'
+      }
+    });
+    gitment.render('gitment-container');
+  }
+
+  
+    renderGitment();
+  
+</script>
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+  
+  <script src="/lib/bookmark/bookmark.min.js?v=1.0"></script>
+  <script>
+  
+    bookmark.scrollToMark('auto', "#更多");
+  
+  </script>
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
