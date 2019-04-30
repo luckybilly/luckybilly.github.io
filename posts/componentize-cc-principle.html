@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: true,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="前言首先说明一下，本文将讲述的组件化与业内的插件化（如：Atlas, RePlugin等）不是同一个概念  【图片来源于网络】 组件化开发：就是将一个app分成多个Module，每个Module都是一个组件(也可以是一个基础库供组件依赖)，开发的过程中我们可以单独调试部分组件，组件间不需要互相依赖，但可以相互调用，最终发布的时候所有组件以lib的形式被主app工程依赖并打包成1个apk。 插件化开">
+<meta name="keywords" content="组件化">
+<meta property="og:type" content="article">
+<meta property="og:title" content="一文看懂组件化框架CC的实现原理">
+<meta property="og:url" content="http://qibilly.com/posts/componentize-cc-principle.html">
+<meta property="og:site_name" content="Billy学技术">
+<meta property="og:description" content="前言首先说明一下，本文将讲述的组件化与业内的插件化（如：Atlas, RePlugin等）不是同一个概念  【图片来源于网络】 组件化开发：就是将一个app分成多个Module，每个Module都是一个组件(也可以是一个基础库供组件依赖)，开发的过程中我们可以单独调试部分组件，组件间不需要互相依赖，但可以相互调用，最终发布的时候所有组件以lib的形式被主app工程依赖并打包成1个apk。 插件化开">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2017/12/9/1603a35e8992e0dd?w=640&h=335&f=jpeg&s=11279">
+<meta property="og:image" content="https://github.com/luckybilly/CC/raw/dev_multiprocess/image/sst/sst_get_remote_service.png">
+<meta property="og:image" content="https://github.com/luckybilly/CC/raw/dev_multiprocess/image/sst/sst_call_remote_component.png">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2017/12/9/1603a35e86b8de45?w=686&h=452&f=png&s=36075">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2017/12/9/1603a35e9b27c92e?w=1684&h=642&f=png&s=182899">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2017/12/9/1603a35e88bf52bc?w=1058&h=1159&f=png&s=112868">
+<meta property="og:image" content="https://github.com/luckybilly/CC/raw/dev_multiprocess/image/sst/sst_cc_interceptors.png">
+<meta property="og:image" content="https://github.com/luckybilly/CC/raw/dev_multiprocess/image/lct/lct_in_app.png">
+<meta property="og:image" content="https://github.com/luckybilly/CC/raw/dev_multiprocess/image/lct/lct_cross_app.png">
+<meta property="og:updated_time" content="2019-04-30T04:07:07.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="一文看懂组件化框架CC的实现原理">
+<meta name="twitter:description" content="前言首先说明一下，本文将讲述的组件化与业内的插件化（如：Atlas, RePlugin等）不是同一个概念  【图片来源于网络】 组件化开发：就是将一个app分成多个Module，每个Module都是一个组件(也可以是一个基础库供组件依赖)，开发的过程中我们可以单独调试部分组件，组件间不需要互相依赖，但可以相互调用，最终发布的时候所有组件以lib的形式被主app工程依赖并打包成1个apk。 插件化开">
+<meta name="twitter:image" content="https://user-gold-cdn.xitu.io/2017/12/9/1603a35e8992e0dd?w=640&h=335&f=jpeg&s=11279">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://qibilly.com/posts/componentize-cc-principle">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>一文看懂组件化框架CC的实现原理 | Billy学技术</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Billy学技术</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://qibilly.com/posts/componentize-cc-principle.html">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="齐翊">
+      <meta itemprop="description" content="Android组件化 开源框架 CC/Gloading/PreLoader">
+      <meta itemprop="image" content="https://avatars3.githubusercontent.com/u/4155835?s=460&v=4">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Billy学技术">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">一文看懂组件化框架CC的实现原理
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-01-30 16:30:03" itemprop="dateCreated datePublished" datetime="2019-01-30T16:30:03+08:00">2019-01-30</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-04-30 12:07:07" itemprop="dateModified" datetime="2019-04-30T12:07:07+08:00">2019-04-30</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Android/开源项目/" itemprop="url" rel="index"><span itemprop="name">开源项目</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>首先说明一下，本文将讲述的组件化与业内的插件化（如：Atlas, RePlugin等）不是同一个概念</p>
+<p><img src="https://user-gold-cdn.xitu.io/2017/12/9/1603a35e8992e0dd?w=640&amp;h=335&amp;f=jpeg&amp;s=11279" alt="组件化 vs 插件化"></p>
+<p>【图片来源于网络】</p>
+<p>组件化开发：就是将一个app分成多个Module，每个Module都是一个组件(也可以是一个基础库供组件依赖)，开发的过程中我们可以单独调试部分组件，组件间不需要互相依赖，但可以相互调用，最终发布的时候所有组件以lib的形式被主app工程依赖并打包成1个apk。</p>
+<p>插件化开发：和组件化开发略有不用，插件化开发时将整个app拆分成很多模块，这些模块包括一个宿主和多个插件，每个模块都是一个apk（组件化的每个模块是个lib），最终打包的时候将宿主apk和插件apk(或其他格式)分开或者联合打包。</p>
+<p><strong>本文将主要就以下几个方面进行介绍：</strong></p>
+<p>一、为什么需要组件化？</p>
+<p>二、CC技术要点</p>
+<p>三、CC执行流程详细解析</p>
+<h2 id="一、为什么需要组件化？"><a href="#一、为什么需要组件化？" class="headerlink" title="一、为什么需要组件化？"></a>一、为什么需要组件化？</h2><p>关于使用组件化的理由，上网能搜到很多，如业务隔离、单独以app运行能提高开发及调试效率等等这里就不多重复了，我补充一条：组件化之后，我们能很容易地实现一些组件层面的AOP，例如：</p>
+<ul>
+<li>轻易实现页面数据(网络请求、I/O、数据库查询等)预加载的功能</li>
+<li>组件被调用时，进行页面跳转的同时异步执行这些耗时逻辑</li>
+<li>页面跳转并初始化完成后，再将这些提前加载好的数据展示出来</li>
+<li>在组件功能调用时进行登录状态校验</li>
+<li>借助拦截器机制，可以动态给组件功能调用添加不同的中间处理逻辑</li>
+</ul>
+<h2 id="二、-CC技术要点"><a href="#二、-CC技术要点" class="headerlink" title="二、 CC技术要点"></a>二、 CC技术要点</h2><p>实现CC组件化开发框架主要需要解决的问题有以下几个方面：</p>
+<ul>
+<li>组件如何自动注册？</li>
+<li>如何兼容同步/异步方式调用组件？</li>
+<li>如何兼容同步/异步方式实现组件？</li>
+<li>如何跨app调用组件？</li>
+<li>组件如何更方便地在application和library之间切换？</li>
+<li>如何实现startActivityForResult？</li>
+<li>如何与Activity、Fragment的生命周期关联起来</li>
+</ul>
+<h3 id="1-组件如何自动注册？"><a href="#1-组件如何自动注册？" class="headerlink" title="1 组件如何自动注册？"></a>1 组件如何自动注册？</h3><p>为了减少后期维护成本，想要实现的效果是：当需要添加某个组件到app时，只需要在gradle中添加一下对这个module的依赖即可（通常都是maven依赖，也可以是project依赖）</p>
+<p>最初想要使用的是annotationProcessor通过编译时注解动态生成组件映射表代码的方式来实现。但尝试过后发现行不通，因为编译时注解的特性只在源码编译时生效，无法扫描到aar包里的注解（project依赖、maven依赖均无效），也就是说必须每个module编译时生成自己的代码，然后要想办法将这些分散在各aar种的类找出来进行集中注册。</p>
+<p>ARouter的解决方案是：</p>
+<ul>
+<li>每个module都生成自己的java类，这些类的包名都是’com.alibaba.android.arouter.routes’</li>
+<li>然后在运行时通过读取每个dex文件中的这个包下的所有类通过反射来完成映射表的注册，详见<a href="https://github.com/alibaba/ARouter/blob/master/arouter-api/src/main/java/com/alibaba/android/arouter/utils/ClassUtils.java" target="_blank" rel="noopener">ClassUtils.java源码</a></li>
+</ul>
+<p> 运行时通过读取所有dex文件遍历每个entry查找指定包内的所有类名，然后反射获取类对象。这种效率看起来并不高。</p>
+<p>ActivityRouter的解决方案是(demo中有2个组件名为’app’和’sdk’)：</p>
+<ul>
+<li>在主app module中有一个<code>@Modules({&quot;app&quot;, &quot;sdk&quot;})</code>注解用来标记当前app内有多少组件，根据这个注解生成一个RouterInit类</li>
+<li>在RouterInit类的init方法中生成调用同一个包内的RouterMapping_app.map</li>
+<li>每个module生成的类(RouterMapping_app.java 和 RouterMapping_sdk.java)都放在com.github.mzule.activityrouter.router包内（在不同的aar中，但包名相同）</li>
+<li>在RouterMapping_sdk类的map()方法中根据扫描到的当前module内所有路由注解，生成了调用Routers.map(…)方法来注册路由的代码</li>
+<li><p>在Routers的所有api接口中最终都会触发RouterInit.init()方法，从而实现所有路由的映射表注册</p>
+<p>这种方式用一个RouterInit类组合了所有module中的路由映射表类，运行时效率比扫描所有dex文件的方式要高，但需要额外在主工程代码中维护一个组件名称列表注解: @Modules({“app”, “sdk”})</p>
+</li>
+</ul>
+<p>还有没有更好的办法呢？</p>
+<p>Transform API: 可以在编译时(dex/proguard之前)扫描当前要打包到apk中的<strong>所有类</strong>，包括: 当前module中java文件编译后的class、aidl文件编译后的class、jar包中的class、aar包中的class、project依赖中的class、maven依赖中的class。</p>
+<p>ASM: 可以读取分析字节码、可以修改字节码</p>
+<p>二者结合，可以做一个gradle插件，在编译时自动扫描所有组件类(IComponent接口实现类)，然后修改字节码，生成代码调用扫描到的所有组件类的构造方法将其注册到一个组件管理类(<a href="https://github.com/luckybilly/CC/blob/master/cc/src/main/java/com/billy/cc/core/component/ComponentManager.java" target="_blank" rel="noopener">ComponentManager</a>)中，生成组件名称与组件对象的映射表。   </p>
+<p>此gradle插件被命名为：<a href="https://github.com/luckybilly/AutoRegister" target="_blank" rel="noopener">AutoRegister</a>，现已开源，并将功能升级为编译时自动扫描任意指定的接口实现类(或类的子类)并自动注册到指定类的指定方法中。只需要在app/build.gradle中配置一下扫描的参数，没有任何代码侵入，原理详细介绍<a href="http://blog.csdn.net/cdecde111/article/details/78074692" target="_blank" rel="noopener">传送门</a></p>
+<p>【2018-10-07补充】开源了一年多的时间，AutoRegister已基本成熟稳定，但为了在插件中实现一些CC框架需要的功能（如：自动生成跨进程通信的RemoteProvider子类并注册到AndroidManifest.xml中），从AutoRegister fork出一份cc-register，从CC2.0.0开始，将使用cc-register插件</p>
+<h3 id="2-如何兼容同步-异步方式调用组件？"><a href="#2-如何兼容同步-异步方式调用组件？" class="headerlink" title="2 如何兼容同步/异步方式调用组件？"></a>2 如何兼容同步/异步方式调用组件？</h3><p>通过实现<code>java.util.concurrent.Callable</code>接口同步返回结果来兼容同步/异步调用：</p>
+<ul>
+<li>同步调用时，直接调用<code>CCResult result = Callable.call()</code>来获取返回结果</li>
+<li>异步调用时，将其放入线程池中运行，执行完成后调用回调对象返回结果: <a href="https://github.com/luckybilly/CC/blob/master/cc/src/main/java/com/billy/cc/core/component/IComponentCallback.java" target="_blank" rel="noopener">IComponentCallback.onResult(cc, result)</a></li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ExecutorService.submit(callable)</span><br></pre></td></tr></table></figure>
+<h3 id="3-如何兼容同步-异步方式实现组件？"><a href="#3-如何兼容同步-异步方式实现组件？" class="headerlink" title="3 如何兼容同步/异步方式实现组件？"></a>3 如何兼容同步/异步方式实现组件？</h3><p>调用组件的onCall方法时，可能需要异步实现，并不能同步返回结果，但同步调用时又需要返回结果，这是一对矛盾。</p>
+<p>此处用到了Object的wait-notify机制，当组件需要异步返回结果时，在CC框架内部进行阻塞，等到结果返回时，通过notify中止阻塞，返回结果给调用方</p>
+<p><em>注意，这里要求在实现一个组件时，必须确保组件一定会回调结果，即：需要确保每一种导致调用流程结束的逻辑分支上(包括if-else/try-catch/Activity.finish()-back键-返回按钮等等)都会回调结果，否则会导致调用方一直阻塞等待结果，直至超时。类似于向服务器发送一个网络请求后服务器必须返回请求结果一样，否则会导致请求超时。</em></p>
+<h3 id="4-如何跨app调用组件？"><a href="#4-如何跨app调用组件？" class="headerlink" title="4 如何跨app调用组件？"></a>4 如何跨app调用组件？</h3><p><strong>为什么需要跨app进行组件调用呢？</strong></p>
+<ol>
+<li>对现有项目进行组件化改造的过程，肯定不是一蹴而就，而是一个个组件逐步从主工程中抽离，这就涉及到主工程与组件间的通信。如果不能跨app进行组件调用，开发时就需要跟主工程一起打包，失去了组件化开发的一个非常大的优势：组件单独编译运行提高开发&amp;测试效率。</li>
+<li>当独立运行的组件需要调用到其他组件的功能时，不需要将其他组件编译进来一起打包，可以调用主app中的组件，可以始终保持单module编译运行的状态进行开发。</li>
+<li>参考阅读：<a href="https://github.com/luckybilly/CC/wiki/%E4%BD%BF%E7%94%A8CC%E8%BF%9B%E8%A1%8C%E6%B8%90%E8%BF%9B%E5%BC%8F%E7%BB%84%E4%BB%B6%E5%8C%96%E6%94%B9%E9%80%A0" target="_blank" rel="noopener">使用CC进行渐进式组件化改造</a></li>
+</ol>
+<p><strong>目前，常见的组件化框架采用的跨app通信解决方案有：</strong></p>
+<ul>
+<li>URLScheme(如：<a href="https://github.com/mzule/ActivityRouter" target="_blank" rel="noopener">ActivityRouter</a>、<a href="https://github.com/alibaba/ARouter" target="_blank" rel="noopener">阿里ARouter</a>等)<ul>
+<li>优点：<ul>
+<li>基因中自带支持从webview中调用</li>
+<li>不用互相注册（不用知道需要调用的app的进程名称等信息）</li>
+</ul>
+</li>
+<li>缺点:<ul>
+<li>只能单向地给组件发送信息，适用于启动Activity和发送指令，不适用于获取数据(例如：获取用户组件的当前用户登录信息)</li>
+<li>需要有个额外的中转Activity来统一处理URLScheme，然后进行转发</li>
+<li>如果设备上安装了多个使用相同URLScheme的app，会弹出选择框（多个组件作为app同时安装到设备上时会出现这个问题）</li>
+<li>无法进行权限设置，无法进行开关设置，任意app都可调用，存在安全性风险</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>AIDL (如：<a href="https://github.com/SpinyTech/ModularizationArchitecture" target="_blank" rel="noopener">ModularizationArchitecture</a>)<ul>
+<li>优点：<ul>
+<li>可以传递Parcelable类型的对象</li>
+<li>效率高</li>
+<li>可以设置跨app调用的开关</li>
+</ul>
+</li>
+<li>缺点：<ul>
+<li>调用组件之前需要提前知道该组件在那个进程，否则无法建立ServiceConnection</li>
+<li>组件在作为独立app和作为lib打包到主app时，进程名称不同，维护成本高</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>设计此功能时，我的出发点是：作为组件化开发框架基础库，想尽量让跨进程调用与在进程内部调用的功能一致，对使用此框架的开发者在切换app模式和lib模式时尽量简单，另外需要尽量不影响产品安全性。因此，跨组件间通信实现的同时，应该满足以下条件：</p>
+<ul>
+<li>每个app都能给其它app调用</li>
+<li>app可以设置是否对外提供跨进程组件调用的支持</li>
+<li>组件调用的请求发出去之后，能自动探测当前设备上是否有支持此次调用的app</li>
+<li>支持超时、取消</li>
+</ul>
+<p>【2018-10-07修改】<br>CC 2.0.0版开始对跨进程通信进行了重构，新版本中使用如下方式进行跨进程通信：</p>
+<ul>
+<li>将<code>IBinder</code>封装到一个<code>Parcelable</code>中</li>
+<li>将<code>Parcelable</code>放入<code>Bundle</code>中</li>
+<li>将<code>Bundle</code>作为<code>RemoteCursor</code>的<code>Extras</code></li>
+<li>通过<code>ContentProvider</code>传递<code>RemoteCursor</code>，从而实现IBinder的跨进程传递</li>
+<li>通过调用<code>IRemoteCCService.Stub.asInterface(binder)</code>得到<code>IRemoteCCService</code>实例:一个<code>RemoteCCService</code>对象</li>
+<li>通过调用<code>IRemoteCCService.call(remoteCC, callback)</code>实现跨进程组件调用</li>
+<li>在<code>IRemoteCCService.call(remoteCC, callback)</code>方法中根据<code>remoteCC</code>对象构造一个本地CC请求，并将返回的<code>CCResult</code>转换成<code>RemoteCCResult</code>对象，通过<code>callback(remoteCCResult)</code>将结果回传给调用方进程</li>
+<li>调用方进程中将<code>remoteCCResult</code>转换成本地的<code>CCResult</code>对象再经过所有拦截器原路返回给组件调用发起方</li>
+</ul>
+<p>如下图所示：</p>
+<p><img src="https://github.com/luckybilly/CC/raw/dev_multiprocess/image/sst/sst_get_remote_service.png" alt="获取远程IRemoteCCService实例"></p>
+<p><img src="https://github.com/luckybilly/CC/raw/dev_multiprocess/image/sst/sst_call_remote_component.png" alt="跨进程调用组件"></p>
+<h3 id="5-组件如何更方便地在application和library之间切换？"><a href="#5-组件如何更方便地在application和library之间切换？" class="headerlink" title="5 组件如何更方便地在application和library之间切换？"></a>5 组件如何更方便地在application和library之间切换？</h3><p>关于切换方式在网络上有很多文章介绍，基本上都是一个思路：在module的build.gradle中设置一个变量来控制切换<code>apply plugin: &#39;com.android.application&#39;</code>或<code>apply plugin: &#39;com.android.library&#39;</code>以及sourceSets的切换。</p>
+<p>为了避免在每个module的build.gradle中配置太多重复代码，我将其封装到了cc-register插件中，每个组件都可以直接在android studio中点击绿色的Run按钮直接以application方式单独编译运行。</p>
+<p>注意：单独运行的组件app如果要与主app进行相互调用，需要同时在调试设备上安装主app，并且需要确保主app在编译打包时将该组件排除，实现方式为：</p>
+<ul>
+<li>确保主app/build.gradle中是使用addComponent来添加对组件module的依赖</li>
+<li>在local.properties中增加一行配置<code>module_name=true</code></li>
+<li>重新编译打包主app</li>
+</ul>
+<h3 id="6-如何实现startActivityForResult？"><a href="#6-如何实现startActivityForResult？" class="headerlink" title="6 如何实现startActivityForResult？"></a>6 如何实现startActivityForResult？</h3><p>android的startActivityForResult的设计也是为了页面传值，在CC组件化框架中，页面传值根本不需要用到startActivityForResult，直接作为异步实现的组件来处理(在原来setResult的地方调用<code>CC.sendCCResult(callId, ccResult)</code>，<em>另外需要注意：按back键及返回按钮的情况也要回调结果</em>)即可。</p>
+<p>如果是原来项目中存在大量的startActivityForResult代码，改造成本较大，可以用下面这种方式来保留原来的onActivityResult(…)及activity中setResult相关的代码：</p>
+<ul>
+<li><p>在原来调用startActivityForResult的地方，改用CC方式调用，将当前context传给组件</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">CC.obtainBuilder(<span class="string">"demo.ComponentA"</span>)</span><br><span class="line">  .setContext(context)</span><br><span class="line">  .addParams(<span class="string">"requestCode"</span>, requestCode)</span><br><span class="line">  .build()</span><br><span class="line">  .callAsync();</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在组件的onCall(cc)方法中用startActivityForResult的方式打开Activity</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onCall</span><span class="params">(CC cc)</span> </span>&#123;</span><br><span class="line">    Context context = cc.getContext();</span><br><span class="line">    Object code = cc.getParams().get(<span class="string">"requestCode"</span>);</span><br><span class="line">    Intent intent = <span class="keyword">new</span> Intent(context, ActivityA.class);</span><br><span class="line">    <span class="keyword">if</span> (!(context <span class="keyword">instanceof</span> Activity)) &#123;</span><br><span class="line">        <span class="comment">//调用方没有设置context或app间组件跳转，context为application</span></span><br><span class="line">        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (context <span class="keyword">instanceof</span> Activity &amp;&amp; code != <span class="keyword">null</span> &amp;&amp; code <span class="keyword">instanceof</span> Integer) &#123;</span><br><span class="line">        ((Activity)context).startActivityForResult(intent, (Integer)code);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        context.startActivity(intent);</span><br><span class="line">    &#125;</span><br><span class="line">    CC.sendCCResult(cc.getCallId(), CCResult.success());</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="7-如何与Activity、Fragment的生命周期关联起来"><a href="#7-如何与Activity、Fragment的生命周期关联起来" class="headerlink" title="7  如何与Activity、Fragment的生命周期关联起来"></a>7  如何与Activity、Fragment的生命周期关联起来</h3><p>背景：在使用异步调用时，由于callback对象一般是使用匿名内部类，会持有外部类对象的引用，容易引起内存泄露，这种内存泄露的情况在各种异步回调中比较常见，如Handler.post(runnable)、Retrofit的Call.enqueue(callback)等。</p>
+<p>为了避免内存泄露及页面退出后取消执行不必要的任务，CC添加了生命周期关联的功能，在onDestroy方法被调用时自动cancel页面内所有未完成的组件调用</p>
+<ul>
+<li><p>Activity生命周期关联</p>
+<p>在api level 14 (android 4.0)以上可以通过注册全局activity生命周期回调监听，在<code>onActivityDestroyed</code>方法中找出所有此activity关联且未完成的cc对象，并自动调用取消功能：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">application.registerActivityLifecycleCallbacks(lifecycleCallback);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>android.support.v4.app.Fragment生命周期关联</p>
+<p>support库从 <a href="https://developer.android.com/reference/android/support/v4/app/FragmentManager.html#registerfragmentlifecyclecallbacks" target="_blank" rel="noopener">25.1.0</a> 开始支持给fragment设置生命周期监听：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">FragmentManager.registerFragmentLifecycleCallbacks(callback)</span><br></pre></td></tr></table></figure>
+<p>可在其<code>onFragmentDestroyed</code>方法中取消未完成的cc调用</p>
+</li>
+<li><p>andorid.app.Fragment生命周期关联（暂不支持）</p>
+</li>
+</ul>
+<h2 id="三、-CC执行流程详细解析"><a href="#三、-CC执行流程详细解析" class="headerlink" title="三、 CC执行流程详细解析"></a>三、 CC执行流程详细解析</h2><p>组件间通信采用了组件总线的方式，在基础库的组件管理类(ComponentMananger)中注册了所有组件对象，ComponentMananger通过查找映射表找到组件对象并调用。</p>
+<p>当ComponentMananger接收到组件的调用请求时，查找当前app内组件清单中是否含有当前需要调用的组件</p>
+<ul>
+<li>有： 执行App内部CC调用的流程：</li>
+</ul>
+<p><img src="https://user-gold-cdn.xitu.io/2017/12/9/1603a35e86b8de45?w=686&amp;h=452&amp;f=png&amp;s=36075" alt="App内部组件调用总线"></p>
+<ul>
+<li><p>没有：执行App之间CC调用的流程</p>
+<p><img src="https://user-gold-cdn.xitu.io/2017/12/9/1603a35e9b27c92e?w=1684&amp;h=642&amp;f=png&amp;s=182899" alt="App之间组件调用总线"></p>
+</li>
+</ul>
+<h3 id="1-组件的同步-异步实现和组件的同步-异步调用原理"><a href="#1-组件的同步-异步实现和组件的同步-异步调用原理" class="headerlink" title="1  组件的同步/异步实现和组件的同步/异步调用原理"></a>1  组件的同步/异步实现和组件的同步/异步调用原理</h3><ul>
+<li>组件实现时，当组件调用的相关功能结束后，通过CC.sendCCResult(callId, ccResult)将调用结果发送给框架</li>
+<li>IComponent实现类(组件入口类)onCall(cc)方法的返回值代表是否异步回调结果：<ul>
+<li>true:   将异步调用CC.sendCCResult(callId, ccResult)</li>
+<li>false: 将同步调用CC.sendCCResult(callId, ccResult)。意味着在onCall方法执行完之前会调用此方法将结果发给框架</li>
+</ul>
+</li>
+<li>当IComponent.onCall(cc)返回false时，直接获取CCResult并返回给调用方</li>
+<li>当IComponent.onCall(cc)返回true时，将进入wait()阻塞，知道获得CCResult后通过notify()中止阻塞，继续运行，将CCResult返回给调用方</li>
+<li>通过ComponentManager调用组件时，创建一个实现了<code>java.util.concurrent.Callable</code>接口<code>ChainProcessor</code>类来负责具体组件的调用<ul>
+<li>同步调用时，直接执行<code>ChainProcessor.call()</code>来调用组件，并将CCResult直接返回给调用方</li>
+<li>异步调用时，将<code>ChainProcessor</code>放入线程池中执行，通过<code>IComponentCallback.onResult(cc, ccResult)</code>将CCResult回调给调用方</li>
+</ul>
+</li>
+</ul>
+<p>执行过程如下图所示：</p>
+<p><img src="https://user-gold-cdn.xitu.io/2017/12/9/1603a35e88bf52bc?w=1058&amp;h=1159&amp;f=png&amp;s=112868" alt="CC兼容同步/异步调用和实现原理图"></p>
+<h3 id="2-自定义拦截器-ICCInterceptor-实现原理"><a href="#2-自定义拦截器-ICCInterceptor-实现原理" class="headerlink" title="2 自定义拦截器(ICCInterceptor)实现原理"></a>2 自定义拦截器(ICCInterceptor)实现原理</h3><ul>
+<li>所有拦截器按顺序存放在调用链(Chain)中</li>
+<li>先按照优先级执行所有用户自定义全局拦截器(<code>ICCGlobalInterceptor</code>接口实现类)</li>
+<li>再按照发起CC调用时添加的顺序执行用户自定义拦截器(<code>ICCInterceptor</code>接口实现类)</li>
+<li>然后执行CC框架自身的拦截器<code>ValidateInterceptor</code></li>
+<li><code>ValidateInterceptor</code>将在app内部查找目标组件，根据查找结果添加具体执行调用的拦截器<code>LocalCCInterceptor</code>（或<code>SubProcessCCInterceptor</code>、<code>RemoteCCInterceptor</code>)和<code>Wait4ResultInterceptor</code> </li>
+<li>Chain类负责依次执行所有拦截器<code>interceptor.intercept(chain)</code></li>
+<li>拦截器<code>intercept(chain)</code>方法通过调用<code>Chain.proceed()</code>方法获取CCResult</li>
+</ul>
+<p><img src="https://github.com/luckybilly/CC/raw/dev_multiprocess/image/sst/sst_cc_interceptors.png" alt="拦截器调用流程"></p>
+<h3 id="3-App内部CC调用流程"><a href="#3-App内部CC调用流程" class="headerlink" title="3 App内部CC调用流程"></a>3 App内部CC调用流程</h3><p>当要调用的组件在当前app内部时，执行此流程，完整流程图如下：</p>
+<p><img src="https://github.com/luckybilly/CC/raw/dev_multiprocess/image/lct/lct_in_app.png" alt="App内部CC调用流程图"></p>
+<p>CC的主体功能由一个个拦截器(<code>ICCInterceptor</code>)来完成，拦截器形成一个调用链(<code>Chain</code>)，调用链由ChainProcessor启动执行，ChainProcessor对象在ComponentManager中被创建。<br>因此，可以将ChainProcessor看做一个整体，由ComponentManager创建后，调用组件的onCall方法，并将组件执行后的结果返回给调用方。<br>ChainProcessor内部的<code>Wait4ResultInterceptor</code><br>ChainProcessor的执行过程可以被timeout和cancel两种事件中止。</p>
+<h3 id="4-App之间CC调用流程"><a href="#4-App之间CC调用流程" class="headerlink" title="4 App之间CC调用流程"></a>4 App之间CC调用流程</h3><p>当要调用的组件在当前app内找不到时，执行此流程，完整流程图如下：</p>
+<p><img src="https://github.com/luckybilly/CC/raw/dev_multiprocess/image/lct/lct_cross_app.png" alt="App之间CC调用流程图"></p>
+<p>同样适用于App内部进程间的通信</p>
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>本文比较详细地介绍了android组件化开发框架《CC》的主要功能、技术方案及执行流程，并给出了使用方式的简单示例。<br>大家如果感兴趣的话可以<a href="https://github.com/luckybilly/CC" target="_blank" rel="noopener">从GitHub上clone源码</a>来进行具体的分析，如果有更好的思路和方案也欢迎贡献代码进一步完善CC。</p>
+<h2 id="致谢"><a href="#致谢" class="headerlink" title="致谢"></a>致谢</h2><p><a href="https://github.com/iqiyi/Andromeda" target="_blank" rel="noopener">Andromeda</a></p>
+<p><a href="https://github.com/mzule/ActivityRouter" target="_blank" rel="noopener">ActivityRouter</a></p>
+<p><a href="https://github.com/alibaba/ARouter" target="_blank" rel="noopener">ARouter</a></p>
+<p><a href="https://github.com/SpinyTech/ModularizationArchitecture" target="_blank" rel="noopener">ModularizationArchitecture</a></p>
+<p><a href="http://blog.spinytech.com/2016/12/28/android_modularization/" target="_blank" rel="noopener">Android架构思考(模块化、多进程)</a></p>
+<p><a href="https://yq.aliyun.com/articles/71687" target="_blank" rel="noopener">开源最佳实践：Android平台页面路由框架ARouter</a></p>
+<p><a href="https://github.com/luojilab/DDComponentForAndroid" target="_blank" rel="noopener">DDComponentForAndroid</a></p>
+<p><a href="https://github.com/JumeiRdGroup/Router" target="_blank" rel="noopener">Router</a></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+      <div>
+        <div id="reward-container">
+  <div>请作者喝咖啡~</div>
+  <button id="reward-button" disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+
+    
+      
+      
+        
+      
+      <div style="display: inline-block">
+        <img src="/images/shoukuan_wechat.png" alt="齐翊 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+      
+      
+        
+      
+      <div style="display: inline-block">
+        <img src="/images/shoukuan_alipay.png" alt="齐翊 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/组件化/" rel="tag"># 组件化</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/posts/componentize_libs.html" rel="next" title="总结一波安卓组件化开源方案">
+                <i class="fa fa-chevron-left"></i> 总结一波安卓组件化开源方案
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/posts/componentize-gradually.html" rel="prev" title="可能否？渐进式组件化改造">
+                可能否？渐进式组件化改造 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://avatars3.githubusercontent.com/u/4155835?s=460&v=4" alt="齐翊">
+            
+              <p class="site-author-name" itemprop="name">齐翊</p>
+              <div class="site-description motion-element" itemprop="description">Android组件化 开源框架 CC/Gloading/PreLoader</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">12</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">7</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/luckybilly" title="GitHub &rarr; https://github.com/luckybilly" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:qiyilike@163.com" title="E-Mail &rarr; mailto:qiyilike@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://twitter.com/lucky_billy_05" title="Twitter &rarr; https://twitter.com/lucky_billy_05" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://juejin.im/user/5a0af10c6fb9a045186a423f/posts" title="掘金 &rarr; https://juejin.im/user/5a0af10c6fb9a045186a423f/posts" rel="noopener" target="_blank"><i class="fa fa-fw fa-spinner"></i>掘金</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一、为什么需要组件化？"><span class="nav-number">2.</span> <span class="nav-text">一、为什么需要组件化？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、-CC技术要点"><span class="nav-number">3.</span> <span class="nav-text">二、 CC技术要点</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-组件如何自动注册？"><span class="nav-number">3.1.</span> <span class="nav-text">1 组件如何自动注册？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-如何兼容同步-异步方式调用组件？"><span class="nav-number">3.2.</span> <span class="nav-text">2 如何兼容同步/异步方式调用组件？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-如何兼容同步-异步方式实现组件？"><span class="nav-number">3.3.</span> <span class="nav-text">3 如何兼容同步/异步方式实现组件？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-如何跨app调用组件？"><span class="nav-number">3.4.</span> <span class="nav-text">4 如何跨app调用组件？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-组件如何更方便地在application和library之间切换？"><span class="nav-number">3.5.</span> <span class="nav-text">5 组件如何更方便地在application和library之间切换？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-如何实现startActivityForResult？"><span class="nav-number">3.6.</span> <span class="nav-text">6 如何实现startActivityForResult？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-如何与Activity、Fragment的生命周期关联起来"><span class="nav-number">3.7.</span> <span class="nav-text">7  如何与Activity、Fragment的生命周期关联起来</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、-CC执行流程详细解析"><span class="nav-number">4.</span> <span class="nav-text">三、 CC执行流程详细解析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-组件的同步-异步实现和组件的同步-异步调用原理"><span class="nav-number">4.1.</span> <span class="nav-text">1  组件的同步/异步实现和组件的同步/异步调用原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-自定义拦截器-ICCInterceptor-实现原理"><span class="nav-number">4.2.</span> <span class="nav-text">2 自定义拦截器(ICCInterceptor)实现原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-App内部CC调用流程"><span class="nav-number">4.3.</span> <span class="nav-text">3 App内部CC调用流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-App之间CC调用流程"><span class="nav-number">4.4.</span> <span class="nav-text">4 App之间CC调用流程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#结语"><span class="nav-number">5.</span> <span class="nav-text">结语</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#致谢"><span class="nav-number">6.</span> <span class="nav-text">致谢</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">齐翊</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+  <script type="text/javascript">
+  	var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");
+  	document.write(unescape("%3Cspan id='cnzz_stat_icon_1277380255'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s23.cnzz.com/z_stat.php%3Fid%3D1277380255' type='text/javascript'%3E%3C/script%3E"));
+  </script>
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.0"></script>
+
+  <script src="/js/motion.js?v=7.1.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.0"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.0"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.0"></script>
+<script src="/js/post-details.js?v=7.1.0"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.0"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+    <!-- LOCAL: You can save these files to your site and update links -->
+
+  
+  <script src="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/gitment.browser.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/default.css">
+<!-- END LOCAL -->
+
+<script>
+  function renderGitment() {
+    var gitment = new Gitment({
+      id: window.location.pathname,
+      owner: 'luckybilly',
+      repo: 'luckybilly.github.io',
+      
+      oauth: {
+      
+      
+        client_secret: '8c3ab2fab44d17832cef8807a6424e687a547e13',
+      
+        client_id: '91f7f5b19d003a84ea17'
+      }
+    });
+    gitment.render('gitment-container');
+  }
+
+  
+    renderGitment();
+  
+</script>
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+  
+  <script src="/lib/bookmark/bookmark.min.js?v=1.0"></script>
+  <script>
+  
+    bookmark.scrollToMark('auto', "#更多");
+  
+  </script>
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

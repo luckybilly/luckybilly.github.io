@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: true,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="*本篇文章已授权微信公众号 guolin_blog （郭霖）独家发布  摘要在编译时，扫描即将打包到apk中的所有类，将所有组件类收集起来，通过修改字节码的方式生成注册代码到组件管理类中，从而实现编译时自动注册的功能，不用再关心项目中有哪些组件类了。特点：不需要注解，不会增加新的类；性能高，不需要反射，运行时直接调用组件的构造方法；能扫描到所有类，不会出现遗漏；支持分级按需加载功能的实现。 前言最">
+<meta name="keywords" content="组件化,解耦,Gradle插件">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AutoRegister:Android模块解耦利器">
+<meta property="og:url" content="http://qibilly.com/posts/os_autoregister.html">
+<meta property="og:site_name" content="Billy学技术">
+<meta property="og:description" content="*本篇文章已授权微信公众号 guolin_blog （郭霖）独家发布  摘要在编译时，扫描即将打包到apk中的所有类，将所有组件类收集起来，通过修改字节码的方式生成注册代码到组件管理类中，从而实现编译时自动注册的功能，不用再关心项目中有哪些组件类了。特点：不需要注解，不会增加新的类；性能高，不需要反射，运行时直接调用组件的构造方法；能扫描到所有类，不会出现遗漏；支持分级按需加载功能的实现。 前言最">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-04-30T03:59:49.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="AutoRegister:Android模块解耦利器">
+<meta name="twitter:description" content="*本篇文章已授权微信公众号 guolin_blog （郭霖）独家发布  摘要在编译时，扫描即将打包到apk中的所有类，将所有组件类收集起来，通过修改字节码的方式生成注册代码到组件管理类中，从而实现编译时自动注册的功能，不用再关心项目中有哪些组件类了。特点：不需要注解，不会增加新的类；性能高，不需要反射，运行时直接调用组件的构造方法；能扫描到所有类，不会出现遗漏；支持分级按需加载功能的实现。 前言最">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://qibilly.com/posts/os_autoregister">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>AutoRegister:Android模块解耦利器 | Billy学技术</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Billy学技术</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://qibilly.com/posts/os_autoregister.html">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="齐翊">
+      <meta itemprop="description" content="Android组件化 开源框架 CC/Gloading/PreLoader">
+      <meta itemprop="image" content="https://avatars3.githubusercontent.com/u/4155835?s=460&v=4">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Billy学技术">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">AutoRegister:Android模块解耦利器
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-04-30 11:51:13 / 修改时间：11:59:49" itemprop="dateCreated datePublished" datetime="2019-04-30T11:51:13+08:00">2019-04-30</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Android/开源项目/" itemprop="url" rel="index"><span itemprop="name">开源项目</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <font color="#36249E">*本篇文章已授权微信公众号 guolin_blog （郭霖）独家发布</font>
+
+<h2 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h2><p>在编译时，扫描即将打包到apk中的所有类，将所有组件类收集起来，通过修改字节码的方式生成注册代码到组件管理类中，从而实现编译时自动注册的功能，不用再关心项目中有哪些组件类了。<br>特点：不需要注解，不会增加新的类；性能高，不需要反射，运行时直接调用组件的构造方法；能扫描到所有类，不会出现遗漏；支持分级按需加载功能的实现。</p>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近在公司做android组件化开发框架的搭建，采用组件总线的方式进行通信：提供一个基础库，各组件（IComponent接口的实现类）都注册到组件管理类（组件总线：ComponentManager）中，组件之间在同一个app内时，通过ComponentManager转发调用请求来实现通信<font color="gray"><em>（不同app之间的通信方式不是本文的主题，暂且略去）</em></font>。但在实现过程中遇到了一个问题：</p>
+<p><b>如何将不同module中的组件类自动注册到ComponentManager中</b>？</p>
+<p>目前市面上比较常用的解决方案是使用annotationProcessor：通过编译时注解动态生成组件映射表代码的方式来实现。但尝试过后发现有问题，因为编译时注解的特性只在源码编译时生效，无法扫描到aar包里的注解（project依赖、maven依赖均无效），也就是说必须每个module编译时生成自己的代码，然后要想办法将这些分散在各aar种的类找出来进行集中注册。</p>
+<p>ARouter的解决方案是：</p>
+<ul>
+<li>每个module都生成自己的java类，这些类的包名都是’com.alibaba.android.arouter.routes’</li>
+<li>然后在运行时通过读取每个dex文件中的这个包下的所有类通过反射来完成映射表的注册，详见<a href="https://github.com/alibaba/ARouter/blob/master/arouter-api/src/main/java/com/alibaba/android/arouter/utils/ClassUtils.java" target="_blank" rel="noopener">ClassUtils.java源码</a></li>
+</ul>
+<p><em>运行时通过读取所有dex文件遍历每个entry查找指定包内的所有类名，然后反射获取类对象。这种效率看起来并不高。</em></p>
+<p>ActivityRouter的解决方案是(demo中有2个组件名为’app’和’sdk’)：</p>
+<ul>
+<li>在主app module中有一个<code>@Modules({&quot;app&quot;, &quot;sdk&quot;})</code>注解用来标记当前app内有多少组件，根据这个注解生成一个RouterInit类</li>
+<li>在RouterInit类的init方法中生成调用同一个包内的RouterMapping_app.map</li>
+<li>每个module生成的类(RouterMapping_app.java 和 RouterMapping_sdk.java)都放在com.github.mzule.activityrouter.router包内（在不同的aar中，但包名相同）</li>
+<li>在RouterMapping_sdk类的map()方法中根据扫描到的当前module内所有路由注解，生成了调用Routers.map(…)方法来注册路由的代码</li>
+<li>在Routers的所有api接口中最终都会触发RouterInit.init()方法，从而实现所有路由的映射表注册</li>
+</ul>
+<p><em>这种方式用一个RouterInit类组合了所有module中的路由映射表类，运行时效率比扫描所有dex文件的方式要高，但需要额外在主工程代码中维护一个组件名称列表注解: @Modules({“app”, “sdk”})</em></p>
+<p><strong>有没有一种方式可以更高效地管理这个列表呢？</strong></p>
+<p>联想到之前用ASM框架自动生成代码的方式做了个<a href="https://github.com/luckybilly/AndAOP" target="_blank" rel="noopener">AndAop插件</a>用于自动插入指定代码到任意类的任意方法中，于是写了一个自动生成注册组件的gradle插件。<br>大致思路是：在编译时，扫描所有类，将符合条件的类收集起来，并通过修改字节码生成注册代码到指定的管理类中，从而实现编译时自动注册的功能，不用再关心项目中有哪些组件类了。不会增加新的class，不需要反射，运行时直接调用组件的构造方法。</p>
+<p>性能方面：由于使用效率更高的ASM框架来进行字节码分析和修改，并过滤掉<code>android/support</code>包中的所有类(还支持设置自定义的扫描范围），经公司项目实测，未代码混淆前所有dex文件总计12MB左右，扫描及代码插入的<strong><font size="4">总耗时在2s-3s之间</font></strong>，相对于整个apk打包所花3分钟左右的时间来说可以忽略不计(运行环境：MacBookPro 15吋高配 Mid 2015)。</p>
+<p>开发完成后，考虑到这个功能的通用性，于是升级组件扫描注册插件为通用的自动注册插件<a href="https://github.com/luckybilly/AutoRegister" target="_blank" rel="noopener">AutoRegister</a>，支持配置多种类型的扫描注册，使用方式见github中的<a href="https://github.com/luckybilly/AutoRegister" target="_blank" rel="noopener">README文档</a>。此插件现已用到组件化开发框架: <a href="https://github.com/luckybilly/CC" target="_blank" rel="noopener">CC</a>中</p>
+<p>升级后，AutoRegister插件的完整功能描述是：</p>
+<p><em>在编译期扫描即将打包到apk中的所有类，并将指定接口的实现类(或指定类的子类)通过字节码操作自动注册到对应的管理类中。尤其适用于命令模式或策略模式下的映射表生成。</em></p>
+<p>在组件化开发框架中，可有助于实现分级按需加载的功能：</p>
+<ul>
+<li>在组件管理类中生成组件自动注册的代码</li>
+<li>在组件框架第一次被调用时加载此注册表</li>
+<li>若组件中有很多功能提供给外部调用，可以将这些功能包装成多个Processor，并将它们自动注册到组件中进行管理</li>
+<li>组件被初次调用时再加载这些Processor</li>
+</ul>
+<h2 id="实现过程"><a href="#实现过程" class="headerlink" title="实现过程"></a>实现过程</h2><h3 id="第一步：准备工作"><a href="#第一步：准备工作" class="headerlink" title="第一步：准备工作"></a>第一步：准备工作</h3><ol>
+<li>首先要知道<a href="http://blog.csdn.net/sbsujjbcy/article/details/50782830" target="_blank" rel="noopener">如何使用Android Studio开发Gradle插件</a></li>
+<li>了解TransformAPI：Transform API是从Gradle 1.5.0版本之后提供的,它允许第三方在打包Dex文件之前的编译过程中修改java字节码(自定义插件注册的transform会在ProguardTransform和DexTransform之前执行，所以自动注册的类不需要考虑混淆的情况).参考文章有： <ul>
+<li><a href="http://blog.csdn.net/sbsujjbcy/article/details/50839263" target="_blank" rel="noopener">Android 热修复使用Gradle Plugin1.5改造Nuwa插件</a>（主要看前半部分关于TransformAPI的介绍，Nuwa相关的内容可先忽略）</li>
+</ul>
+</li>
+<li>字节码修改框架（相比于Javassist框架ASM较难上手，但性能更高，但相学习难度阻挡不了我们对性能的追求）：<ul>
+<li><a href="http://download.forge.objectweb.org/asm/asm4-guide.pdf" target="_blank" rel="noopener">ASM英文文档</a></li>
+<li><a href="http://asm.ow2.org/asm50/javadoc/user/index.html" target="_blank" rel="noopener">ASM API文档</a></li>
+<li><a href="http://blog.csdn.net/l2show/article/details/54846682" target="_blank" rel="noopener">Android 热修复方案Tinker(七) 插桩实现</a>（主要看关于ASM使用的介绍及与transformAPI的结合）</li>
+</ul>
+</li>
+</ol>
+<h3 id="第二步：构建插件工程"><a href="#第二步：构建插件工程" class="headerlink" title="第二步：构建插件工程"></a>第二步：构建插件工程</h3><ol>
+<li>按照<a href="http://blog.csdn.net/sbsujjbcy/article/details/50782830" target="_blank" rel="noopener">如何使用Android Studio开发Gradle插件</a>文章中的方法创建好插件工程并发布到本地maven仓库（我是放在工程根目录下的一个文件夹中），这样我们就可以在本地快速调试了</li>
+</ol>
+<p>build.gradle文件的部分内容如下：<br><figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line">apply plugin: <span class="string">'groovy'</span></span><br><span class="line">apply plugin: <span class="string">'maven'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">dependencies</span> &#123;</span><br><span class="line">    <span class="keyword">compile</span> gradleApi()</span><br><span class="line">    <span class="keyword">compile</span> localGroovy()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">repositories</span> &#123;</span><br><span class="line">    mavenCentral()</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">dependencies</span> &#123;</span><br><span class="line">    <span class="keyword">compile</span> <span class="string">'com.android.tools.build:gradle:2.2.0'</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//加载本地maven私服配置（在工程根目录中的local.properties文件中进行配置）</span></span><br><span class="line">Properties properties = <span class="keyword">new</span> Properties()</span><br><span class="line">properties.load(<span class="keyword">project</span>.rootProject.<span class="keyword">file</span>(<span class="string">'local.properties'</span>).newDataInputStream())</span><br><span class="line"><span class="keyword">def</span> artifactory_user = properties.getProperty(<span class="string">"artifactory_user"</span>)</span><br><span class="line"><span class="keyword">def</span> artifactory_password = properties.getProperty(<span class="string">"artifactory_password"</span>)</span><br><span class="line"><span class="keyword">def</span> artifactory_contextUrl = properties.getProperty(<span class="string">"artifactory_contextUrl"</span>)</span><br><span class="line"><span class="keyword">def</span> artifactory_snapshot_repoKey = properties.getProperty(<span class="string">"artifactory_snapshot_repoKey"</span>)</span><br><span class="line"><span class="keyword">def</span> artifactory_release_repoKey = properties.getProperty(<span class="string">"artifactory_release_repoKey"</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> maven_type_snapshot = <span class="keyword">true</span></span><br><span class="line"><span class="comment">// 项目引用的版本号，比如compile 'com.yanzhenjie:andserver:1.0.1'中的1.0.1就是这里配置的。</span></span><br><span class="line"><span class="keyword">def</span> artifact_version=<span class="string">'1.0.1'</span></span><br><span class="line"><span class="comment">// 唯一包名，比如compile 'com.yanzhenjie:andserver:1.0.1'中的com.yanzhenjie就是这里配置的。</span></span><br><span class="line"><span class="keyword">def</span> artifact_group = <span class="string">'com.billy.android'</span></span><br><span class="line"><span class="keyword">def</span> artifact_id = <span class="string">'autoregister'</span></span><br><span class="line"><span class="keyword">def</span> debug_flag = <span class="keyword">true</span> <span class="comment">//true: 发布到本地maven仓库， false： 发布到maven私服</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">task</span> sourcesJar(type: Jar) &#123;</span><br><span class="line">    <span class="keyword">from</span> <span class="keyword">project</span>.<span class="keyword">file</span>(<span class="string">'src/main/groovy'</span>)</span><br><span class="line">    classifier = <span class="string">'sources'</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">artifacts</span> &#123;</span><br><span class="line">    archives sourcesJar</span><br><span class="line">&#125;</span><br><span class="line">uploadArchives &#123;</span><br><span class="line">    <span class="keyword">repositories</span> &#123;</span><br><span class="line">        mavenDeployer &#123;</span><br><span class="line">            <span class="comment">//deploy到maven仓库</span></span><br><span class="line">            <span class="keyword">if</span> (debug_flag) &#123;</span><br><span class="line">                repository(url: uri(<span class="string">'../repo-local'</span>)) <span class="comment">//deploy到本地仓库</span></span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;<span class="comment">//deploy到maven私服中</span></span><br><span class="line">                <span class="keyword">def</span> repoKey = maven_type_snapshot ? artifactory_snapshot_repoKey : artifactory_release_repoKey</span><br><span class="line">                repository(url: <span class="string">"$&#123;artifactory_contextUrl&#125;/$&#123;repoKey&#125;"</span>) &#123;</span><br><span class="line">                    authentication(userName: artifactory_user, password: artifactory_password)</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            pom.groupId = artifact_group</span><br><span class="line">            pom.artifactId = artifact_id</span><br><span class="line">            pom.version = artifact_version + (maven_type_snapshot ? <span class="string">'-SNAPSHOT'</span> : <span class="string">''</span>)</span><br><span class="line"></span><br><span class="line">            pom.<span class="keyword">project</span> &#123;</span><br><span class="line">                licenses &#123;</span><br><span class="line">                    license &#123;</span><br><span class="line">                        name <span class="string">'The Apache Software License, Version 2.0'</span></span><br><span class="line">                        url <span class="string">'http://www.apache.org/licenses/LICENSE-2.0.txt'</span></span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>根目录的build.gradle文件中要添加本地仓库的地址及dependencies<br><figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">buildscript</span> &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">repositories</span> &#123;</span><br><span class="line">        maven&#123; url rootProject.<span class="keyword">file</span>(<span class="string">"repo-local"</span>) &#125;</span><br><span class="line">        maven &#123; url <span class="string">'http://maven.aliyun.com/nexus/content/groups/public/'</span> &#125;</span><br><span class="line">        google()</span><br><span class="line">        jcenter()</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">dependencies</span> &#123;</span><br><span class="line">        <span class="keyword">classpath</span> <span class="string">'com.android.tools.build:gradle:3.0.0-beta6'</span></span><br><span class="line">        <span class="keyword">classpath</span> <span class="string">'com.github.dcendents:android-maven-gradle-plugin:1.4.1'</span></span><br><span class="line">        <span class="keyword">classpath</span> <span class="string">'com.billy.android:autoregister:1.0.1'</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p> 2.在Transform类的transform方法中添加类扫描相关的代码<br><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 遍历输入文件</span></span><br><span class="line">inputs.each &#123; TransformInput input -&gt;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 遍历jar</span></span><br><span class="line">    input.jarInputs.each &#123; JarInput jarInput -&gt;</span><br><span class="line">        String destName = jarInput.name</span><br><span class="line">        <span class="comment">// 重名名输出文件,因为可能同名,会覆盖</span></span><br><span class="line">        <span class="keyword">def</span> hexName = DigestUtils.md5Hex(jarInput.file.absolutePath)</span><br><span class="line">        <span class="keyword">if</span> (destName.endsWith(<span class="string">".jar"</span>)) &#123;</span><br><span class="line">            destName = destName.substring(<span class="number">0</span>, destName.length() - <span class="number">4</span>)</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 获得输入文件</span></span><br><span class="line">        File src = jarInput.file</span><br><span class="line">        <span class="comment">// 获得输出文件</span></span><br><span class="line">        File dest = outputProvider.getContentLocation(destName + <span class="string">"_"</span> + hexName, jarInput.contentTypes, jarInput.scopes, Format.JAR)</span><br><span class="line"></span><br><span class="line">        <span class="comment">//遍历jar的字节码类文件，找到需要自动注册的component</span></span><br><span class="line">        <span class="keyword">if</span> (CodeScanProcessor.shouldProcessPreDexJar(src.absolutePath)) &#123;</span><br><span class="line">            CodeScanProcessor.scanJar(src, dest)</span><br><span class="line">        &#125;</span><br><span class="line">        FileUtils.copyFile(src, dest)</span><br><span class="line"></span><br><span class="line">        project.logger.info <span class="string">"Copying\t$&#123;src.absolutePath&#125; \nto\t\t$&#123;dest.absolutePath&#125;"</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 遍历目录</span></span><br><span class="line">    input.directoryInputs.each &#123; DirectoryInput directoryInput -&gt;</span><br><span class="line">        <span class="comment">// 获得产物的目录</span></span><br><span class="line">        File dest = outputProvider.getContentLocation(directoryInput.name, directoryInput.contentTypes, directoryInput.scopes, Format.DIRECTORY)</span><br><span class="line">        String root = directoryInput.file.absolutePath</span><br><span class="line">        <span class="keyword">if</span> (!root.endsWith(File.separator))</span><br><span class="line">            root += File.separator</span><br><span class="line">        <span class="comment">//遍历目录下的每个文件</span></span><br><span class="line">        directoryInput.file.eachFileRecurse &#123; File file -&gt;</span><br><span class="line">            <span class="keyword">def</span> path = file.absolutePath.replace(root, <span class="string">''</span>)</span><br><span class="line">            <span class="keyword">if</span>(file.isFile())&#123;</span><br><span class="line">                CodeScanProcessor.checkInitClass(path, <span class="keyword">new</span> File(dest.absolutePath + File.separator + path))</span><br><span class="line">                <span class="keyword">if</span> (CodeScanProcessor.shouldProcessClass(path)) &#123;</span><br><span class="line">                    CodeScanProcessor.scanClass(file)</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        project.logger.info <span class="string">"Copying\t$&#123;directoryInput.file.absolutePath&#125; \nto\t\t$&#123;dest.absolutePath&#125;"</span></span><br><span class="line">        <span class="comment">// 处理完后拷到目标文件</span></span><br><span class="line">        FileUtils.copyDirectory(directoryInput.file, dest)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>CodeScanProcessor是一个工具类，其中<code>CodeScanProcessor.scanJar(src, dest)</code>和<code>CodeScanProcessor.scanClass(file)</code>分别是用来扫描jar包和class文件的<br>扫描的原理是利用ASM的ClassVisitor来查看每个类的父类类名及所实现的接口名称，与配置的信息进行比较，如果符合我们的过滤条件，则记录下来，在全部扫描完成后将调用这些类的无参构造方法进行注册</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">void</span> scanClass(InputStream inputStream) &#123;</span><br><span class="line">    ClassReader cr = <span class="keyword">new</span> ClassReader(inputStream)</span><br><span class="line">    ClassWriter cw = <span class="keyword">new</span> ClassWriter(cr, <span class="number">0</span>)</span><br><span class="line">    ScanClassVisitor cv = <span class="keyword">new</span> ScanClassVisitor(Opcodes.ASM5, cw)</span><br><span class="line">    cr.accept(cv, ClassReader.EXPAND_FRAMES)</span><br><span class="line">    inputStream.close()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">ScanClassVisitor</span> <span class="keyword">extends</span> <span class="title">ClassVisitor</span> &#123;</span></span><br><span class="line">    ScanClassVisitor(<span class="keyword">int</span> api, ClassVisitor cv) &#123;</span><br><span class="line">        <span class="keyword">super</span>(api, cv)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">void</span> visit(<span class="keyword">int</span> version, <span class="keyword">int</span> access, String name, String signature,</span><br><span class="line">               String superName, String[] interfaces) &#123;</span><br><span class="line">        <span class="keyword">super</span>.visit(version, access, name, signature, superName, interfaces)</span><br><span class="line">        RegisterTransform.infoList.each &#123; ext -&gt;</span><br><span class="line">            <span class="keyword">if</span> (shouldProcessThisClassForRegister(ext, name)) &#123;</span><br><span class="line">                <span class="keyword">if</span> (superName != <span class="string">'java/lang/Object'</span> &amp;&amp; !ext.superClassNames.isEmpty()) &#123;</span><br><span class="line">                    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; ext.superClassNames.size(); i++) &#123;</span><br><span class="line">                        <span class="keyword">if</span> (ext.superClassNames.get(i) == superName) &#123;</span><br><span class="line">                            ext.classList.add(name)</span><br><span class="line">                            <span class="keyword">return</span></span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span> (ext.interfaceName &amp;&amp; interfaces != <span class="literal">null</span>) &#123;</span><br><span class="line">                    interfaces.each &#123; itName -&gt;</span><br><span class="line">                        <span class="keyword">if</span> (itName == ext.interfaceName) &#123;</span><br><span class="line">                            ext.classList.add(name)</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>3.记录目标类所在的文件，因为我们接下来要修改其字节码，将注册代码插入进去<br><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">void</span> checkInitClass(String entryName, File file) &#123;</span><br><span class="line">    <span class="keyword">if</span> (entryName == <span class="literal">null</span> || !entryName.endsWith(<span class="string">".class"</span>))</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    entryName = entryName.substring(<span class="number">0</span>, entryName.lastIndexOf(<span class="string">'.'</span>))</span><br><span class="line">    RegisterTransform.infoList.each &#123; ext -&gt;</span><br><span class="line">        <span class="keyword">if</span> (ext.initClassName == entryName)</span><br><span class="line">            ext.fileContainsInitClass = file</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>4.扫描完成后，开始修改目标类的字节码(使用ASM的MethodVisitor来修改目标类指定方法，若未指定则默认为static块，即<code>&lt;clinit&gt;</code>方法)，生成的代码是直接调用扫描到的类的无参构造方法，<strong>并非通过反射</strong></p>
+<ul>
+<li>class文件： 直接修改此字节码文件（其实是重新生成一个class文件并替换掉原来的文件）</li>
+<li>jar文件：复制此jar文件，找到jar包中目标类所对应的JarEntry，修改其字节码，然后替换原来的jar文件<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.apache.commons.io.IOUtils</span><br><span class="line"><span class="keyword">import</span> org.objectweb.asm.*</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.jar.JarEntry</span><br><span class="line"><span class="keyword">import</span> java.util.jar.JarFile</span><br><span class="line"><span class="keyword">import</span> java.util.jar.JarOutputStream</span><br><span class="line"><span class="keyword">import</span> java.util.zip.ZipEntry</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> billy.qi</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@since</span> 17/3/20 11:48</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CodeInsertProcessor</span> &#123;</span></span><br><span class="line">    RegisterInfo extension</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> CodeInsertProcessor(RegisterInfo extension) &#123;</span><br><span class="line">        <span class="keyword">this</span>.extension = extension</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">void</span> insertInitCodeTo(RegisterInfo extension) &#123;</span><br><span class="line">        <span class="keyword">if</span> (extension != <span class="literal">null</span> &amp;&amp; !extension.classList.isEmpty()) &#123;</span><br><span class="line">            CodeInsertProcessor processor = <span class="keyword">new</span> CodeInsertProcessor(extension)</span><br><span class="line">            File file = extension.fileContainsInitClass</span><br><span class="line">            <span class="keyword">if</span> (file.getName().endsWith(<span class="string">'.jar'</span>))</span><br><span class="line">                processor.insertInitCodeIntoJarFile(file)</span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">                processor.insertInitCodeIntoClassFile(file)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//处理jar包中的class代码注入</span></span><br><span class="line">    <span class="keyword">private</span> File insertInitCodeIntoJarFile(File jarFile) &#123;</span><br><span class="line">        <span class="keyword">if</span> (jarFile) &#123;</span><br><span class="line">            <span class="keyword">def</span> optJar = <span class="keyword">new</span> File(jarFile.getParent(), jarFile.name + <span class="string">".opt"</span>)</span><br><span class="line">            <span class="keyword">if</span> (optJar.exists())</span><br><span class="line">                optJar.delete()</span><br><span class="line">            <span class="keyword">def</span> file = <span class="keyword">new</span> JarFile(jarFile)</span><br><span class="line">            Enumeration enumeration = file.entries()</span><br><span class="line">            JarOutputStream jarOutputStream = <span class="keyword">new</span> JarOutputStream(<span class="keyword">new</span> FileOutputStream(optJar))</span><br><span class="line"></span><br><span class="line">            <span class="keyword">while</span> (enumeration.hasMoreElements()) &#123;</span><br><span class="line">                JarEntry jarEntry = (JarEntry) enumeration.nextElement()</span><br><span class="line">                String entryName = jarEntry.getName()</span><br><span class="line">                ZipEntry zipEntry = <span class="keyword">new</span> ZipEntry(entryName)</span><br><span class="line">                InputStream inputStream = file.getInputStream(jarEntry)</span><br><span class="line">                jarOutputStream.putNextEntry(zipEntry)</span><br><span class="line">                <span class="keyword">if</span> (isInitClass(entryName)) &#123;</span><br><span class="line">                    println(<span class="string">'codeInsertToClassName:'</span> + entryName)</span><br><span class="line">                    <span class="keyword">def</span> bytes = referHackWhenInit(inputStream)</span><br><span class="line">                    jarOutputStream.write(bytes)</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    jarOutputStream.write(IOUtils.toByteArray(inputStream))</span><br><span class="line">                &#125;</span><br><span class="line">                inputStream.close()</span><br><span class="line">                jarOutputStream.closeEntry()</span><br><span class="line">            &#125;</span><br><span class="line">            jarOutputStream.close()</span><br><span class="line">            file.close()</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (jarFile.exists()) &#123;</span><br><span class="line">                jarFile.delete()</span><br><span class="line">            &#125;</span><br><span class="line">            optJar.renameTo(jarFile)</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> jarFile</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">boolean</span> isInitClass(String entryName) &#123;</span><br><span class="line">        <span class="keyword">if</span> (entryName == <span class="literal">null</span> || !entryName.endsWith(<span class="string">".class"</span>))</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">        <span class="keyword">if</span> (extension.initClassName) &#123;</span><br><span class="line">            entryName = entryName.substring(<span class="number">0</span>, entryName.lastIndexOf(<span class="string">'.'</span>))</span><br><span class="line">            <span class="keyword">return</span> extension.initClassName == entryName</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 处理class的注入</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> file class文件</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 修改后的字节码文件内容</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">byte</span>[] insertInitCodeIntoClassFile(File file) &#123;</span><br><span class="line">        <span class="keyword">def</span> optClass = <span class="keyword">new</span> File(file.getParent(), file.name + <span class="string">".opt"</span>)</span><br><span class="line"></span><br><span class="line">        FileInputStream inputStream = <span class="keyword">new</span> FileInputStream(file)</span><br><span class="line">        FileOutputStream outputStream = <span class="keyword">new</span> FileOutputStream(optClass)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">def</span> bytes = referHackWhenInit(inputStream)</span><br><span class="line">        outputStream.write(bytes)</span><br><span class="line">        inputStream.close()</span><br><span class="line">        outputStream.close()</span><br><span class="line">        <span class="keyword">if</span> (file.exists()) &#123;</span><br><span class="line">            file.delete()</span><br><span class="line">        &#125;</span><br><span class="line">        optClass.renameTo(file)</span><br><span class="line">        <span class="keyword">return</span> bytes</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">//refer hack class when object init</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">byte</span>[] referHackWhenInit(InputStream inputStream) &#123;</span><br><span class="line">        ClassReader cr = <span class="keyword">new</span> ClassReader(inputStream)</span><br><span class="line">        ClassWriter cw = <span class="keyword">new</span> ClassWriter(cr, <span class="number">0</span>)</span><br><span class="line">        ClassVisitor cv = <span class="keyword">new</span> MyClassVisitor(Opcodes.ASM5, cw)</span><br><span class="line">        cr.accept(cv, ClassReader.EXPAND_FRAMES)</span><br><span class="line">        <span class="keyword">return</span> cw.toByteArray()</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">MyClassVisitor</span> <span class="keyword">extends</span> <span class="title">ClassVisitor</span> &#123;</span></span><br><span class="line"></span><br><span class="line">        MyClassVisitor(<span class="keyword">int</span> api, ClassVisitor cv) &#123;</span><br><span class="line">            <span class="keyword">super</span>(api, cv)</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">void</span> visit(<span class="keyword">int</span> version, <span class="keyword">int</span> access, String name, String signature,</span><br><span class="line">                   String superName, String[] interfaces) &#123;</span><br><span class="line">            <span class="keyword">super</span>.visit(version, access, name, signature, superName, interfaces)</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        MethodVisitor visitMethod(<span class="keyword">int</span> access, String name, String desc,</span><br><span class="line">                                  String signature, String[] exceptions) &#123;</span><br><span class="line">            MethodVisitor mv = <span class="keyword">super</span>.visitMethod(access, name, desc, signature, exceptions)</span><br><span class="line">            <span class="keyword">if</span> (name == extension.initMethodName) &#123; <span class="comment">//注入代码到指定的方法之中</span></span><br><span class="line">                <span class="keyword">boolean</span> _static = (access &amp; Opcodes.ACC_STATIC) &gt; <span class="number">0</span></span><br><span class="line">                mv = <span class="keyword">new</span> MyMethodVisitor(Opcodes.ASM5, mv, _static)</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> mv</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">MyMethodVisitor</span> <span class="keyword">extends</span> <span class="title">MethodVisitor</span> &#123;</span></span><br><span class="line">        <span class="keyword">boolean</span> _static;</span><br><span class="line"></span><br><span class="line">        MyMethodVisitor(<span class="keyword">int</span> api, MethodVisitor mv, <span class="keyword">boolean</span> _static) &#123;</span><br><span class="line">            <span class="keyword">super</span>(api, mv)</span><br><span class="line">            <span class="keyword">this</span>._static = _static;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="keyword">void</span> visitInsn(<span class="keyword">int</span> opcode) &#123;</span><br><span class="line">            <span class="keyword">if</span> ((opcode &gt;= Opcodes.IRETURN &amp;&amp; opcode &lt;= Opcodes.RETURN)) &#123;</span><br><span class="line">                extension.classList.each &#123; name -&gt;</span><br><span class="line">                    <span class="keyword">if</span> (!_static) &#123;</span><br><span class="line">                        <span class="comment">//加载this</span></span><br><span class="line">                        mv.visitVarInsn(Opcodes.ALOAD, <span class="number">0</span>)</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="comment">//用无参构造方法创建一个组件实例</span></span><br><span class="line">                    mv.visitTypeInsn(Opcodes.NEW, name)</span><br><span class="line">                    mv.visitInsn(Opcodes.DUP)</span><br><span class="line">                    mv.visitMethodInsn(Opcodes.INVOKESPECIAL, name, <span class="string">"&lt;init&gt;"</span>, <span class="string">"()V"</span>, <span class="literal">false</span>)</span><br><span class="line">                    <span class="comment">//调用注册方法将组件实例注册到组件库中</span></span><br><span class="line">                    <span class="keyword">if</span> (_static) &#123;</span><br><span class="line">                        mv.visitMethodInsn(Opcodes.INVOKESTATIC</span><br><span class="line">                                , extension.registerClassName</span><br><span class="line">                                , extension.registerMethodName</span><br><span class="line">                                , <span class="string">"(L$&#123;extension.interfaceName&#125;;)V"</span></span><br><span class="line">                                , <span class="literal">false</span>)</span><br><span class="line">                    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                        mv.visitMethodInsn(Opcodes.INVOKESPECIAL</span><br><span class="line">                                , extension.registerClassName</span><br><span class="line">                                , extension.registerMethodName</span><br><span class="line">                                , <span class="string">"(L$&#123;extension.interfaceName&#125;;)V"</span></span><br><span class="line">                                , <span class="literal">false</span>)</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">super</span>.visitInsn(opcode)</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="keyword">void</span> visitMaxs(<span class="keyword">int</span> maxStack, <span class="keyword">int</span> maxLocals) &#123;</span><br><span class="line">            <span class="keyword">super</span>.visitMaxs(maxStack + <span class="number">4</span>, maxLocals)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>5.接收扩展参数，获取需要扫描类的特征及需要插入的代码</p>
+<p>找了很久没找到gradle插件接收自定义对象数组扩展参数的方法，于是退一步改用<code>List&lt;Map&gt;</code>接收后再进行转换的方式来实现，以此来接收多个扫描任务的扩展参数<br><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.gradle.api.Project</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * aop的配置信息</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> billy.qi</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@since</span> 17/3/28 11:48</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">AutoRegisterConfig</span> &#123;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> ArrayList&lt;Map&lt;String, Object&gt;&gt; registerInfo = []</span><br><span class="line"></span><br><span class="line">    ArrayList&lt;RegisterInfo&gt; list = <span class="keyword">new</span> ArrayList&lt;&gt;()</span><br><span class="line"></span><br><span class="line">    Project project</span><br><span class="line"></span><br><span class="line">    AutoRegisterConfig()&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">void</span> convertConfig() &#123;</span><br><span class="line">        registerInfo.each &#123; map -&gt;</span><br><span class="line">            RegisterInfo info = <span class="keyword">new</span> RegisterInfo()</span><br><span class="line">            info.interfaceName = map.get(<span class="string">'scanInterface'</span>)</span><br><span class="line">            <span class="keyword">def</span> superClasses = map.get(<span class="string">'scanSuperClasses'</span>)</span><br><span class="line">            <span class="keyword">if</span> (!superClasses) &#123;</span><br><span class="line">                superClasses = <span class="keyword">new</span> ArrayList&lt;String&gt;()</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (superClasses <span class="keyword">instanceof</span> String) &#123;</span><br><span class="line">                ArrayList&lt;String&gt; superList = <span class="keyword">new</span> ArrayList&lt;&gt;()</span><br><span class="line">                superList.add(superClasses)</span><br><span class="line">                superClasses = superList</span><br><span class="line">            &#125;</span><br><span class="line">            info.superClassNames = superClasses</span><br><span class="line">            info.initClassName = map.get(<span class="string">'codeInsertToClassName'</span>) <span class="comment">//代码注入的类</span></span><br><span class="line">            info.initMethodName = map.get(<span class="string">'codeInsertToMethodName'</span>) <span class="comment">//代码注入的方法（默认为static块）</span></span><br><span class="line">            info.registerMethodName = map.get(<span class="string">'registerMethodName'</span>) <span class="comment">//生成的代码所调用的方法</span></span><br><span class="line">            info.registerClassName = map.get(<span class="string">'registerClassName'</span>) <span class="comment">//注册方法所在的类</span></span><br><span class="line">            info.include = map.get(<span class="string">'include'</span>)</span><br><span class="line">            info.exclude = map.get(<span class="string">'exclude'</span>)</span><br><span class="line">            info.init()</span><br><span class="line">            <span class="keyword">if</span> (info.validate())</span><br><span class="line">                list.add(info)</span><br><span class="line">            <span class="keyword">else</span> &#123;</span><br><span class="line">                project.logger.error(<span class="string">'auto register config error: scanInterface, codeInsertToClassName and registerMethodName should not be null\n'</span> + info.toString())</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.regex.Pattern</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * aop的配置信息</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> billy.qi</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@since</span> 17/3/28 11:48</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">RegisterInfo</span> &#123;</span></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">final</span> DEFAULT_EXCLUDE = [</span><br><span class="line">            <span class="string">'.*/R(\\$[^/]*)?'</span></span><br><span class="line">            , <span class="string">'.*/BuildConfig$'</span></span><br><span class="line">    ]</span><br><span class="line">    <span class="comment">//以下是可配置参数</span></span><br><span class="line">    String interfaceName = <span class="string">''</span></span><br><span class="line">    ArrayList&lt;String&gt; superClassNames = []</span><br><span class="line">    String initClassName = <span class="string">''</span></span><br><span class="line">    String initMethodName = <span class="string">''</span></span><br><span class="line">    String registerClassName = <span class="string">''</span></span><br><span class="line">    String registerMethodName = <span class="string">''</span></span><br><span class="line">    ArrayList&lt;String&gt; include = []</span><br><span class="line">    ArrayList&lt;String&gt; exclude = []</span><br><span class="line"></span><br><span class="line">    <span class="comment">//以下不是可配置参数</span></span><br><span class="line">    ArrayList&lt;Pattern&gt; includePatterns = []</span><br><span class="line">    ArrayList&lt;Pattern&gt; excludePatterns = []</span><br><span class="line">    File fileContainsInitClass <span class="comment">//initClassName的class文件或含有initClassName类的jar文件</span></span><br><span class="line">    ArrayList&lt;String&gt; classList = <span class="keyword">new</span> ArrayList&lt;&gt;()</span><br><span class="line"></span><br><span class="line">    RegisterInfo()&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">boolean</span> validate() &#123;</span><br><span class="line">        <span class="keyword">return</span> interfaceName &amp;&amp; registerClassName &amp;&amp; registerMethodName</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//用于在console中输出日志</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    String toString() &#123;</span><br><span class="line">        StringBuilder sb = <span class="keyword">new</span> StringBuilder(<span class="string">'&#123;'</span>)</span><br><span class="line">        sb.append(<span class="string">'\n\t'</span>).append(<span class="string">'scanInterface'</span>).append(<span class="string">'\t\t\t=\t'</span>).append(interfaceName)</span><br><span class="line">        sb.append(<span class="string">'\n\t'</span>).append(<span class="string">'scanSuperClasses'</span>).append(<span class="string">'\t\t=\t['</span>)</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; superClassNames.size(); i++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (i &gt; <span class="number">0</span>) sb.append(<span class="string">','</span>)</span><br><span class="line">            sb.append(<span class="string">' \''</span>).append(superClassNames.get(i)).append(<span class="string">'\''</span>)</span><br><span class="line">        &#125;</span><br><span class="line">        sb.append(<span class="string">' ]'</span>)</span><br><span class="line">        sb.append(<span class="string">'\n\t'</span>).append(<span class="string">'codeInsertToClassName'</span>).append(<span class="string">'\t=\t'</span>).append(initClassName)</span><br><span class="line">        sb.append(<span class="string">'\n\t'</span>).append(<span class="string">'codeInsertToMethodName'</span>).append(<span class="string">'\t=\t'</span>).append(initMethodName)</span><br><span class="line">        sb.append(<span class="string">'\n\t'</span>).append(<span class="string">'registerMethodName'</span>).append(<span class="string">'\t\t=\tpublic static void '</span>)</span><br><span class="line">                .append(registerClassName).append(<span class="string">'.'</span>).append(registerMethodName)</span><br><span class="line">        sb.append(<span class="string">'\n\t'</span>).append(<span class="string">'include'</span>).append(<span class="string">' = ['</span>)</span><br><span class="line">        include.each &#123; i -&gt;</span><br><span class="line">            sb.append(<span class="string">'\n\t\t\''</span>).append(i).append(<span class="string">'\''</span>)</span><br><span class="line">        &#125;</span><br><span class="line">        sb.append(<span class="string">'\n\t]'</span>)</span><br><span class="line">        sb.append(<span class="string">'\n\t'</span>).append(<span class="string">'exclude'</span>).append(<span class="string">' = ['</span>)</span><br><span class="line">        exclude.each &#123; i -&gt;</span><br><span class="line">            sb.append(<span class="string">'\n\t\t\''</span>).append(i).append(<span class="string">'\''</span>)</span><br><span class="line">        &#125;</span><br><span class="line">        sb.append(<span class="string">'\n\t]\n&#125;'</span>)</span><br><span class="line">        <span class="keyword">return</span> sb.toString()</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">void</span> init() &#123;</span><br><span class="line">        <span class="keyword">if</span> (include == <span class="literal">null</span>) include = <span class="keyword">new</span> ArrayList&lt;&gt;()</span><br><span class="line">        <span class="keyword">if</span> (include.empty) include.add(<span class="string">".*"</span>) <span class="comment">//如果没有设置则默认为include所有</span></span><br><span class="line">        <span class="keyword">if</span> (exclude == <span class="literal">null</span>) exclude = <span class="keyword">new</span> ArrayList&lt;&gt;()</span><br><span class="line">        <span class="keyword">if</span> (!registerClassName)</span><br><span class="line">            registerClassName = initClassName</span><br><span class="line"></span><br><span class="line">        <span class="comment">//将interfaceName中的'.'转换为'/'</span></span><br><span class="line">        <span class="keyword">if</span> (interfaceName)</span><br><span class="line">            interfaceName = convertDotToSlash(interfaceName)</span><br><span class="line">        <span class="comment">//将superClassName中的'.'转换为'/'</span></span><br><span class="line">        <span class="keyword">if</span> (superClassNames == <span class="literal">null</span>) superClassNames = <span class="keyword">new</span> ArrayList&lt;&gt;()</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; superClassNames.size(); i++) &#123;</span><br><span class="line">            <span class="keyword">def</span> superClass = convertDotToSlash(superClassNames.get(i))</span><br><span class="line">            superClassNames.set(i, superClass)</span><br><span class="line">            <span class="keyword">if</span> (!exclude.contains(superClass))</span><br><span class="line">                exclude.add(superClass)</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//interfaceName添加到排除项</span></span><br><span class="line">        <span class="keyword">if</span> (!exclude.contains(interfaceName))</span><br><span class="line">            exclude.add(interfaceName)</span><br><span class="line">        <span class="comment">//注册和初始化的方法所在的类默认为同一个类</span></span><br><span class="line">        initClassName = convertDotToSlash(initClassName)</span><br><span class="line">        <span class="comment">//默认插入到static块中</span></span><br><span class="line">        <span class="keyword">if</span> (!initMethodName)</span><br><span class="line">            initMethodName = <span class="string">"&lt;clinit&gt;"</span></span><br><span class="line">        registerClassName = convertDotToSlash(registerClassName)</span><br><span class="line">        <span class="comment">//添加默认的排除项</span></span><br><span class="line">        DEFAULT_EXCLUDE.each &#123; e -&gt;</span><br><span class="line">            <span class="keyword">if</span> (!exclude.contains(e))</span><br><span class="line">                exclude.add(e)</span><br><span class="line">        &#125;</span><br><span class="line">        initPattern(include, includePatterns)</span><br><span class="line">        initPattern(exclude, excludePatterns)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> String convertDotToSlash(String str) &#123;</span><br><span class="line">        <span class="keyword">return</span> str ? str.replaceAll('\\.', '/').intern() : str</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> initPattern(ArrayList&lt;String&gt; list, ArrayList&lt;Pattern&gt; patterns) &#123;</span><br><span class="line">        list.each &#123; s -&gt;</span><br><span class="line">            patterns.add(Pattern.compile(s))</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="第三步：-在application中配置自动注册插件所需的相关扩展参数"><a href="#第三步：-在application中配置自动注册插件所需的相关扩展参数" class="headerlink" title="第三步： 在application中配置自动注册插件所需的相关扩展参数"></a>第三步： 在application中配置自动注册插件所需的相关扩展参数</h3><p>在主app module的build.gradle文件中添加扩展参数，示例如下：</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//auto register extension</span></span><br><span class="line"><span class="comment">// 功能介绍：</span></span><br><span class="line"><span class="comment">//  在编译期扫描将打到apk包中的所有类</span></span><br><span class="line"><span class="comment">//  将 scanInterface的实现类 或 scanSuperClasses的子类</span></span><br><span class="line"><span class="comment">//  并在 codeInsertToClassName 类的 codeInsertToMethodName 方法中生成如下代码：</span></span><br><span class="line"><span class="comment">//  codeInsertToClassName.registerMethodName(scanInterface)</span></span><br><span class="line"><span class="comment">// 要点：</span></span><br><span class="line"><span class="comment">//  1. codeInsertToMethodName 若未指定，则默认为static块</span></span><br><span class="line"><span class="comment">//  2. codeInsertToMethodName 与 registerMethodName 需要同为static或非static</span></span><br><span class="line"><span class="comment">// 自动生成的代码示例：</span></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">  在com.billy.app_lib_interface.CategoryManager.class文件中</span></span><br><span class="line"><span class="comment">  static</span></span><br><span class="line"><span class="comment">  &#123;</span></span><br><span class="line"><span class="comment">    register(new CategoryA()); //scanInterface的实现类</span></span><br><span class="line"><span class="comment">    register(new CategoryB()); //scanSuperClass的子类</span></span><br><span class="line"><span class="comment">  &#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">apply plugin: <span class="string">'auto-register'</span></span><br><span class="line">autoregister &#123;</span><br><span class="line">    registerInfo = [</span><br><span class="line">        [</span><br><span class="line">            <span class="string">'scanInterface'</span>             : <span class="string">'com.billy.app_lib_interface.ICategory'</span></span><br><span class="line">            <span class="comment">// scanSuperClasses 会自动被加入到exclude中，下面的exclude只作为演示，其实可以不用手动添加</span></span><br><span class="line">            , <span class="string">'scanSuperClasses'</span>        : [<span class="string">'com.billy.android.autoregister.demo.BaseCategory'</span>]</span><br><span class="line">            , <span class="string">'codeInsertToClassName'</span>   : <span class="string">'com.billy.app_lib_interface.CategoryManager'</span></span><br><span class="line">            <span class="comment">//未指定codeInsertToMethodName，默认插入到static块中，故此处register必须为static方法</span></span><br><span class="line">            , <span class="string">'registerMethodName'</span>      : <span class="string">'register'</span> <span class="comment">//</span></span><br><span class="line">            , <span class="string">'exclude'</span>                 : [</span><br><span class="line">                <span class="comment">//排除的类，支持正则表达式（包分隔符需要用/表示，不能用.）</span></span><br><span class="line">                <span class="string">'com.billy.android.autoregister.demo.BaseCategory'</span>.replaceAll(<span class="string">'\\.'</span>, <span class="string">'/'</span>) <span class="comment">//排除这个基类</span></span><br><span class="line">            ]</span><br><span class="line">        ],</span><br><span class="line">        [</span><br><span class="line">            <span class="string">'scanInterface'</span>             : <span class="string">'com.billy.app_lib.IOther'</span></span><br><span class="line">            , <span class="string">'codeInsertToClassName'</span>   : <span class="string">'com.billy.app_lib.OtherManager'</span></span><br><span class="line">            , <span class="string">'codeInsertToMethodName'</span>  : <span class="string">'init'</span> <span class="comment">//非static方法</span></span><br><span class="line">            , <span class="string">'registerMethodName'</span>      : <span class="string">'registerOther'</span> <span class="comment">//非static方法</span></span><br><span class="line">        ]</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本文介绍了AutoRegister插件的功能及其在组件化开发框架中的应用。重点对其原理做了说明，主要介绍了此插件的实现过程，其中涉及到的技术点有TransformAPI、ASM、groovy相关语法、gradle机制。</p>
+<p>本插件的所有代码及其用法demo已开源到<a href="https://github.com/luckybilly/AutoRegister" target="_blank" rel="noopener">github</a>上，欢迎fork、start</p>
+<p>接下来就用这个插件来为我们自动管理注册表吧！</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+      <div>
+        <div id="reward-container">
+  <div>请作者喝咖啡~</div>
+  <button id="reward-button" disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+
+    
+      
+      
+        
+      
+      <div style="display: inline-block">
+        <img src="/images/shoukuan_wechat.png" alt="齐翊 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+      
+      
+        
+      
+      <div style="display: inline-block">
+        <img src="/images/shoukuan_alipay.png" alt="齐翊 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/组件化/" rel="tag"># 组件化</a>
+          
+            <a href="/tags/解耦/" rel="tag"># 解耦</a>
+          
+            <a href="/tags/Gradle插件/" rel="tag"># Gradle插件</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/posts/os_gloading.html" rel="next" title="我们经常用的Loading动画居然还有这种姿势">
+                <i class="fa fa-chevron-left"></i> 我们经常用的Loading动画居然还有这种姿势
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://avatars3.githubusercontent.com/u/4155835?s=460&v=4" alt="齐翊">
+            
+              <p class="site-author-name" itemprop="name">齐翊</p>
+              <div class="site-description motion-element" itemprop="description">Android组件化 开源框架 CC/Gloading/PreLoader</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">12</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">7</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/luckybilly" title="GitHub &rarr; https://github.com/luckybilly" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:qiyilike@163.com" title="E-Mail &rarr; mailto:qiyilike@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://twitter.com/lucky_billy_05" title="Twitter &rarr; https://twitter.com/lucky_billy_05" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://juejin.im/user/5a0af10c6fb9a045186a423f/posts" title="掘金 &rarr; https://juejin.im/user/5a0af10c6fb9a045186a423f/posts" rel="noopener" target="_blank"><i class="fa fa-fw fa-spinner"></i>掘金</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#摘要"><span class="nav-number">1.</span> <span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">2.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实现过程"><span class="nav-number">3.</span> <span class="nav-text">实现过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#第一步：准备工作"><span class="nav-number">3.1.</span> <span class="nav-text">第一步：准备工作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第二步：构建插件工程"><span class="nav-number">3.2.</span> <span class="nav-text">第二步：构建插件工程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第三步：-在application中配置自动注册插件所需的相关扩展参数"><span class="nav-number">3.3.</span> <span class="nav-text">第三步： 在application中配置自动注册插件所需的相关扩展参数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">齐翊</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+  <script type="text/javascript">
+  	var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");
+  	document.write(unescape("%3Cspan id='cnzz_stat_icon_1277380255'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s23.cnzz.com/z_stat.php%3Fid%3D1277380255' type='text/javascript'%3E%3C/script%3E"));
+  </script>
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.0"></script>
+
+  <script src="/js/motion.js?v=7.1.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.0"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.0"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.0"></script>
+<script src="/js/post-details.js?v=7.1.0"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.0"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+    <!-- LOCAL: You can save these files to your site and update links -->
+
+  
+  <script src="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/gitment.browser.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/default.css">
+<!-- END LOCAL -->
+
+<script>
+  function renderGitment() {
+    var gitment = new Gitment({
+      id: window.location.pathname,
+      owner: 'luckybilly',
+      repo: 'luckybilly.github.io',
+      
+      oauth: {
+      
+      
+        client_secret: '8c3ab2fab44d17832cef8807a6424e687a547e13',
+      
+        client_id: '91f7f5b19d003a84ea17'
+      }
+    });
+    gitment.render('gitment-container');
+  }
+
+  
+    renderGitment();
+  
+</script>
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+  
+  <script src="/lib/bookmark/bookmark.min.js?v=1.0"></script>
+  <script>
+  
+    bookmark.scrollToMark('auto', "#更多");
+  
+  </script>
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

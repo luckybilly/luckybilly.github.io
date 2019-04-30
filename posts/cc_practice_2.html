@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: true,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="一、需求背景在android组件化过程中，你有没有遇到这样的问题：  单Activity + 多Fragment的架构下，如何进行Fragment的组件化？ 主界面上的Fragment太多，想用组件化进行管理，该怎么做？ 一个功能模块比较独立，但在主界面使用了其中一个Fragment，如何解耦？ 对某些View进行了封装或者自定义的View，功能比较独立，是作为基础库通过类依赖使用好还是作为组件使">
+<meta name="keywords" content="组件化,CC框架实践">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CC框架实践(2)：Fragment和View的组件化">
+<meta property="og:url" content="http://qibilly.com/posts/cc_practice_2.html">
+<meta property="og:site_name" content="Billy学技术">
+<meta property="og:description" content="一、需求背景在android组件化过程中，你有没有遇到这样的问题：  单Activity + 多Fragment的架构下，如何进行Fragment的组件化？ 主界面上的Fragment太多，想用组件化进行管理，该怎么做？ 一个功能模块比较独立，但在主界面使用了其中一个Fragment，如何解耦？ 对某些View进行了封装或者自定义的View，功能比较独立，是作为基础库通过类依赖使用好还是作为组件使">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-04-30T03:36:07.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="CC框架实践(2)：Fragment和View的组件化">
+<meta name="twitter:description" content="一、需求背景在android组件化过程中，你有没有遇到这样的问题：  单Activity + 多Fragment的架构下，如何进行Fragment的组件化？ 主界面上的Fragment太多，想用组件化进行管理，该怎么做？ 一个功能模块比较独立，但在主界面使用了其中一个Fragment，如何解耦？ 对某些View进行了封装或者自定义的View，功能比较独立，是作为基础库通过类依赖使用好还是作为组件使">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://qibilly.com/posts/cc_practice_2">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>CC框架实践(2)：Fragment和View的组件化 | Billy学技术</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Billy学技术</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://qibilly.com/posts/cc_practice_2.html">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="齐翊">
+      <meta itemprop="description" content="Android组件化 开源框架 CC/Gloading/PreLoader">
+      <meta itemprop="image" content="https://avatars3.githubusercontent.com/u/4155835?s=460&v=4">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Billy学技术">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">CC框架实践(2)：Fragment和View的组件化
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-01-30 16:30:03" itemprop="dateCreated datePublished" datetime="2019-01-30T16:30:03+08:00">2019-01-30</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-04-30 11:36:07" itemprop="dateModified" datetime="2019-04-30T11:36:07+08:00">2019-04-30</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Android/开源项目/" itemprop="url" rel="index"><span itemprop="name">开源项目</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="一、需求背景"><a href="#一、需求背景" class="headerlink" title="一、需求背景"></a>一、需求背景</h3><p>在android组件化过程中，你有没有遇到这样的问题：</p>
+<ul>
+<li>单Activity + 多Fragment的架构下，如何进行Fragment的组件化？</li>
+<li>主界面上的Fragment太多，想用组件化进行管理，该怎么做？</li>
+<li>一个功能模块比较独立，但在主界面使用了其中一个Fragment，如何解耦？</li>
+<li>对某些View进行了封装或者自定义的View，功能比较独立，是作为基础库通过类依赖使用好还是作为组件使用比较好？如果要作为组件使用，那要如何组件化？</li>
+</ul>
+<h3 id="二、现有的一些解决方案："><a href="#二、现有的一些解决方案：" class="headerlink" title="二、现有的一些解决方案："></a>二、现有的一些解决方案：</h3><ul>
+<li>在主app中依赖所有组件，所以在主app中可直接使用这些组件中的Fragment或View的类<ul>
+<li>直接使用具体的类将产生耦合，违背了组件化的解耦目的</li>
+<li>组件之间的fragment引用也需要直接依赖，这样就变成了一个库而非组件</li>
+</ul>
+</li>
+<li>使用ARouter来获取Fragment对象来实现Fragment组件化<ul>
+<li>由于没有Fragment的具体类型，只能调用到系统中Fragment的public方法，不能进行业务通信</li>
+<li>由于View的创建需要用到Activity对象(用Application对象会导致Activity设置的Theme样式失效)，无法通过这种方式来获取</li>
+</ul>
+</li>
+<li>创建一个公共库，供所有组件依赖，所有组件在初始化时，将组件内的Fragment和View注册到公共库中生成一个映射表。组件通过调用公共库的映射表查找对应的Fragment或View的类<ul>
+<li>跟用ARouter获取Fragment一样，在组件中无具体类型时无法进行业务通信</li>
+<li>如果要用于获取View，其构造方法的参数列表调用方需要了解，在一定程度上也属于类耦合</li>
+</ul>
+</li>
+<li>使用ARouter的获取Service方式实现，对外暴露服务，在公共库中定义接口，提供创建、业务通信相关的方法，在组件中实现此接口的具体功能，调用方通过动态获取接口实现类来调用业务功能。这种方式能实现Fragment和View的组件化调用和业务通信，实现的也比较优雅，但接口的管理成本有点高。<ul>
+<li>接口放在公共库中，一般用以下2种方式实现：<ul>
+<li>为每个向外提供Fragment或View的组件额外创建一个公共库，供需要调用的组件依赖（感觉好麻烦，还不如直接依赖组件…）</li>
+<li>所有组件的这些接口统一放在一个公共库中，供所有组件依赖。但这个库的维护成本就比较高了，每次有新的接口或者原接口新增/修改方法都要修改这个库。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="三、在CC框架中如何实现Fragment的组件化？"><a href="#三、在CC框架中如何实现Fragment的组件化？" class="headerlink" title="三、在CC框架中如何实现Fragment的组件化？"></a>三、在CC框架中如何实现Fragment的组件化？</h3><p>CC的参数和回调结果使用的数据结构是Map，在app内部可以传递任何类型。</p>
+<ol>
+<li><p>通过CC调用获取组件中的Fragment对象</p>
+<p> 1.1 组件调用方按如下方式调用，并从回调结果中获取Fragment，例如：</p>
+ <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Fragment fragment = CC.obtainBuilder(<span class="string">"ComponentName"</span>)</span><br><span class="line">        .build().call().getDataItem(<span class="string">"key"</span>);</span><br><span class="line"><span class="keyword">if</span> (fragment != <span class="keyword">null</span>) &#123;</span><br><span class="line">    <span class="comment">//show fragment</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p> 1.2 组件实现方按如下方式设置结果，例如：</p>
+ <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CC.sendCCResult(cc.getCallId(), CCResult.success(<span class="string">"key"</span>, <span class="keyword">new</span> MyFragment()));</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>与Fragment进行通信</p>
+<p> 组件化实施的主要目的之一是业务隔离：<b>只暴露调用协议给外部</b>(<em>类似于app端与服务端的通信接口</em>)，内部实现的更改对外部无影响。甚至组件的插拔和替换都不影响调用方(只要组件调用方做好组件调用失败的降级处理，例如1.1示例代码中的<code>if (fragment != null) {...}</code>。)</p>
+<p> 所以，Fragment中的具体业务逻辑应由组件自身内部来实现，在组件调用方(如：Activity)中通过CC调用组件暴露的接口来完成。</p>
+<p> 2.1 组件调用方将fragment对象及其它参数通过CC传递给组件，例如：</p>
+ <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">boolean</span> success = CC.obtainBuilder(<span class="string">"ComponentName"</span>)</span><br><span class="line">    .setActionName(<span class="string">"updateTextView"</span>) <span class="comment">//action名称</span></span><br><span class="line">    .addParam(<span class="string">"fragment"</span>, fragment) <span class="comment">//目标fragment对象</span></span><br><span class="line">    .addParam(<span class="string">"value"</span>, text) <span class="comment">//设置参数</span></span><br><span class="line">    .build().call().isSuccess();</span><br></pre></td></tr></table></figure>
+<p> 2.2 组件中接收fragment对象及其它参数，并调用fragment对象的指定方法实现对应的业务，例如：</p>
+ <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onCall</span><span class="params">(CC cc)</span> </span>&#123;</span><br><span class="line">    String actionName = cc.getActionName();</span><br><span class="line">    <span class="keyword">if</span> (<span class="string">"updateTextView"</span>.equals(actionName)) &#123;</span><br><span class="line">        MyFragment fragment = cc.getParamItem(<span class="string">"fragment"</span>);<span class="comment">//接收fragment对象</span></span><br><span class="line">        <span class="keyword">if</span> (fragment != <span class="keyword">null</span>) &#123;</span><br><span class="line">            String text = cc.getParamItem(<span class="string">"value"</span>, <span class="string">""</span>);<span class="comment">//接收其它参数</span></span><br><span class="line">            fragment.updateText(text);<span class="comment">//调用fragment的方法</span></span><br><span class="line">            CC.sendCCResult(cc.getCallId(), CCResult.success());<span class="comment">//回调结果</span></span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">//回调错误信息</span></span><br><span class="line">            CC.sendCCResult(cc.getCallId(), CCResult.error(<span class="string">"no fragment params"</span>));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="五、-View有没有必要组件化？"><a href="#五、-View有没有必要组件化？" class="headerlink" title="五、 View有没有必要组件化？"></a>五、 View有没有必要组件化？</h3><p>答案是：对于一些封装过的View、自定义View(特别是第三方自定义View）是有必要的。</p>
+<p>理由是：组件化能很好的解耦，将业务实现完全交给组件内部完成，只要接口协议不发生变化，实现方式发生改变时不会影响到使用方式。</p>
+<p>网上很多组件化方案中，都是将自定义View(自己写的或者第三方库)作为公共库来使用。如果没有做个适配层(Adapter)而直接使用自定义View的类，将会导致View的耦合度很高，降低系统的扩展性。</p>
+<h2 id="六、在CC框架中如何实现View的组件化？"><a href="#六、在CC框架中如何实现View的组件化？" class="headerlink" title="六、在CC框架中如何实现View的组件化？"></a>六、在CC框架中如何实现View的组件化？</h2><p>与Fragment组件化一样，通过CC获取对象和业务调用。</p>
+<p>唯一的差别是：在获取View对象时需要将Activity对象传给组件</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">View view = CC.obtainBuilder(<span class="string">"ComponentName"</span>)</span><br><span class="line">        .setContext(activity) <span class="comment">//将activity对象传给组件，用于View的初始化</span></span><br><span class="line">        .build().call().getDataItem(<span class="string">"key"</span>);</span><br><span class="line"><span class="keyword">if</span> (view != <span class="keyword">null</span>) &#123;</span><br><span class="line">    <span class="comment">//add view to container</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>关于android的组件化文章一般都只是介绍如何进行Activity的跳转及服务调用，对于Fragment的组件化一直没有很好的解决，View的组件化几乎没有被提到。</p>
+<p>本文介绍了在CC组件化框架下实现Fragment及View组件化的方式，为android工程组件化的道路扫除一个障碍。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+      <div>
+        <div id="reward-container">
+  <div>请作者喝咖啡~</div>
+  <button id="reward-button" disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+
+    
+      
+      
+        
+      
+      <div style="display: inline-block">
+        <img src="/images/shoukuan_wechat.png" alt="齐翊 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+      
+      
+        
+      
+      <div style="display: inline-block">
+        <img src="/images/shoukuan_alipay.png" alt="齐翊 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/组件化/" rel="tag"># 组件化</a>
+          
+            <a href="/tags/CC框架实践/" rel="tag"># CC框架实践</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/posts/componentize-gradually.html" rel="next" title="可能否？渐进式组件化改造">
+                <i class="fa fa-chevron-left"></i> 可能否？渐进式组件化改造
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/posts/cc_practice_3.html" rel="prev" title="CC框架实践(3): 让jsBridge更优雅">
+                CC框架实践(3): 让jsBridge更优雅 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://avatars3.githubusercontent.com/u/4155835?s=460&v=4" alt="齐翊">
+            
+              <p class="site-author-name" itemprop="name">齐翊</p>
+              <div class="site-description motion-element" itemprop="description">Android组件化 开源框架 CC/Gloading/PreLoader</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">12</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">7</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/luckybilly" title="GitHub &rarr; https://github.com/luckybilly" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:qiyilike@163.com" title="E-Mail &rarr; mailto:qiyilike@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://twitter.com/lucky_billy_05" title="Twitter &rarr; https://twitter.com/lucky_billy_05" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://juejin.im/user/5a0af10c6fb9a045186a423f/posts" title="掘金 &rarr; https://juejin.im/user/5a0af10c6fb9a045186a423f/posts" rel="noopener" target="_blank"><i class="fa fa-fw fa-spinner"></i>掘金</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、需求背景"><span class="nav-number">1.</span> <span class="nav-text">一、需求背景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、现有的一些解决方案："><span class="nav-number">2.</span> <span class="nav-text">二、现有的一些解决方案：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三、在CC框架中如何实现Fragment的组件化？"><span class="nav-number">3.</span> <span class="nav-text">三、在CC框架中如何实现Fragment的组件化？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#五、-View有没有必要组件化？"><span class="nav-number">4.</span> <span class="nav-text">五、 View有没有必要组件化？</span></a></li></ol><li class="nav-item nav-level-2"><a class="nav-link" href="#六、在CC框架中如何实现View的组件化？"><span class="nav-number"></span> <span class="nav-text">六、在CC框架中如何实现View的组件化？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">1.</span> <span class="nav-text">总结</span></a></li></ol></li></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">齐翊</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+  <script type="text/javascript">
+  	var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");
+  	document.write(unescape("%3Cspan id='cnzz_stat_icon_1277380255'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s23.cnzz.com/z_stat.php%3Fid%3D1277380255' type='text/javascript'%3E%3C/script%3E"));
+  </script>
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.0"></script>
+
+  <script src="/js/motion.js?v=7.1.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.0"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.0"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.0"></script>
+<script src="/js/post-details.js?v=7.1.0"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.0"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+    <!-- LOCAL: You can save these files to your site and update links -->
+
+  
+  <script src="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/gitment.browser.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/default.css">
+<!-- END LOCAL -->
+
+<script>
+  function renderGitment() {
+    var gitment = new Gitment({
+      id: window.location.pathname,
+      owner: 'luckybilly',
+      repo: 'luckybilly.github.io',
+      
+      oauth: {
+      
+      
+        client_secret: '8c3ab2fab44d17832cef8807a6424e687a547e13',
+      
+        client_id: '91f7f5b19d003a84ea17'
+      }
+    });
+    gitment.render('gitment-container');
+  }
+
+  
+    renderGitment();
+  
+</script>
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+  
+  <script src="/lib/bookmark/bookmark.min.js?v=1.0"></script>
+  <script>
+  
+    bookmark.scrollToMark('auto', "#更多");
+  
+  </script>
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: true,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="前言之前写了一篇关于总结一波安卓组件化开源方案的文章，反响还不错，很高兴能够对大家整体了解android组件化技术有所帮助。 有些开发者在了解组件化开发的好处及相关开源框架后，想要对自己所负责的项目进行组件化改造以解决多人（多团队）协同开发困难及单工程开发编译时间过长等问题，但一直难以下决心真正开始实施，停留在了解阶段或仅仅写个demo体验一把的阶段，其中很大一部分原因是迭代开发任务排的很紧，很难">
+<meta name="keywords" content="组件化,架构">
+<meta property="og:type" content="article">
+<meta property="og:title" content="谁阻碍了你做组件化开发？">
+<meta property="og:url" content="http://qibilly.com/posts/componentize_who_stops.html">
+<meta property="og:site_name" content="Billy学技术">
+<meta property="og:description" content="前言之前写了一篇关于总结一波安卓组件化开源方案的文章，反响还不错，很高兴能够对大家整体了解android组件化技术有所帮助。 有些开发者在了解组件化开发的好处及相关开源框架后，想要对自己所负责的项目进行组件化改造以解决多人（多团队）协同开发困难及单工程开发编译时间过长等问题，但一直难以下决心真正开始实施，停留在了解阶段或仅仅写个demo体验一把的阶段，其中很大一部分原因是迭代开发任务排的很紧，很难">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-04-30T03:21:55.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="谁阻碍了你做组件化开发？">
+<meta name="twitter:description" content="前言之前写了一篇关于总结一波安卓组件化开源方案的文章，反响还不错，很高兴能够对大家整体了解android组件化技术有所帮助。 有些开发者在了解组件化开发的好处及相关开源框架后，想要对自己所负责的项目进行组件化改造以解决多人（多团队）协同开发困难及单工程开发编译时间过长等问题，但一直难以下决心真正开始实施，停留在了解阶段或仅仅写个demo体验一把的阶段，其中很大一部分原因是迭代开发任务排的很紧，很难">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://qibilly.com/posts/componentize_who_stops">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>谁阻碍了你做组件化开发？ | Billy学技术</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Billy学技术</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://qibilly.com/posts/componentize_who_stops.html">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="齐翊">
+      <meta itemprop="description" content="Android组件化 开源框架 CC/Gloading/PreLoader">
+      <meta itemprop="image" content="https://avatars3.githubusercontent.com/u/4155835?s=460&v=4">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Billy学技术">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">谁阻碍了你做组件化开发？
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-02-23 18:46:30" itemprop="dateCreated datePublished" datetime="2018-02-23T18:46:30+08:00">2018-02-23</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-04-30 11:21:55" itemprop="dateModified" datetime="2019-04-30T11:21:55+08:00">2019-04-30</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Android/组件化文章/" itemprop="url" rel="index"><span itemprop="name">组件化文章</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>之前写了一篇关于<a href="https://juejin.im/post/5a7ab8846fb9a0634514a2f5" target="_blank" rel="noopener">总结一波安卓组件化开源方案</a>的文章，反响还不错，很高兴能够对大家整体了解android组件化技术有所帮助。</p>
+<p>有些开发者在了解组件化开发的好处及相关开源框架后，想要对自己所负责的项目进行组件化改造以解决多人（多团队）协同开发困难及单工程开发编译时间过长等问题，但一直难以下决心真正开始实施，停留在了解阶段或仅仅写个demo体验一把的阶段，其中很大一部分原因是迭代开发任务排的很紧，很难空出一段时间来实施，而且组件化改造是纯技术上的优化，产品经理和业务部门并不太关心。</p>
+<p>为此，本文将介绍一下如何用 <a href="https://github.com/luckybilly/CC" target="_blank" rel="noopener">CC</a> 框架来破解android组件化不易上手的难题（想要了解CC实现原理的细节，请戳<a href="https://github.com/luckybilly/CC/wiki" target="_blank" rel="noopener">这里</a>）</p>
+<h2 id="一、谁阻碍了你"><a href="#一、谁阻碍了你" class="headerlink" title="一、谁阻碍了你"></a>一、谁阻碍了你</h2><p>先来解决几个可能阻挡我们下决心实施组件化改造的拦路石：</p>
+<ol>
+<li>怕配置复杂，容易遗漏或出错<ul>
+<li>CC将配置封装到了一个cc-settings.gradle文件，在需要组件化的module的build.gradle中添加一行依赖cc-settings.gradle文件的代码即可</li>
+</ul>
+</li>
+<li>怕一开始就需要很大的改动<ul>
+<li>使用CC可以先不改变当前项目中现有的代码，无需添加注解，只需新增一个接口的实现类即可定义一个组件，将其服务暴露给其它组件调用，后续有空的时候再逐步拆分</li>
+</ul>
+</li>
+<li>怕组件化开发框架学习成本高，团队内每个人都了解需要较长时间<ul>
+<li>CC提供了统一的调用方式和实现方式</li>
+<li>定义组件仅需实现1个接口类，并确保通过调用<code>CC.sendCCResult(callId, cCResult)</code>将组件调用的执行结果发送给调用者即可</li>
+<li>调用组件仅需了解一下CC链式调用即可，例如：（<code>CC.obtainBuilder(&quot;demo.ComponentA&quot;).setActionName(&quot;login&quot;).addParam(&quot;id&quot;, 12345).build().callAsync(callback)</code>）</li>
+<li>另外library模式切换成application的方式简化为在local.properties中配置一行<code>module名称=true</code>即可，而且local.properties不会被提交到代码仓库中，不会因为误操作导致在jenkins上编译出错的情况</li>
+<li>几乎零门槛就可以进行组件化开发</li>
+</ul>
+</li>
+<li>怕增加项目的维护成本<ul>
+<li>CC采用了编译时自动注册插件<a href="https://github.com/luckybilly/AutoRegister" target="_blank" rel="noopener">AutoRegister</a>来自动维护组件的注册工作，无需手动维护</li>
+<li>组件化框架下进行开发跟普通的开发一样，未使用hook等黑科技</li>
+<li>组件将业务隔离在内部，并且可单独调试，能降低项目维护成本</li>
+</ul>
+</li>
+<li>刚开始组件化时如果调用其它组件必须要打包一起运行，则享受不到单组件运行的便利<ul>
+<li>CC支持跨app调用</li>
+<li>CC支持一个module中包含多个组件类，即使没有进行拆分，也可以在主工程中定义这些组件类（在主app moudle或在被调用功能所在的module都可以），暴露调用入口给其它组件调用，后续在进行组件拆分时将组件类一同拆分出去即可</li>
+<li>所以，可以将需要被调用到的功能先定义好组件，供新建的组件跨app调用，无需与主工程一起打包，从一开始就可以单独运行组件</li>
+</ul>
+</li>
+<li>Fragment不好组件化<ul>
+<li>其它组件化方案采用下沉接口的方式提供组件间调用，但只是获取了Fragment对象，难以进行后续的通信</li>
+<li>CC框架下，获取Fragment对象的方式跟其它组件调用完全一样，并且后续可以将此Fragment对象作为参数回传给原组件进行Fragment内部功能的调用，真正做到业务隔离在组件内部进行处理</li>
+</ul>
+</li>
+<li>有自定义View或者第三方View的功能不好组件化，例如将第三方地图SDK封装成组件，由于其它组件页面中要用到MapView控件，是否需要强依赖？<ul>
+<li>CC同样支持View的组件化，详情请戳<a href="https://juejin.im/post/5a3e48f26fb9a045132ae7ff" target="_blank" rel="noopener">Fragment和View的组件化</a></li>
+</ul>
+</li>
+</ol>
+<h2 id="二、推荐的组件化实施步骤"><a href="#二、推荐的组件化实施步骤" class="headerlink" title="二、推荐的组件化实施步骤"></a>二、推荐的组件化实施步骤</h2><p>设想一下，在做组件化改造之前，如果按照如下步骤来实施，是不是可行性更高一些，让我们更快地享受到组件化给我们带来的便利和好处，不至于因为迭代任务节奏快而迟迟不能落实：</p>
+<h3 id="2-1-快速上手"><a href="#2-1-快速上手" class="headerlink" title="2.1 快速上手"></a>2.1 快速上手</h3><ul>
+<li>先不用修改当前项目中现有的代码（最大程度地降低工作量及出错概率）</li>
+<li>可以选择将新的业务按照组件化的方式来进行开发，单独以apk的方式编译运行&amp;调试（也可以选择一个耦合度较低且相对独立的业务来进行这一步）</li>
+<li>在主工程中创建新组件所需要调用到的主工程业务的组件类</li>
+<li>在这些组件类在组件尚未完整拆分之前即可按照组件化的方式对其它组件暴露调用入口</li>
+<li>恭喜，组件化改造的第一步已经成功迈出。</li>
+</ul>
+<h3 id="2-2-全局规划"><a href="#2-2-全局规划" class="headerlink" title="2.2 全局规划"></a>2.2 全局规划</h3><p>由于组件化是全局的架构，提前规划好整个工程的组件划分并明确各自的业务边界，会让我们实施组件化改造的过程更加有章法，项目结构更加清晰，责任更加明确，组件的可复用性更强。</p>
+<p>关于组件如何划分，不同的团队有不同的理解，不同的业务应用场景下也有不同的要求。一般常用的划分方式以下2种，可以结合起来使用：</p>
+<ul>
+<li>按UI(Activity/Fragment/View)划分，每个页面或控件都作为独立的组件。<ul>
+<li>优点是粒度较细，方便复用，某个页面发生变化不会影响其他页面</li>
+<li>缺点是如果页面多，会导致组件太多，并且如果一个业务有多个页面，这种方式导致业务内部太松散，不方便管理。</li>
+<li>另外需要将非页面性的一些服务封装为组件</li>
+</ul>
+</li>
+<li>按业务/功能来划分，将同一个业务下的不同功能和页面划分在同一个组件中<ul>
+<li>优点是可以统一管理本业务下的所有功能（包括页面和服务），提高了内聚性，改造方便</li>
+<li>缺点是如果掌控不好粒度可能会比较粗</li>
+</ul>
+</li>
+</ul>
+<p>不管具体如何划分，有一点是相通的：单一职责。即需要确定好业务边界，将组件的业务隔离在自己内部，只暴露调用协议给外部。</p>
+<p><strong><em>举个栗子：</em></strong></p>
+<p>与用户账号相关的业务，根据业务复杂程度及组件在不同app中复用的需求等不同情况，可以将其整体划分为1个组件，也可以划分为登录组件、设置组件、地址管理组件等各种更细粒度的组件，如果你愿意，也可以每个页面1个组件再加上账号相关的服务组件。</p>
+<p><strong>但需要注意的是必须有明确的业务边界</strong>。比如其中的登录组件，就只负责用户的账号登录/注册等功能，不能将各种登录后的页面跳转业务需求耦合到登录组件中，可以采用这种方式来实现：<a href="https://juejin.im/post/5a30d5f151882534af25f1c2" target="_blank" rel="noopener">实现登录成功再进入目标界面功能</a></p>
+<p><strong><em>再举个JsBridge的栗子：</em></strong> </p>
+<p>由于每个组件的业务都内聚在自身内部，所以JsBridge可以封装得十分优雅，回归其本质:仅作为js与java通信的桥梁，与其它组件完全解耦，不需要下沉业务BridgePlugin接口</p>
+<ul>
+<li>js调用java时，在JsBridge组件中直接将参数转发给对应的组件</li>
+<li>java调用js时，在JsBridge组件中根据调用参数调用对应页面的js</li>
+<li>做好对应业务组件找不到时的降级处理</li>
+</ul>
+<p>再也不需要在application中注册一系列的Plugin</p>
+<p>详情请戳<a href="https://juejin.im/post/5a3fa7fe6fb9a045204c702f" target="_blank" rel="noopener">让jsBridge更优雅</a></p>
+<h3 id="2-3-有空再弄"><a href="#2-3-有空再弄" class="headerlink" title="2.3 有空再弄"></a>2.3 有空再弄</h3><p>组件化改造中工作量最大的是要进行业务隔离，逐个组件抽离、解耦，这是一个比较长的过程，不能一蹴而就，可以在迭代任务有空闲的时候一个个进行拆分，拆分的难度取决于原来项目中代码的耦合程度：</p>
+<ul>
+<li>已封装完好的业务module，只暴露一个或多个入口给别的module调用<ul>
+<li>这种最简单，仅需创建一个IComponent实现类，并将原来直接类调用的代码改成组件调用即可</li>
+</ul>
+</li>
+<li>耦合度比较高的业务<ul>
+<li>这种业务的拆分需要一定的时间，可以安排在迭代任务没那么繁忙的时间段来做。如果正好有改版的需求就更好了，可以借着改版的机会用组件化的方式来开发，替换原来的代码。</li>
+<li>也可以暂时先粗粒度地拆分，但按照全局的规划创建多个IComponent接口实现类，相当于一个module中包含多个组件，后续有时间再进一步拆分</li>
+</ul>
+</li>
+<li>各种Base类、工具类<ul>
+<li>这种module建议仍然下沉作为公共库的形式供其它组件依赖</li>
+</ul>
+</li>
+</ul>
+<h2 id="三、常见问题"><a href="#三、常见问题" class="headerlink" title="三、常见问题"></a>三、常见问题</h2><h4 id="3-1-自定义类型如何在组件间传递？"><a href="#3-1-自定义类型如何在组件间传递？" class="headerlink" title="3.1 自定义类型如何在组件间传递？"></a>3.1 自定义类型如何在组件间传递？</h4><ul>
+<li>下沉到公共库中，作为公共类型<ul>
+<li>适用于使用频次高或对性能要求特别敏感的场景</li>
+</ul>
+</li>
+<li>json传递 &amp; bean冗余：即在每个用到此类型的组件，通过冗余bean的方式来传递<ul>
+<li>适用于使用频次较低且对性能要求不是十分敏感的场景</li>
+</ul>
+</li>
+</ul>
+<h4 id="3-2-如何确定一个module到底是该作为组件提供服务还是下沉为base基础库供其它组件依赖？"><a href="#3-2-如何确定一个module到底是该作为组件提供服务还是下沉为base基础库供其它组件依赖？" class="headerlink" title="3.2 如何确定一个module到底是该作为组件提供服务还是下沉为base基础库供其它组件依赖？"></a>3.2 如何确定一个module到底是该作为组件提供服务还是下沉为base基础库供其它组件依赖？</h4><p>由于组件有可单独运行调试、无强类型耦合、AOP等优点，除非有特殊情况，原则上绝大多数的业务module都应该作为组件来封装。</p>
+<p>这些特殊情况有：</p>
+<ul>
+<li>各种Base类、工具类</li>
+<li>在组件间传递的公共自定义类型</li>
+</ul>
+<p>其它诸如Fragment/View的组件化CC都已经支持了，如果有您需要的功能CC还未支持欢迎给我<a href="https://github.com/luckybilly/CC/issues/new" target="_blank" rel="noopener">提issue</a></p>
+<h2 id="四、总结"><a href="#四、总结" class="headerlink" title="四、总结"></a>四、总结</h2><p>本文主要介绍了如何更方便地使用CC框架来进行组件化改造，看完这篇文章后，对老项目进行组件化改造所需的成本应该有个比较直观的认识。</p>
+<p>如果您虽然很想在自己负责的项目中实施组件化改造，渴望组件化开发带来的便利，但还有本文中未涉及到的其它顾虑导致尚未开始执行，欢迎在评论中给我留言！</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+      <div>
+        <div id="reward-container">
+  <div>请作者喝咖啡~</div>
+  <button id="reward-button" disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+
+    
+      
+      
+        
+      
+      <div style="display: inline-block">
+        <img src="/images/shoukuan_wechat.png" alt="齐翊 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+      
+      
+        
+      
+      <div style="display: inline-block">
+        <img src="/images/shoukuan_alipay.png" alt="齐翊 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/组件化/" rel="tag"># 组件化</a>
+          
+            <a href="/tags/架构/" rel="tag"># 架构</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/posts/os_preloader.html" rel="next" title="预加载：页面启动速度优化利器">
+                <i class="fa fa-chevron-left"></i> 预加载：页面启动速度优化利器
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/posts/componentize_libs.html" rel="prev" title="总结一波安卓组件化开源方案">
+                总结一波安卓组件化开源方案 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://avatars3.githubusercontent.com/u/4155835?s=460&v=4" alt="齐翊">
+            
+              <p class="site-author-name" itemprop="name">齐翊</p>
+              <div class="site-description motion-element" itemprop="description">Android组件化 开源框架 CC/Gloading/PreLoader</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">12</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">7</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/luckybilly" title="GitHub &rarr; https://github.com/luckybilly" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:qiyilike@163.com" title="E-Mail &rarr; mailto:qiyilike@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://twitter.com/lucky_billy_05" title="Twitter &rarr; https://twitter.com/lucky_billy_05" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://juejin.im/user/5a0af10c6fb9a045186a423f/posts" title="掘金 &rarr; https://juejin.im/user/5a0af10c6fb9a045186a423f/posts" rel="noopener" target="_blank"><i class="fa fa-fw fa-spinner"></i>掘金</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一、谁阻碍了你"><span class="nav-number">2.</span> <span class="nav-text">一、谁阻碍了你</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、推荐的组件化实施步骤"><span class="nav-number">3.</span> <span class="nav-text">二、推荐的组件化实施步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-快速上手"><span class="nav-number">3.1.</span> <span class="nav-text">2.1 快速上手</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-全局规划"><span class="nav-number">3.2.</span> <span class="nav-text">2.2 全局规划</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-有空再弄"><span class="nav-number">3.3.</span> <span class="nav-text">2.3 有空再弄</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、常见问题"><span class="nav-number">4.</span> <span class="nav-text">三、常见问题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-自定义类型如何在组件间传递？"><span class="nav-number">4.0.1.</span> <span class="nav-text">3.1 自定义类型如何在组件间传递？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-如何确定一个module到底是该作为组件提供服务还是下沉为base基础库供其它组件依赖？"><span class="nav-number">4.0.2.</span> <span class="nav-text">3.2 如何确定一个module到底是该作为组件提供服务还是下沉为base基础库供其它组件依赖？</span></a></li></ol></li></ol><li class="nav-item nav-level-2"><a class="nav-link" href="#四、总结"><span class="nav-number">5.</span> <span class="nav-text">四、总结</span></a></li></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">齐翊</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+  <script type="text/javascript">
+  	var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");
+  	document.write(unescape("%3Cspan id='cnzz_stat_icon_1277380255'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s23.cnzz.com/z_stat.php%3Fid%3D1277380255' type='text/javascript'%3E%3C/script%3E"));
+  </script>
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.0"></script>
+
+  <script src="/js/motion.js?v=7.1.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.0"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.0"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.0"></script>
+<script src="/js/post-details.js?v=7.1.0"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.0"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+    <!-- LOCAL: You can save these files to your site and update links -->
+
+  
+  <script src="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/gitment.browser.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/default.css">
+<!-- END LOCAL -->
+
+<script>
+  function renderGitment() {
+    var gitment = new Gitment({
+      id: window.location.pathname,
+      owner: 'luckybilly',
+      repo: 'luckybilly.github.io',
+      
+      oauth: {
+      
+      
+        client_secret: '8c3ab2fab44d17832cef8807a6424e687a547e13',
+      
+        client_id: '91f7f5b19d003a84ea17'
+      }
+    });
+    gitment.render('gitment-container');
+  }
+
+  
+    renderGitment();
+  
+</script>
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+  
+  <script src="/lib/bookmark/bookmark.min.js?v=1.0"></script>
+  <script>
+  
+    bookmark.scrollToMark('auto', "#更多");
+  
+  </script>
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -96,17 +96,18 @@
 
 
 
-  <meta name="description" content="Android组件化 开源框架 CC/Gloading/PreLoader">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Billy学技术">
-<meta property="og:url" content="http://qibilly.com/categories/index.html">
+  <meta name="description" content="相同点路由和组件总线都需要将分布在不同组件module中的某些类按照一定规则生成映射表（数据结构通常是Map，Key为一个字符串，Value为类或对象） 然后在需要用到的时候从映射表中根据字符串从映射表中取出类或对象 不同点1. 路由方案（如：ARouter等）1.1 路由的本质是类的查找 其工作原理类似于仓库管理员：大家先把类全部放到仓库中，有人需要的时候，仓库管理员就根据所提供的字符串找出存放">
+<meta name="keywords" content="组件化,架构">
+<meta property="og:type" content="article">
+<meta property="og:title" content="组件化核心引擎（路由 VS 总线）">
+<meta property="og:url" content="http://qibilly.com/posts/componentize_router_vs_bus.html">
 <meta property="og:site_name" content="Billy学技术">
-<meta property="og:description" content="Android组件化 开源框架 CC/Gloading/PreLoader">
+<meta property="og:description" content="相同点路由和组件总线都需要将分布在不同组件module中的某些类按照一定规则生成映射表（数据结构通常是Map，Key为一个字符串，Value为类或对象） 然后在需要用到的时候从映射表中根据字符串从映射表中取出类或对象 不同点1. 路由方案（如：ARouter等）1.1 路由的本质是类的查找 其工作原理类似于仓库管理员：大家先把类全部放到仓库中，有人需要的时候，仓库管理员就根据所提供的字符串找出存放">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-04-29T14:04:51.000Z">
+<meta property="og:updated_time" content="2019-04-30T03:36:52.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Billy学技术">
-<meta name="twitter:description" content="Android组件化 开源框架 CC/Gloading/PreLoader">
+<meta name="twitter:title" content="组件化核心引擎（路由 VS 总线）">
+<meta name="twitter:description" content="相同点路由和组件总线都需要将分布在不同组件module中的某些类按照一定规则生成映射表（数据结构通常是Map，Key为一个字符串，Value为类或对象） 然后在需要用到的时候从映射表中根据字符串从映射表中取出类或对象 不同点1. 路由方案（如：ARouter等）1.1 路由的本质是类的查找 其工作原理类似于仓库管理员：大家先把类全部放到仓库中，有人需要的时候，仓库管理员就根据所提供的字符串找出存放">
 
 
 
@@ -114,7 +115,7 @@
 
   
   
-  <link rel="canonical" href="http://qibilly.com/categories/">
+  <link rel="canonical" href="http://qibilly.com/posts/componentize_router_vs_bus">
 
 
 
@@ -124,7 +125,7 @@
   };
 </script>
 
-  <title>分类 | Billy学技术</title>
+  <title>组件化核心引擎（路由 VS 总线） | Billy学技术</title>
   
 
 
@@ -244,7 +245,7 @@
         
         
           
-          <li class="menu-item menu-item-categories menu-item-active">
+          <li class="menu-item menu-item-categories">
 
     
     
@@ -303,101 +304,270 @@
           
             
 
-    
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-    
-
-  
-
-
           
           <div id="content" class="content">
             
 
   <div id="posts" class="posts-expand">
     
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://qibilly.com/posts/componentize_router_vs_bus.html">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="齐翊">
+      <meta itemprop="description" content="Android组件化 开源框架 CC/Gloading/PreLoader">
+      <meta itemprop="image" content="https://avatars3.githubusercontent.com/u/4155835?s=460&v=4">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Billy学技术">
+    </span>
+
     
-    
-    <div class="post-block page">
       <header class="post-header">
 
-<h1 class="post-title" itemprop="name headline">
-
-</h1>
-
-<div class="post-meta">
-  
-  
-
-
-
-</div>
-
-</header>
-
-      
-      
-      
-      <div class="post-body">
         
         
-          <div class="category-all-page">
-            <div class="category-all-title">
+          <h1 class="post-title" itemprop="name headline">组件化核心引擎（路由 VS 总线）
+
               
-              
-                
-              
-                
-              
-                
-              
-                
-                  
-                
-              
-                
-              
-                
-                  
-                
-              
-                
-              
-                
-                  
-                
-              
-              目前共计 3 个分类
-            </div>
-            <div class="category-all">
-              <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Android/">Android</a><span class="category-list-count">12</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Android/开源项目/">开源项目</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/组件化文章/">组件化文章</a><span class="category-list-count">3</span></li></ul></li></ul>
-            </div>
-          </div>
+            
+          </h1>
         
-      </div>
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-01-30 16:30:03" itemprop="dateCreated datePublished" datetime="2019-01-30T16:30:03+08:00">2019-01-30</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-04-30 11:36:52" itemprop="dateModified" datetime="2019-04-30T11:36:52+08:00">2019-04-30</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Android/组件化文章/" itemprop="url" rel="index"><span itemprop="name">组件化文章</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
       
       
+
+      
+        <h3 id="相同点"><a href="#相同点" class="headerlink" title="相同点"></a>相同点</h3><p>路由和组件总线都需要将分布在不同组件module中的某些类按照一定规则生成映射表（数据结构通常是Map，Key为一个字符串，Value为类或对象）</p>
+<p>然后在需要用到的时候从映射表中根据字符串从映射表中取出类或对象</p>
+<h3 id="不同点"><a href="#不同点" class="headerlink" title="不同点"></a>不同点</h3><h4 id="1-路由方案（如：ARouter等）"><a href="#1-路由方案（如：ARouter等）" class="headerlink" title="1. 路由方案（如：ARouter等）"></a>1. 路由方案（如：<a href="https://github.com/alibaba/ARouter" target="_blank" rel="noopener">ARouter</a>等）</h4><p>1.1 <strong>路由的本质是类的查找</strong></p>
+<p>其工作原理类似于仓库管理员：大家先把类全部放到仓库中，有人需要的时候，仓库管理员就根据所提供的字符串找出存放在仓库中的类</p>
+<p>查找的类主要分为3种：Activity子类、Fragment子类和自定义接口实现类</p>
+<ul>
+<li>Activity子类： 路由库提供startActivity(或startActivityForResult)的封装，并根据字符串从映射表中获取对应的Activity类(XxxActivity.class)，跳转到该Activity页面</li>
+<li>Fragment子类：路由库根据字符串从映射表中获取对应的Fragment类(XxxFragment.class)并创建一个对象返回给调用方</li>
+<li>自定义接口实现类：路由库根据字符串（注解的字符串或者接口类名字符串）从映射表中获取对应接口的实现类（XxxInterfaceImpl.class)，并创建一个对象返回给调用方</li>
+</ul>
+<p>1.2 路由这种一对一的类映射关系理解起来比较容易，特别是页面跳转，使用起来也很方便</p>
+<p>1.3 组件之间的服务调用时，调用方需要持有接口类，需要将接口类定义下沉到base层，向接口编程，遵循依赖倒置原则</p>
+<p>1.4 由于路由本质是类查找，所以需要通信的组件必须要打包在同一个app内部才能获取到。</p>
+<h4 id="2-组件总线方案（如：CC）"><a href="#2-组件总线方案（如：CC）" class="headerlink" title="2. 组件总线方案（如：CC）"></a>2. 组件总线方案（如：<a href="https://github.com/luckybilly/CC" target="_blank" rel="noopener">CC</a>）</h4><p>2.1 <strong>组件总线的本质是转发调用请求</strong></p>
+<p>其工作原理类似于电话接线员（中介者模式）：组件总线负责收集所有组件类并形成映射表（Key为字符串，Value为组件类的对象）。调用组件时，总线根据字符串找到对应的组件类并将调用信息转发给该组件类，组件执行完成后再通过组件总线将结果返回给调用方</p>
+<p>2.2 组件总线只负责通信，即转发调用请求和返回执行结果。</p>
+<p>2.3 不需要下沉接口，面向通信协议编程（类似于app客户端调用服务器端接口的通信协议）</p>
+<p>2.4 由于组件总线的本质是转发调用请求，可以通过跨进程通信方式将调用请求转发给其它app，从而实现跨app进行组件调用。</p>
+<pre><code>Tips: 跨进程通信的方式有很多种，例如：
+BroadcastReceiver、Socket、FileObserver、MemoryFile、UrlScheme、ContentProvider、AIDL、Messenger及Binder等等
+</code></pre><p>支持跨app的组件调用后，单组件作为app运行时，可以与主app进行通信，调用主app中的所有组件，无需与其他组件一起打包运行，所有的组件都是平行的，没有依赖关系，带来的好处有：</p>
+<ul>
+<li>从框架层面避免了组件之间的依赖，做到完全的代码隔离。</li>
+<li>组件独立运行时编译速度更快</li>
+<li>老项目改造时，从第一个组件开始就可以独立运行，而不会因为需要调用到组件外的功能而必须跟主工程一起打包运行调试</li>
+</ul>
+
       
     </div>
-    
-
-
 
     
+
     
     
+    
+
+    
+
+    
+      
+    
+    
+      <div>
+        <div id="reward-container">
+  <div>请作者喝咖啡~</div>
+  <button id="reward-button" disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+
+    
+      
+      
+        
+      
+      <div style="display: inline-block">
+        <img src="/images/shoukuan_wechat.png" alt="齐翊 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+      
+      
+        
+      
+      <div style="display: inline-block">
+        <img src="/images/shoukuan_alipay.png" alt="齐翊 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/组件化/" rel="tag"># 组件化</a>
+          
+            <a href="/tags/架构/" rel="tag"># 架构</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/posts/cc_practice_4.html" rel="next" title="CC框架实践(4): 登录状态监听功能的实现">
+                <i class="fa fa-chevron-left"></i> CC框架实践(4): 登录状态监听功能的实现
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/posts/os_gloading.html" rel="prev" title="我们经常用的Loading动画居然还有这种姿势">
+                我们经常用的Loading动画居然还有这种姿势 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
   </div>
 
 
@@ -433,8 +603,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <div class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
             
@@ -594,6 +773,23 @@
         </div>
       </div>
 
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#相同点"><span class="nav-number">1.</span> <span class="nav-text">相同点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#不同点"><span class="nav-number">2.</span> <span class="nav-text">不同点</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-路由方案（如：ARouter等）"><span class="nav-number">2.1.</span> <span class="nav-text">1. 路由方案（如：ARouter等）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-组件总线方案（如：CC）"><span class="nav-number">2.2.</span> <span class="nav-text">2. 组件总线方案（如：CC）</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
       
 
       
@@ -812,7 +1008,7 @@
   <script src="/lib/bookmark/bookmark.min.js?v=1.0"></script>
   <script>
   
-    bookmark.loadBookmark();
+    bookmark.scrollToMark('auto', "#更多");
   
   </script>
 

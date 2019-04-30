@@ -99,7 +99,7 @@
   <meta name="description" content="Android组件化 开源框架 CC/Gloading/PreLoader">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Billy学技术">
-<meta property="og:url" content="http://qibilly.com/tags/架构/index.html">
+<meta property="og:url" content="http://qibilly.com/page/2/index.html">
 <meta property="og:site_name" content="Billy学技术">
 <meta property="og:description" content="Android组件化 开源框架 CC/Gloading/PreLoader">
 <meta property="og:locale" content="zh-Hans">
@@ -113,7 +113,7 @@
 
   
   
-  <link rel="canonical" href="http://qibilly.com/tags/架构/">
+  <link rel="canonical" href="http://qibilly.com/page/2/">
 
 
 
@@ -123,7 +123,7 @@
   };
 </script>
 
-  <title>标签: 架构 | Billy学技术</title>
+  <title>Billy学技术</title>
   
 
 
@@ -171,7 +171,8 @@
     
   
 
-  <div class="container sidebar-position-left ">
+  <div class="container sidebar-position-left 
+  page-home">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
@@ -226,7 +227,7 @@
         
         
           
-          <li class="menu-item menu-item-tags menu-item-active">
+          <li class="menu-item menu-item-tags">
 
     
     
@@ -302,101 +303,417 @@
           
             
 
-    
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-    
-
-  
-
-
           
           <div id="content" class="content">
             
+  <section id="posts" class="posts-expand">
+    
+      
+
+  
 
   
   
   
-  <div class="post-block tag">
 
-    <div id="posts" class="posts-collapse">
-      <div class="collection-title">
-        <h1>架构<small>标签</small>
-        </h1>
-      </div>
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://qibilly.com/posts/componentize_who_stops.html">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="齐翊">
+      <meta itemprop="description" content="Android组件化 开源框架 CC/Gloading/PreLoader">
+      <meta itemprop="image" content="https://avatars3.githubusercontent.com/u/4155835?s=460&v=4">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Billy学技术">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/posts/componentize_who_stops.html" class="post-title-link" itemprop="url">谁阻碍了你做组件化开发？</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-02-23 18:46:30" itemprop="dateCreated datePublished" datetime="2018-02-23T18:46:30+08:00">2018-02-23</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-04-30 11:21:55" itemprop="dateModified" datetime="2019-04-30T11:21:55+08:00">2019-04-30</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Android/组件化文章/" itemprop="url" rel="index"><span itemprop="name">组件化文章</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
 
       
         
+          
+            <p>
+              前言之前写了一篇关于总结一波安卓组件化开源方案的文章，反响还不错，很高兴能够对大家整体了解android组件化技术有所帮助。
+有些开发者在了解组件化开发的好处及相关开源框架后，想要对自己所负责的项目进行组件化改造以解决多人（多团队）协同开发困难及单工程开发编译时间过长等问题，但一直难以下决心真正开始实施，停留在了解阶段或仅仅写个demo体验一把的阶段，其中很大一部分原因是迭代开发任务排的很紧，很难空出一段时间来实施，而且组件化改造是纯技术上的优化，产品经理和业务部门并不太关心。
+为此，本文将介绍一下如何用 CC 框架来破解android组件化不易上手的难题（想要了解CC实现原理的细节，请戳这里）
+一、谁阻碍了你先来解决几个可能阻挡我们下决心实施组件化改造的拦路石：
 
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
+怕配置复杂，容易遗漏或出错
+CC将配置封装到了一个cc-settings.gradle文件，在需要组件化的module的bu
+              ...
+            </p>
+          <!--noindex-->
+          
+            <div class="post-button text-center">
+              <a class="btn" href="/posts/componentize_who_stops.html#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
         
-          <a class="post-title-link" href="/posts/componentize_router_vs_bus.html" itemprop="url">
-            
-              <span itemprop="name">组件化核心引擎（路由 VS 总线）</span>
-            
-          </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-01-30T16:30:03+08:00" content="2019-01-30">
-          01-30
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-          <a class="post-title-link" href="/posts/componentize_who_stops.html" itemprop="url">
-            
-              <span itemprop="name">谁阻碍了你做组件化开发？</span>
-            
-          </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2018-02-23T18:46:30+08:00" content="2018-02-23">
-          02-23
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
       
     </div>
 
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
   </div>
   
   
   
+  </article>
+
+
+    
+      
 
   
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://qibilly.com/posts/os_preloader.html">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="齐翊">
+      <meta itemprop="description" content="Android组件化 开源框架 CC/Gloading/PreLoader">
+      <meta itemprop="image" content="https://avatars3.githubusercontent.com/u/4155835?s=460&v=4">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Billy学技术">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/posts/os_preloader.html" class="post-title-link" itemprop="url">预加载：页面启动速度优化利器</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-01-23 20:29:42" itemprop="dateCreated datePublished" datetime="2018-01-23T20:29:42+08:00">2018-01-23</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-04-30 11:37:22" itemprop="dateModified" datetime="2019-04-30T11:37:22+08:00">2019-04-30</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Android/开源项目/" itemprop="url" rel="index"><span itemprop="name">开源项目</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>
+              更新日志
+Activity打开之前就预加载数据，在Activity的UI布局初始化完成后显示预加载的数据，大大缩短启动时间。
+在任意处开启预加载任务，并生成任务id，根据任务id可在任意处(一般是UI初始化完成后)开始对预加载的数据进行监听。
+
+开始进行监听时，若预加载任务未完成，则等待任务加载完成后执行监听对象的回调方法
+开始进行监听时，若预加载任务已完成，则直接执行监听对象的回调方法
+
+持续优化中，欢迎watch、star关注！
+demodemo下载
+  
+典型应用
+在Application.onCreate中加载地址数据，在需要用到地址的页面中获取预加载的数据
+在启动页中预加载app主页所需的数据，减少用户等待时间
+startActivity之前就开始预加载，UI初始化完成后显示预加载的数据
+复杂页面(UI初始化耗时较多的页面)内部在UI初始化开始之前预加载数据，UI初始化完成后显示
+              ...
+            </p>
+          <!--noindex-->
+          
+            <div class="post-button text-center">
+              <a class="btn" href="/posts/os_preloader.html#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+  </section>
+
+  
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+  </nav>
 
 
 
