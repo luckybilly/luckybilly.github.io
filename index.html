@@ -514,6 +514,389 @@ void showLoading(); //调用此方法显示加载中的动
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://qibilly.com/2019/01/30/article-componentize-gradually/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="齐翊">
+      <meta itemprop="description" content="Android组件化 开源框架 CC/Gloading/PreLoader">
+      <meta itemprop="image" content="https://avatars3.githubusercontent.com/u/4155835?s=460&v=4">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Billy学技术">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/01/30/article-componentize-gradually/" class="post-title-link" itemprop="url">使用CC进行渐进式组件化改造</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-01-30 16:30:03" itemprop="dateCreated datePublished" datetime="2019-01-30T16:30:03+08:00">2019-01-30</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-04-29 23:26:05" itemprop="dateModified" datetime="2019-04-29T23:26:05+08:00">2019-04-29</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Android-CC框架介绍/" itemprop="url" rel="index"><span itemprop="name">Android-CC框架介绍</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>
+              项目大了，编译慢了，开发效率低了，怎么办？也许你已经知道了组件化，但项目迭代任务紧张，根本没有时间进行整体解耦，更害怕一下子改动太大导致的风险不可控，不敢大改，怎么办？
+先别急着放弃，渐进式组件化了解一下
+背景故事在实行组件化改造之前，我们对业内的一些技术文章及开源库进行调研之后，发现基本上千篇一律地都是基于路由这种方案作为通信引擎来实现组件化，重要的是组件化之前得先解耦原来的项目代码。很尴尬，我们没那么人力和时间来一下子做这么一大块事情。这时候我们是这样想的：
+可不可以先不解耦？
+这个问题问得好，不先解耦，组件怎么单独以app运行呢？
+新业务新module可以无耦合，总可以单独运行调试了吧？
+组件需要登录怎么办？
+需要跟其它组件通信怎么办？
+用URLScheme来跨app通信总可以了吧？
+页面跳转还行，虽然有个中转页面，仅在开发期间使用勉强也能接受
+但如何获取服务？那可是要查找接口的实现
+              ...
+            </p>
+          <!--noindex-->
+          
+            <div class="post-button text-center">
+              <a class="btn" href="/2019/01/30/article-componentize-gradually/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://qibilly.com/2019/01/30/article-router_vs_bus/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="齐翊">
+      <meta itemprop="description" content="Android组件化 开源框架 CC/Gloading/PreLoader">
+      <meta itemprop="image" content="https://avatars3.githubusercontent.com/u/4155835?s=460&v=4">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Billy学技术">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/01/30/article-router_vs_bus/" class="post-title-link" itemprop="url">组件化核心引擎（路由 VS 总线）</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-01-30 16:30:03" itemprop="dateCreated datePublished" datetime="2019-01-30T16:30:03+08:00">2019-01-30</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-04-29 22:13:18" itemprop="dateModified" datetime="2019-04-29T22:13:18+08:00">2019-04-29</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Android-组件化文章/" itemprop="url" rel="index"><span itemprop="name">Android-组件化文章</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>
+              相同点路由和组件总线都需要将分布在不同组件module中的某些类按照一定规则生成映射表（数据结构通常是Map，Key为一个字符串，Value为类或对象）
+然后在需要用到的时候从映射表中根据字符串从映射表中取出类或对象
+不同点1. 路由方案（如：ARouter等）1.1 路由的本质是类的查找
+其工作原理类似于仓库管理员：大家先把类全部放到仓库中，有人需要的时候，仓库管理员就根据所提供的字符串找出存放在仓库中的类
+查找的类主要分为3种：Activity子类、Fragment子类和自定义接口实现类
+
+Activity子类： 路由库提供startActivity(或startActivityForResult)的封装，并根据字符串从映射表中获取对应的Activity类(XxxActivity.class)，跳转到该Activity页面
+Fragment子类：路由库根据字符串从映射表中获取对应的Fr
+              ...
+            </p>
+          <!--noindex-->
+          
+            <div class="post-button text-center">
+              <a class="btn" href="/2019/01/30/article-router_vs_bus/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://qibilly.com/2019/01/30/cc_practice_1/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -904,7 +1287,7 @@ void showLoading(); //调用此方法显示加载中的动
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://qibilly.com/2019/01/30/article-router_vs_bus/">
+    <link itemprop="mainEntityOfPage" href="http://qibilly.com/2019/01/30/cc_practice_3/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="齐翊">
@@ -924,7 +1307,7 @@ void showLoading(); //调用此方法显示加载中的动
           <h1 class="post-title" itemprop="name headline">
                 
                 
-                <a href="/2019/01/30/article-router_vs_bus/" class="post-title-link" itemprop="url">组件化核心引擎（路由 VS 总线）</a>
+                <a href="/2019/01/30/cc_practice_3/" class="post-title-link" itemprop="url">CC框架实践(3): 让jsBridge更优雅</a>
               
             
           </h1>
@@ -966,7 +1349,7 @@ void showLoading(); //调用此方法显示加载中的动
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2019-04-29 22:13:18" itemprop="dateModified" datetime="2019-04-29T22:13:18+08:00">2019-04-29</time>
+                <time title="修改时间：2019-04-29 22:13:33" itemprop="dateModified" datetime="2019-04-29T22:13:33+08:00">2019-04-29</time>
               
             
           </span>
@@ -983,7 +1366,7 @@ void showLoading(); //调用此方法显示加载中的动
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Android-组件化文章/" itemprop="url" rel="index"><span itemprop="name">Android-组件化文章</span></a></span>
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Android-CC框架实践/" itemprop="url" rel="index"><span itemprop="name">Android-CC框架实践</span></a></span>
 
                 
                 
@@ -1021,20 +1404,20 @@ void showLoading(); //调用此方法显示加载中的动
         
           
             <p>
-              相同点路由和组件总线都需要将分布在不同组件module中的某些类按照一定规则生成映射表（数据结构通常是Map，Key为一个字符串，Value为类或对象）
-然后在需要用到的时候从映射表中根据字符串从映射表中取出类或对象
-不同点1. 路由方案（如：ARouter等）1.1 路由的本质是类的查找
-其工作原理类似于仓库管理员：大家先把类全部放到仓库中，有人需要的时候，仓库管理员就根据所提供的字符串找出存放在仓库中的类
-查找的类主要分为3种：Activity子类、Fragment子类和自定义接口实现类
+              前言jsBridge是作为js和java之间通信的桥梁，本身它的职责只是完成通信。
+本文不是介绍js与java通信过程的实现，你可以使用第三方库（如：JsBridge），也可以自己来实现，或者用addJavascriptInterface，都可以。本文的侧重点是如何让我们的jsBridge不那么臃肿，实现得更优雅，更利于维护。
+但在实际封装过程中，会发现需要我们需要解决很多耦合的问题：
 
-Activity子类： 路由库提供startActivity(或startActivityForResult)的封装，并根据字符串从映射表中获取对应的Activity类(XxxActivity.class)，跳转到该Activity页面
-Fragment子类：路由库根据字符串从映射表中获取对应的Fr
+js调用的功能在其他module中，如何调用到这些功能，如何向jsbridge注册这些功能？
+jsbridge依赖了太多module，怎么解耦？
+当js调用的功能是打开其它页面获取该页面处理后的结果并回调给js，怎么破？ onResume? startActivityForResult? 一个常见的场景是：打开登录界面，登录成功后将用户信息回调给js。你是不是想过这样做？
+jsBridge中封装一个Act
               ...
             </p>
           <!--noindex-->
           
             <div class="post-button text-center">
-              <a class="btn" href="/2019/01/30/article-router_vs_bus/#more" rel="contents">
+              <a class="btn" href="/2019/01/30/cc_practice_3/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -1280,389 +1663,6 @@ Fragment子类：路由库根据字符串从映射表中获取对应的Fr
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://qibilly.com/2019/01/30/article-componentize-gradually/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="齐翊">
-      <meta itemprop="description" content="Android组件化 开源框架 CC/Gloading/PreLoader">
-      <meta itemprop="image" content="https://avatars3.githubusercontent.com/u/4155835?s=460&v=4">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Billy学技术">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2019/01/30/article-componentize-gradually/" class="post-title-link" itemprop="url">使用CC进行渐进式组件化改造</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-01-30 16:30:03" itemprop="dateCreated datePublished" datetime="2019-01-30T16:30:03+08:00">2019-01-30</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-04-29 23:26:05" itemprop="dateModified" datetime="2019-04-29T23:26:05+08:00">2019-04-29</time>
-              
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Android-CC框架介绍/" itemprop="url" rel="index"><span itemprop="name">Android-CC框架介绍</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>
-              项目大了，编译慢了，开发效率低了，怎么办？也许你已经知道了组件化，但项目迭代任务紧张，根本没有时间进行整体解耦，更害怕一下子改动太大导致的风险不可控，不敢大改，怎么办？
-先别急着放弃，渐进式组件化了解一下
-背景故事在实行组件化改造之前，我们对业内的一些技术文章及开源库进行调研之后，发现基本上千篇一律地都是基于路由这种方案作为通信引擎来实现组件化，重要的是组件化之前得先解耦原来的项目代码。很尴尬，我们没那么人力和时间来一下子做这么一大块事情。这时候我们是这样想的：
-可不可以先不解耦？
-这个问题问得好，不先解耦，组件怎么单独以app运行呢？
-新业务新module可以无耦合，总可以单独运行调试了吧？
-组件需要登录怎么办？
-需要跟其它组件通信怎么办？
-用URLScheme来跨app通信总可以了吧？
-页面跳转还行，虽然有个中转页面，仅在开发期间使用勉强也能接受
-但如何获取服务？那可是要查找接口的实现
-              ...
-            </p>
-          <!--noindex-->
-          
-            <div class="post-button text-center">
-              <a class="btn" href="/2019/01/30/article-componentize-gradually/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://qibilly.com/2019/01/30/cc_practice_3/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="齐翊">
-      <meta itemprop="description" content="Android组件化 开源框架 CC/Gloading/PreLoader">
-      <meta itemprop="image" content="https://avatars3.githubusercontent.com/u/4155835?s=460&v=4">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Billy学技术">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2019/01/30/cc_practice_3/" class="post-title-link" itemprop="url">CC框架实践(3): 让jsBridge更优雅</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-01-30 16:30:03" itemprop="dateCreated datePublished" datetime="2019-01-30T16:30:03+08:00">2019-01-30</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-04-29 22:13:33" itemprop="dateModified" datetime="2019-04-29T22:13:33+08:00">2019-04-29</time>
-              
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Android-CC框架实践/" itemprop="url" rel="index"><span itemprop="name">Android-CC框架实践</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>
-              前言jsBridge是作为js和java之间通信的桥梁，本身它的职责只是完成通信。
-本文不是介绍js与java通信过程的实现，你可以使用第三方库（如：JsBridge），也可以自己来实现，或者用addJavascriptInterface，都可以。本文的侧重点是如何让我们的jsBridge不那么臃肿，实现得更优雅，更利于维护。
-但在实际封装过程中，会发现需要我们需要解决很多耦合的问题：
-
-js调用的功能在其他module中，如何调用到这些功能，如何向jsbridge注册这些功能？
-jsbridge依赖了太多module，怎么解耦？
-当js调用的功能是打开其它页面获取该页面处理后的结果并回调给js，怎么破？ onResume? startActivityForResult? 一个常见的场景是：打开登录界面，登录成功后将用户信息回调给js。你是不是想过这样做？
-jsBridge中封装一个Act
-              ...
-            </p>
-          <!--noindex-->
-          
-            <div class="post-button text-center">
-              <a class="btn" href="/2019/01/30/cc_practice_3/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1723,14 +1723,6 @@ jsBridge中封装一个Act
                     
                   
                     
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
                     
                       
                     

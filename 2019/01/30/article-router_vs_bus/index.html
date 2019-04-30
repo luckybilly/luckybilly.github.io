@@ -97,7 +97,7 @@
 
 
   <meta name="description" content="相同点路由和组件总线都需要将分布在不同组件module中的某些类按照一定规则生成映射表（数据结构通常是Map，Key为一个字符串，Value为类或对象） 然后在需要用到的时候从映射表中根据字符串从映射表中取出类或对象 不同点1. 路由方案（如：ARouter等）1.1 路由的本质是类的查找 其工作原理类似于仓库管理员：大家先把类全部放到仓库中，有人需要的时候，仓库管理员就根据所提供的字符串找出存放">
-<meta name="keywords" content="组件化,架构,开源项目,Android">
+<meta name="keywords" content="组件化,开源项目,Android,架构">
 <meta property="og:type" content="article">
 <meta property="og:title" content="组件化核心引擎（路由 VS 总线）">
 <meta property="og:url" content="http://qibilly.com/2019/01/30/article-router_vs_bus/index.html">
@@ -533,11 +533,11 @@ BroadcastReceiver、Socket、FileObserver、MemoryFile、UrlScheme、ContentProv
           
             <a href="/tags/组件化/" rel="tag"># 组件化</a>
           
-            <a href="/tags/架构/" rel="tag"># 架构</a>
-          
             <a href="/tags/开源项目/" rel="tag"># 开源项目</a>
           
             <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/架构/" rel="tag"># 架构</a>
           
         </div>
       
@@ -550,8 +550,8 @@ BroadcastReceiver、Socket、FileObserver、MemoryFile、UrlScheme、ContentProv
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/01/30/cc_practice_4/" rel="next" title="CC框架实践(4): 登录状态监听功能的实现">
-                <i class="fa fa-chevron-left"></i> CC框架实践(4): 登录状态监听功能的实现
+              <a href="/2019/01/30/cc_practice_1/" rel="next" title="CC框架实践(1)：实现登录成功再进入目标界面">
+                <i class="fa fa-chevron-left"></i> CC框架实践(1)：实现登录成功再进入目标界面
               </a>
             
           </div>
@@ -560,8 +560,8 @@ BroadcastReceiver、Socket、FileObserver、MemoryFile、UrlScheme、ContentProv
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2019/01/30/cc_practice_2/" rel="prev" title="CC框架实践(2)：Fragment和View的组件化">
-                CC框架实践(2)：Fragment和View的组件化 <i class="fa fa-chevron-right"></i>
+              <a href="/2019/01/30/article-componentize-gradually/" rel="prev" title="使用CC进行渐进式组件化改造">
+                使用CC进行渐进式组件化改造 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -656,14 +656,6 @@ BroadcastReceiver、Socket、FileObserver、MemoryFile、UrlScheme、ContentProv
                     
                   
                     
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
                     
                       
                     
@@ -952,17 +944,17 @@ BroadcastReceiver、Socket、FileObserver、MemoryFile、UrlScheme、ContentProv
   function renderGitment() {
     var gitment = new Gitmint({
       id: window.location.pathname,
-      owner: 'luckybilly# MUST HAVE, Your Github Username',
-      repo: 'luckybilly.github.io# MUST HAVE, The name of the repo you use to store Gitment comments',
+      owner: 'luckybilly',
+      repo: 'luckybilly.github.io',
       
         lang: '' || navigator.language || navigator.systemLanguage || navigator.userLanguage,
       
       oauth: {
       
       
-        client_secret: '8c3ab2fab44d17832cef8807a6424e687a547e13# EITHER this or proxy_gateway, Github access secret token for the Gitment',
+        client_secret: '8c3ab2fab44d17832cef8807a6424e687a547e13',
       
-        client_id: '91f7f5b19d003a84ea17# MUST HAVE, Github client id for the Gitment'
+        client_id: '91f7f5b19d003a84ea17'
       }
     });
     gitment.render('gitment-container');

@@ -476,14 +476,6 @@
                     
                       
                     
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
                     <span class="site-state-item-count">4</span>
                     <span class="site-state-item-name">分类</span>
                   </a>
@@ -746,17 +738,17 @@
   function renderGitment() {
     var gitment = new Gitmint({
       id: window.location.pathname,
-      owner: 'luckybilly# MUST HAVE, Your Github Username',
-      repo: 'luckybilly.github.io# MUST HAVE, The name of the repo you use to store Gitment comments',
+      owner: 'luckybilly',
+      repo: 'luckybilly.github.io',
       
         lang: '' || navigator.language || navigator.systemLanguage || navigator.userLanguage,
       
       oauth: {
       
       
-        client_secret: '8c3ab2fab44d17832cef8807a6424e687a547e13# EITHER this or proxy_gateway, Github access secret token for the Gitment',
+        client_secret: '8c3ab2fab44d17832cef8807a6424e687a547e13',
       
-        client_id: '91f7f5b19d003a84ea17# MUST HAVE, Github client id for the Gitment'
+        client_id: '91f7f5b19d003a84ea17'
       }
     });
     gitment.render('gitment-container');

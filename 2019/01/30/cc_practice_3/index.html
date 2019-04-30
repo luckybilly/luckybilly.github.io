@@ -592,14 +592,18 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
+              <a href="/2019/01/30/cc_practice_4/" rel="next" title="CC框架实践(4): 登录状态监听功能的实现">
+                <i class="fa fa-chevron-left"></i> CC框架实践(4): 登录状态监听功能的实现
+              </a>
+            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2019/01/30/article-componentize-gradually/" rel="prev" title="使用CC进行渐进式组件化改造">
-                使用CC进行渐进式组件化改造 <i class="fa fa-chevron-right"></i>
+              <a href="/2019/01/30/cc_practice_2/" rel="prev" title="CC框架实践(2)：Fragment和View的组件化">
+                CC框架实践(2)：Fragment和View的组件化 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -694,14 +698,6 @@
                     
                   
                     
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
                     
                       
                     
@@ -990,17 +986,17 @@
   function renderGitment() {
     var gitment = new Gitmint({
       id: window.location.pathname,
-      owner: 'luckybilly# MUST HAVE, Your Github Username',
-      repo: 'luckybilly.github.io# MUST HAVE, The name of the repo you use to store Gitment comments',
+      owner: 'luckybilly',
+      repo: 'luckybilly.github.io',
       
         lang: '' || navigator.language || navigator.systemLanguage || navigator.userLanguage,
       
       oauth: {
       
       
-        client_secret: '8c3ab2fab44d17832cef8807a6424e687a547e13# EITHER this or proxy_gateway, Github access secret token for the Gitment',
+        client_secret: '8c3ab2fab44d17832cef8807a6424e687a547e13',
       
-        client_id: '91f7f5b19d003a84ea17# MUST HAVE, Github client id for the Gitment'
+        client_id: '91f7f5b19d003a84ea17'
       }
     });
     gitment.render('gitment-container');

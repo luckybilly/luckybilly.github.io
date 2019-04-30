@@ -671,8 +671,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/01/30/cc_practice_1/" rel="next" title="CC框架实践(1)：实现登录成功再进入目标界面">
-                <i class="fa fa-chevron-left"></i> CC框架实践(1)：实现登录成功再进入目标界面
+              <a href="/2019/01/30/article-componentize-gradually/" rel="next" title="使用CC进行渐进式组件化改造">
+                <i class="fa fa-chevron-left"></i> 使用CC进行渐进式组件化改造
               </a>
             
           </div>
@@ -773,14 +773,6 @@
                     
                   
                     
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
                     
                       
                     
@@ -1069,17 +1061,17 @@
   function renderGitment() {
     var gitment = new Gitmint({
       id: window.location.pathname,
-      owner: 'luckybilly# MUST HAVE, Your Github Username',
-      repo: 'luckybilly.github.io# MUST HAVE, The name of the repo you use to store Gitment comments',
+      owner: 'luckybilly',
+      repo: 'luckybilly.github.io',
       
         lang: '' || navigator.language || navigator.systemLanguage || navigator.userLanguage,
       
       oauth: {
       
       
-        client_secret: '8c3ab2fab44d17832cef8807a6424e687a547e13# EITHER this or proxy_gateway, Github access secret token for the Gitment',
+        client_secret: '8c3ab2fab44d17832cef8807a6424e687a547e13',
       
-        client_id: '91f7f5b19d003a84ea17# MUST HAVE, Github client id for the Gitment'
+        client_id: '91f7f5b19d003a84ea17'
       }
     });
     gitment.render('gitment-container');
