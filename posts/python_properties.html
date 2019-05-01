@@ -96,20 +96,21 @@
 
 
 
-  <meta name="description" content="摘要为了让大家能快速对android组件化有个整体的认识，本文将从多个维度对目前网上一些有代表性的开源组件化开发方案进行对比，从而更好的区分各组件化方案的特点，快速选择适合自己使用的方案深入学习并使用，在面试中被问到时也能做到心中有数。 前言android平台上组件化开发的概念近两年非常火热，有些同学反映在面试中被问到的频率也很高。 目前网上关于组件化开发方案的文章、开源库比较多，让很多初学者感到">
-<meta name="keywords" content="组件化">
+  <meta name="description" content="最近用python写个工具，涉及到properties文件的读写操作。发现Python并没有提供操作properties文件的库，只有一个 ConfigParser 类来支持 .ini 文件的读写，这显然不是我想要的，于是一番折腾后整出下面这个工具类： property.py12345678910111213141516171819202122232425262728293031323334353">
+<meta name="keywords" content="工具类">
 <meta property="og:type" content="article">
-<meta property="og:title" content="总结一波安卓组件化开源方案">
-<meta property="og:url" content="http://qibilly.com/posts/componentize_libs.html">
+<meta property="og:title" content="Python读写properties文件">
+<meta property="og:url" content="http://qibilly.com/posts/python_properties.html">
 <meta property="og:site_name" content="Billy学技术">
-<meta property="og:description" content="摘要为了让大家能快速对android组件化有个整体的认识，本文将从多个维度对目前网上一些有代表性的开源组件化开发方案进行对比，从而更好的区分各组件化方案的特点，快速选择适合自己使用的方案深入学习并使用，在面试中被问到时也能做到心中有数。 前言android平台上组件化开发的概念近两年非常火热，有些同学反映在面试中被问到的频率也很高。 目前网上关于组件化开发方案的文章、开源库比较多，让很多初学者感到">
+<meta property="og:description" content="最近用python写个工具，涉及到properties文件的读写操作。发现Python并没有提供操作properties文件的库，只有一个 ConfigParser 类来支持 .ini 文件的读写，这显然不是我想要的，于是一番折腾后整出下面这个工具类： property.py12345678910111213141516171819202122232425262728293031323334353">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://user-gold-cdn.xitu.io/2018/2/22/161bbfad99bbc20a?w=2842&h=1472&f=png&s=767580">
-<meta property="og:updated_time" content="2019-04-30T03:11:23.000Z">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190125160152526.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190125160403794.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2NkZWNkZTExMQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:updated_time" content="2019-05-01T13:12:57.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="总结一波安卓组件化开源方案">
-<meta name="twitter:description" content="摘要为了让大家能快速对android组件化有个整体的认识，本文将从多个维度对目前网上一些有代表性的开源组件化开发方案进行对比，从而更好的区分各组件化方案的特点，快速选择适合自己使用的方案深入学习并使用，在面试中被问到时也能做到心中有数。 前言android平台上组件化开发的概念近两年非常火热，有些同学反映在面试中被问到的频率也很高。 目前网上关于组件化开发方案的文章、开源库比较多，让很多初学者感到">
-<meta name="twitter:image" content="https://user-gold-cdn.xitu.io/2018/2/22/161bbfad99bbc20a?w=2842&h=1472&f=png&s=767580">
+<meta name="twitter:title" content="Python读写properties文件">
+<meta name="twitter:description" content="最近用python写个工具，涉及到properties文件的读写操作。发现Python并没有提供操作properties文件的库，只有一个 ConfigParser 类来支持 .ini 文件的读写，这显然不是我想要的，于是一番折腾后整出下面这个工具类： property.py12345678910111213141516171819202122232425262728293031323334353">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20190125160152526.png">
 
 
 
@@ -117,7 +118,7 @@
 
   
   
-  <link rel="canonical" href="http://qibilly.com/posts/componentize_libs">
+  <link rel="canonical" href="http://qibilly.com/posts/python_properties">
 
 
 
@@ -127,7 +128,7 @@
   };
 </script>
 
-  <title>总结一波安卓组件化开源方案 | Billy学技术</title>
+  <title>Python读写properties文件 | Billy学技术</title>
   
 
 
@@ -326,7 +327,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://qibilly.com/posts/componentize_libs.html">
+    <link itemprop="mainEntityOfPage" href="http://qibilly.com/posts/python_properties.html">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="齐翊">
@@ -343,7 +344,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">总结一波安卓组件化开源方案
+          <h1 class="post-title" itemprop="name headline">Python读写properties文件
 
               
             
@@ -369,24 +370,12 @@
                 
               
 
-              <time title="创建时间：2018-03-21 15:55:57" itemprop="dateCreated datePublished" datetime="2018-03-21T15:55:57+08:00">2018-03-21</time>
+              <time title="创建时间：2019-05-01 21:11:57 / 修改时间：21:12:57" itemprop="dateCreated datePublished" datetime="2019-05-01T21:11:57+08:00">2019-05-01</time>
             
 
             
               
 
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-04-30 11:11:23" itemprop="dateModified" datetime="2019-04-30T11:11:23+08:00">2019-04-30</time>
               
             
           </span>
@@ -403,14 +392,7 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a></span>
-
-                
-                
-                  ，
-                
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Android/组件化文章/" itemprop="url" rel="index"><span itemprop="name">组件化文章</span></a></span>
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/python/" itemprop="url" rel="index"><span itemprop="name">python</span></a></span>
 
                 
                 
@@ -445,72 +427,11 @@
       
 
       
-        <h2 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h2><p>为了让大家能快速对android组件化有个整体的认识，本文将从多个维度对目前网上一些有代表性的开源组件化开发方案进行对比，从而更好的区分各组件化方案的特点，快速选择适合自己使用的方案深入学习并使用，在面试中被问到时也能做到心中有数。</p>
-<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>android平台上组件化开发的概念近两年非常火热，有些同学反映在面试中被问到的频率也很高。</p>
-<p>目前网上关于组件化开发方案的文章、开源库比较多，让很多初学者感到迷茫，不知该从何处入手，难以确定自身的业务特性适合使用哪种框架，如果全部都学习一遍成本比较高，而且在学习过程中容易将各方案的一些特性记混淆。</p>
-<p>为了让大家能快速对android组件化有个整体的认识，本文将从多个维度对目前网上一些有代表性的开源组件化开发方案进行对比，从而更好的区分各组件化方案的特点，快速选择适合自己使用的方案深入学习并使用，在面试中被问到时也能做到心中有数。</p>
-<p>由于篇幅及个人精力所限，只选取了比较有代表性的几个组件化方案进行比较，对比内容中如有谬误之处，欢迎大家指正，可以在评论中留言或者<a href="https://github.com/luckybilly/AndroidComponentizeLibs/issues/new" target="_blank" rel="noopener">提issue</a>和<a href="https://github.com/luckybilly/AndroidComponentizeLibs/compare" target="_blank" rel="noopener">pr</a>给我,和我一起完善更多组件化方案的对比，降低开发者学习组件化技术的难度。</p>
-<p>持续更新中，欢迎<a href="https://github.com/luckybilly/AndroidComponentizeLibs" target="_blank" rel="noopener">watch、star</a></p>
-<h2 id="对比表"><a href="#对比表" class="headerlink" title="对比表"></a>对比表</h2><p>markdown语法对表格支持的不太友好，为了方便查看，下面贴出对比表的截图，具体的表格见<a href="https://github.com/luckybilly/AndroidComponentizeLibs" target="_blank" rel="noopener">github</a></p>
-<p>👉手机上图片显示不清晰，请点击<a href="https://user-gold-cdn.xitu.io/2018/2/22/161bbfad99bbc20a?w=2842&amp;h=1472&amp;f=png&amp;s=767580" target="_blank" rel="noopener">此处看大图</a></p>
-<p><img src="https://user-gold-cdn.xitu.io/2018/2/22/161bbfad99bbc20a?w=2842&amp;h=1472&amp;f=png&amp;s=767580" alt="android组件化框架对比图"></p>
-<h2 id="表格中框架的相关链接"><a href="#表格中框架的相关链接" class="headerlink" title="表格中框架的相关链接"></a>表格中框架的相关链接</h2><table>
-<thead>
-<tr>
-<th>序号</th>
-<th>名称</th>
-<th>相关文章</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>1</td>
-<td><a href="https://github.com/luckybilly/CC" target="_blank" rel="noopener">CC</a></td>
-<td><a href="https://github.com/luckybilly/CC/wiki" target="_blank" rel="noopener">wiki</a><br><br><a href="https://github.com/luckybilly/CC/wiki/CC%E6%A1%86%E6%9E%B6%E5%AE%9E%E8%B7%B5(1" target="_blank" rel="noopener">CC框架实践(1)：实现登录成功再进入目标界面功能</a>%EF%BC%9A%E5%AE%9E%E7%8E%B0%E7%99%BB%E5%BD%95%E6%88%90%E5%8A%9F%E5%86%8D%E8%BF%9B%E5%85%A5%E7%9B%AE%E6%A0%87%E7%95%8C%E9%9D%A2%E5%8A%9F%E8%83%BD)<br><br><a href="https://github.com/luckybilly/CC/wiki/CC%E6%A1%86%E6%9E%B6%E5%AE%9E%E8%B7%B5(2" target="_blank" rel="noopener">CC框架实践(2)：Fragment和View的组件化</a>%EF%BC%9AFragment%E5%92%8CView%E7%9A%84%E7%BB%84%E4%BB%B6%E5%8C%96)<br><br><a href="https://github.com/luckybilly/CC/wiki/CC%E6%A1%86%E6%9E%B6%E5%AE%9E%E8%B7%B5(3" target="_blank" rel="noopener">CC框架实践(3): 让jsBridge更优雅</a>:-%E8%AE%A9jsBridge%E6%9B%B4%E4%BC%98%E9%9B%85)</td>
-</tr>
-<tr>
-<td>2</td>
-<td><a href="https://github.com/luojilab/DDComponentForAndroid" target="_blank" rel="noopener">得到DDComponentForAndroid</a></td>
-<td><a href="https://www.jianshu.com/p/1b1d77f58e84" target="_blank" rel="noopener">Android彻底组件化方案实践</a><br><br>组件化设计思路 <a href="https://mp.weixin.qq.com/s/RAOjrpie214w0byRndczmg" target="_blank" rel="noopener">浅谈Android组件化</a><br><br>原理解释文章<a href="http://www.jianshu.com/p/1b1d77f58e84" target="_blank" rel="noopener">Android彻底组件化方案实践</a><br><br>demo解读文章<a href="http://www.jianshu.com/p/59822a7b2fad" target="_blank" rel="noopener">Android彻底组件化demo发布</a></td>
-</tr>
-<tr>
-<td>3</td>
-<td><a href="https://github.com/SpinyTech/ModularizationArchitecture" target="_blank" rel="noopener">ModularizationArchitecture</a></td>
-<td><a href="http://blog.spinytech.com/2016/12/28/android_modularization/" target="_blank" rel="noopener">Android架构思考(模块化、多进程)</a><br><br><a href="http://blog.spinytech.com/2017/02/01/ma_get_start_cn/" target="_blank" rel="noopener">ModularizationArchitecture 使用教程</a></td>
-</tr>
-<tr>
-<td>4</td>
-<td><a href="https://github.com/alibaba/ARouter" target="_blank" rel="noopener">阿里ARouter</a></td>
-<td><a href="https://yq.aliyun.com/articles/71687?spm=5176.100240.searchblog.7.8os9Go" target="_blank" rel="noopener">开源最佳实践：Android平台页面路由框架Arouter</a></td>
-</tr>
-<tr>
-<td>5</td>
-<td>聚美组件化方案<a href="https://github.com/yjfnypeu/AndroidComponent" target="_blank" rel="noopener">Demo</a><br>(基于<a href="https://github.com/JumeiRdGroup/Router" target="_blank" rel="noopener">聚美Router</a>)</td>
-<td><a href="https://juejin.im/post/5a4b4425518825128654eef4" target="_blank" rel="noopener">聚美组件化实践之路</a><br><br><a href="https://juejin.im/post/5a37771f6fb9a0450e7636e0" target="_blank" rel="noopener">Router:一款单品、组件化、插件化全支持的路由框架</a></td>
-</tr>
-<tr>
-<td>6</td>
-<td><a href="https://github.com/mzule/ActivityRouter" target="_blank" rel="noopener">ActivityRouter</a></td>
-<td><a href="https://joyrun.github.io/2016/08/01/ActivityRouter/" target="_blank" rel="noopener">ActivityRouter路由框架：通过注解实现URL打开Activity</a><br><br><a href="https://mzule.github.io/2016/04/11/%E9%80%9A%E8%BF%87URL%E6%89%93%E5%BC%80Activity/" target="_blank" rel="noopener">通过 URL 打开 Activity</a></td>
-</tr>
-</tbody>
-</table>
-<h2 id="其它比较有特色的组件化方案简介"><a href="#其它比较有特色的组件化方案简介" class="headerlink" title="其它比较有特色的组件化方案简介"></a>其它比较有特色的组件化方案简介</h2><ul>
-<li><p>51信用卡路由方案<a href="https://www.jianshu.com/p/8a3eeeaf01e8" target="_blank" rel="noopener">OkDeepLink</a></p>
-<p>  <em>曾经在作者的github账号上开源，现已删除，作者在博文中提到后续2.0版会放到公司的github账号上，但一直未发布。</em> <a href="https://github.com/jjerry/OkDeepLink" target="_blank" rel="noopener">这里</a>有个fork版本</p>
-<p>  这个方案中使用aspectJ来实现路由表的自动注册，与其它方案不太一样，不过此方案的作者也打算废弃这种方式，理由是aspectJ还是太重了</p>
-<p>  这个方案文章中还提到了关于路由安全的措施，其中有使用URL中加签名的方式来屏蔽非法访问，类似于客户端连接服务端的http请求对参数进行加密校验</p>
-</li>
-<li><p>组件总线方案<a href="https://github.com/cangwang/ModuleBus" target="_blank" rel="noopener">ModuleBus</a></p>
-<p>  介绍文档：<a href="https://juejin.im/post/58524bd2b123db00655b4e99" target="_blank" rel="noopener">组件化开发跨module交互方式—ModuleBus交互</a></p>
-<p>  这个方案的特别之处在于其借鉴了<a href="https://github.com/greenrobot/EventBus" target="_blank" rel="noopener">EventBus</a>的思想，组件的注册/注销和组件调用的事件发送都跟EventBus类似</p>
-</li>
-<li><p>美柚路由方案<a href="https://github.com/gybin02/RouterKit" target="_blank" rel="noopener">RouterKit</a></p>
-<p>  这个方案的特别之处在于其组件自动注册的方案：通过apt生成每个module的路由表，然后<a href="https://github.com/gybin02/RouterKit/blob/master/app/build.gradle#L60:1" target="_blank" rel="noopener">复制到app的assets目录</a>，运行的时候遍历asset目录，<a href="https://github.com/gybin02/RouterKit/blob/master/jet_router/src/main/java/com/meiyou/router/Router.java#L322:17" target="_blank" rel="noopener">反射对应的activity</a></p>
-</li>
-<li><p>其它（欢迎给我<a href="https://github.com/luckybilly/AndroidComponentizeLibs/issues/new" target="_blank" rel="noopener">提issue</a>或<a href="https://github.com/luckybilly/AndroidComponentizeLibs/compare" target="_blank" rel="noopener">pr</a>补充!）</p>
-</li>
-</ul>
+        <p>最近用python写个工具，涉及到properties文件的读写操作。发现Python并没有提供操作properties文件的库，只有一个 ConfigParser 类来支持 .ini 文件的读写，这显然不是我想要的，于是一番折腾后整出下面这个工具类：</p>
+<h3 id="property-py"><a href="#property-py" class="headerlink" title="property.py"></a>property.py</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/python</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> re</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> tempfile</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Properties</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, file_name)</span>:</span></span><br><span class="line">        self.file_name = file_name</span><br><span class="line">        self.properties = &#123;&#125;</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            fopen = open(self.file_name, <span class="string">'r'</span>)</span><br><span class="line">            <span class="keyword">for</span> line <span class="keyword">in</span> fopen:</span><br><span class="line">                line = line.strip()</span><br><span class="line">                <span class="keyword">if</span> line.find(<span class="string">'='</span>) &gt; <span class="number">0</span> <span class="keyword">and</span> <span class="keyword">not</span> line.startswith(<span class="string">'#'</span>):</span><br><span class="line">                    strs = line.split(<span class="string">'='</span>)</span><br><span class="line">                    self.properties[strs[<span class="number">0</span>].strip()] = strs[<span class="number">1</span>].strip()</span><br><span class="line">        <span class="keyword">except</span> Exception, e:</span><br><span class="line">            <span class="keyword">raise</span> e</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            fopen.close()</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">has_key</span><span class="params">(self, key)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> self.properties.has_key(key)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get</span><span class="params">(self, key, default_value=<span class="string">''</span>)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> self.properties.has_key(key):</span><br><span class="line">            <span class="keyword">return</span> self.properties[key]</span><br><span class="line">        <span class="keyword">return</span> default_value</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">put</span><span class="params">(self, key, value)</span>:</span></span><br><span class="line">        self.properties[key] = value</span><br><span class="line">        replace_property(self.file_name, key + <span class="string">'=.*'</span>, key + <span class="string">'='</span> + value, <span class="keyword">True</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">parse</span><span class="params">(file_name)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> Properties(file_name)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">replace_property</span><span class="params">(file_name, from_regex, to_str, append_on_not_exists=True)</span>:</span></span><br><span class="line">    file = tempfile.TemporaryFile()         <span class="comment">#创建临时文件</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> os.path.exists(file_name):</span><br><span class="line">        r_open = open(file_name,<span class="string">'r'</span>)</span><br><span class="line">        pattern = re.compile(<span class="string">r''</span> + from_regex)</span><br><span class="line">        found = <span class="keyword">None</span></span><br><span class="line">        <span class="keyword">for</span> line <span class="keyword">in</span> r_open: <span class="comment">#读取原文件</span></span><br><span class="line">            <span class="keyword">if</span> pattern.search(line) <span class="keyword">and</span> <span class="keyword">not</span> line.strip().startswith(<span class="string">'#'</span>):</span><br><span class="line">                found = <span class="keyword">True</span></span><br><span class="line">                line = re.sub(from_regex, to_str, line)</span><br><span class="line">            file.write(line)   <span class="comment">#写入临时文件</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> found <span class="keyword">and</span> append_on_not_exists:</span><br><span class="line">            file.write(<span class="string">'\n'</span> + to_str)</span><br><span class="line">        r_open.close()</span><br><span class="line">        file.seek(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">        content = file.read()  <span class="comment">#读取临时文件中的所有内容</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> os.path.exists(file_name):</span><br><span class="line">            os.remove(file_name)</span><br><span class="line"></span><br><span class="line">        w_open = open(file_name,<span class="string">'w'</span>)</span><br><span class="line">        w_open.write(content)   <span class="comment">#将临时文件中的内容写入原文件</span></span><br><span class="line">        w_open.close()</span><br><span class="line"></span><br><span class="line">        file.close()  <span class="comment">#关闭临时文件，同时也会自动删掉临时文件</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">print</span> <span class="string">"file %s not found"</span> % file_name</span><br></pre></td></tr></table></figure>
+<h3 id="使用方式"><a href="#使用方式" class="headerlink" title="使用方式"></a>使用方式</h3><p>在要使用property工具的python文件中导入property.py文件即可使用<br>示例（test.py）：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/python</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> property</span><br><span class="line"></span><br><span class="line">file_path = <span class="string">'/Users/billy/Desktop/bak/test.properties'</span> <span class="comment">#要操作的properties文件的路径</span></span><br><span class="line">props = property.parse(file_path)   <span class="comment">#读取文件</span></span><br><span class="line">props.put(<span class="string">'key_a'</span>, <span class="string">'value_a'</span>)       <span class="comment">#修改/添加key=value</span></span><br><span class="line"><span class="keyword">print</span> props.get(<span class="string">'key_a'</span>)            <span class="comment">#根据key读取value</span></span><br><span class="line"><span class="keyword">print</span> <span class="string">"props.has_key('key_a')="</span> + str(props.has_key(<span class="string">'key_a'</span>))   <span class="comment">#判断是否包含该key1</span></span><br></pre></td></tr></table></figure></p>
+<p>测试效果：<br><img src="https://img-blog.csdnimg.cn/20190125160152526.png" alt="测试代码运行效果"><br>注意，操作的目标文件要存在，否则报错：<br><img src="https://img-blog.csdnimg.cn/20190125160403794.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2NkZWNkZTExMQ==,size_16,color_FFFFFF,t_70" alt="找不到文件"></p>
+<h3 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h3><p> <a href="http://blog.sina.com.cn/s/blog_6a24f10901018lhn.html" target="_blank" rel="noopener">Python实用脚本（1）：读取Properties文件</a></p>
 
       
     </div>
@@ -567,7 +488,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/组件化/" rel="tag"># 组件化</a>
+            <a href="/tags/工具类/" rel="tag"># 工具类</a>
           
         </div>
       
@@ -580,8 +501,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/posts/componentize_who_stops.html" rel="next" title="谁阻碍了你做组件化开发？">
-                <i class="fa fa-chevron-left"></i> 谁阻碍了你做组件化开发？
+              <a href="/posts/os_autoregister.html" rel="next" title="AutoRegister:Android模块解耦利器">
+                <i class="fa fa-chevron-left"></i> AutoRegister:Android模块解耦利器
               </a>
             
           </div>
@@ -589,10 +510,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/posts/componentize_router_vs_bus.html" rel="prev" title="组件化核心引擎（路由 VS 总线）">
-                组件化核心引擎（路由 VS 总线） <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -828,7 +745,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#摘要"><span class="nav-number">1.</span> <span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">2.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#对比表"><span class="nav-number">3.</span> <span class="nav-text">对比表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#表格中框架的相关链接"><span class="nav-number">4.</span> <span class="nav-text">表格中框架的相关链接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其它比较有特色的组件化方案简介"><span class="nav-number">5.</span> <span class="nav-text">其它比较有特色的组件化方案简介</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#property-py"><span class="nav-number">1.</span> <span class="nav-text">property.py</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用方式"><span class="nav-number">2.</span> <span class="nav-text">使用方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考文档"><span class="nav-number">3.</span> <span class="nav-text">参考文档</span></a></li></ol></div>
             
 
           </div>
