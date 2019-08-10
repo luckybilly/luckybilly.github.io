@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: true,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="前言侧滑手势在Android App应用得非常广泛，常见的使用场景包括：滑动抽屉、侧滑删除、侧滑返回、下拉刷新以及侧滑封面等。由于这些使用场景实在是太通用了，各路大神们八仙过海各显神通，每种侧滑场景都开源出了很多非常实用的框架，让我们的业务开发便利了很多。 目前，我们需要为每种场景引入不同的侧滑框架，由于App中的侧滑场景很多，我们项目中也就需要引入多个侧滑框架，而每个框架的使用方式各有不同，需要">
+<meta name="keywords" content="侧滑">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android侧滑原来可以这么优雅">
+<meta property="og:url" content="http://qibilly.com/posts/os_smartswipe.html">
+<meta property="og:site_name" content="Billy">
+<meta property="og:description" content="前言侧滑手势在Android App应用得非常广泛，常见的使用场景包括：滑动抽屉、侧滑删除、侧滑返回、下拉刷新以及侧滑封面等。由于这些使用场景实在是太通用了，各路大神们八仙过海各显神通，每种侧滑场景都开源出了很多非常实用的框架，让我们的业务开发便利了很多。 目前，我们需要为每种场景引入不同的侧滑框架，由于App中的侧滑场景很多，我们项目中也就需要引入多个侧滑框架，而每个框架的使用方式各有不同，需要">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/7/16/16bf97a90a2601de?w=313&h=555&f=gif&s=675005">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/7/16/16bf9790056209d6?w=313&h=555&f=gif&s=852919">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/7/30/16c429627874c87e?w=313&h=555&f=gif&s=1014400">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/7/30/16c42a25e51da7df?w=313&h=555&f=gif&s=1427592">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/7/30/16c42a53722eec38?w=313&h=555&f=gif&s=967235">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/7/30/16c42abb6f3d67b9?w=313&h=555&f=gif&s=235041">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/7/30/16c42adb2afae744?w=313&h=555&f=gif&s=277057">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/7/30/16c42b0733438844?w=313&h=555&f=gif&s=287731">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/7/30/16c42b361495aac3?w=313&h=555&f=gif&s=343903">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/7/30/16c42b99cbc71bc1?w=313&h=555&f=gif&s=926668">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/7/30/16c42b99cc6f8fcd?w=313&h=555&f=gif&s=923254">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/7/30/16c42bb09f2cc670?w=313&h=555&f=gif&s=586993">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/7/16/16bf97d44df0d9e1?w=1015&h=332&f=gif&s=2139974">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/7/16/16bf97f1bd242aa9?w=314&h=164&f=gif&s=30825">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/7/16/16bf97f7feccce5a?w=314&h=164&f=gif&s=88975">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/7/16/16bf97fc3428d082?w=314&h=164&f=gif&s=126827">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/7/16/16bf9801217f3979?w=316&h=157&f=gif&s=83454">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/7/30/16c42ca1a6f97e22?w=318&h=278&f=gif&s=736500">
+<meta property="og:updated_time" content="2019-08-10T09:56:39.400Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android侧滑原来可以这么优雅">
+<meta name="twitter:description" content="前言侧滑手势在Android App应用得非常广泛，常见的使用场景包括：滑动抽屉、侧滑删除、侧滑返回、下拉刷新以及侧滑封面等。由于这些使用场景实在是太通用了，各路大神们八仙过海各显神通，每种侧滑场景都开源出了很多非常实用的框架，让我们的业务开发便利了很多。 目前，我们需要为每种场景引入不同的侧滑框架，由于App中的侧滑场景很多，我们项目中也就需要引入多个侧滑框架，而每个框架的使用方式各有不同，需要">
+<meta name="twitter:image" content="https://user-gold-cdn.xitu.io/2019/7/16/16bf97a90a2601de?w=313&h=555&f=gif&s=675005">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://qibilly.com/posts/os_smartswipe">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Android侧滑原来可以这么优雅 | Billy</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Billy</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://qibilly.com/posts/os_smartswipe.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="齐翊">
+      <meta itemprop="description" content="Android组件化 开源框架 CC/SmartSwipe/Gloading/PreLoader/AutoRegister...">
+      <meta itemprop="image" content="https://avatars3.githubusercontent.com/u/4155835?s=460&v=4">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Billy">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android侧滑原来可以这么优雅
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-08-10 17:56:39" itemprop="dateCreated datePublished" datetime="2019-08-10T17:56:39+08:00">2019-08-10</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Android/开源项目/" itemprop="url" rel="index"><span itemprop="name">开源项目</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>侧滑手势在Android App应用得非常广泛，常见的使用场景包括：滑动抽屉、侧滑删除、侧滑返回、下拉刷新以及侧滑封面等。由于这些使用场景实在是太通用了，各路大神们八仙过海各显神通，每种侧滑场景都开源出了很多非常实用的框架，让我们的业务开发便利了很多。</p>
+<p>目前，我们需要为每种场景引入不同的侧滑框架，由于App中的侧滑场景很多，我们项目中也就需要引入多个侧滑框架，而每个框架的使用方式各有不同，需要单独学习，团队的学习成本较高。</p>
+<p>那么问题来了，有没有一种框架能解决所有侧滑需求呢？</p>
+<h2 id="一个框架解决所有侧滑需求？你确定不是在开玩笑？"><a href="#一个框架解决所有侧滑需求？你确定不是在开玩笑？" class="headerlink" title="一个框架解决所有侧滑需求？你确定不是在开玩笑？"></a>一个框架解决所有侧滑需求？你确定不是在开玩笑？</h2><p>在刚开始学习面向对象编程概念的时候我们就知道一个道理：<strong>解决一个软件问题，首先要将它抽象出来</strong>。</p>
+<p>针对侧滑这个手势，我们能不能将它的概念抽象一下，到底侧滑指的是什么呢？</p>
+<ul>
+<li>狭义侧滑：从屏幕的某侧的边缘开始向着远离该边缘的方向滑动</li>
+<li>广义侧滑：手指在屏幕上按下之后向着某一侧方向滑动</li>
+</ul>
+<p>我的理解是，广义侧滑包含狭义侧滑，只不过是触发区域是否在屏幕边缘的区别罢了。</p>
+<p>于是，侧滑的概念就这样被清晰地抽象出来了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">从这个抽象概念可以看出：侧滑手势同一时间只处理上下左右4个方向中的一个方向</span><br></pre></td></tr></table></figure>
+<p>如果我们将这个抽象概念封装出来，将手势事件的识别、拦截及数据加工在框架内部处理好，并向外实时地输出侧滑<strong>方向</strong>、<strong>距离</strong>及相关的<strong>回调</strong>， 理论上我们就可以实现<strong>所有的侧滑需求</strong>了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">至于具体的侧滑效果，学过策略模式的都知道：</span><br><span class="line">每一种具体的侧滑效果实现都可以看做是一种侧滑策略。</span><br></pre></td></tr></table></figure>
+<h2 id="说的那么玄乎，到底咋弄？"><a href="#说的那么玄乎，到底咋弄？" class="headerlink" title="说的那么玄乎，到底咋弄？"></a>说的那么玄乎，到底咋弄？</h2><p>胸抬，憋急！磨刀不误砍柴工，站在巨人的肩膀上你就有可能比巨人高那么一点点。</p>
+<p>Google在android support库中为侧滑菜单的需求提供了SlidingPaneLayout和DrawerLayout两种实现，看源码会发现两者都是基于ViewDragHelper来实现的，那么ViewDragHelper又是何方神圣呢？</p>
+<p>ViewDragHelper是android support库中的一个工具类。它可以帮助我们处理控件的拖拽，它的使用方式为：先创建一个自定义ViewGroup，将被拖动的控件添加到这个自定义ViewGroup中，并用ViewDragHelper来处理控件的拖拽，可以通过Callback来指定拖拽区域及捕获子控件的逻辑。</p>
+<p>通过阅读ViewDragHelper的源码发现，它对view在父容器中的拖拽行为进行了封装，通过拦截父容器控件的手势事件，捕获需要拖拽的子控件，并实时根据手指的移动改变它的坐标，从而实现拖拽效果。</p>
+<blockquote>
+<p>ViewDragHelper封装的很优雅，也很强大，<br>有些开源侧滑框架也是基于ViewDragHelper来实现的,例如：<br> <a href="https://github.com/ikew0ng/SwipeBackLayout" target="_blank" rel="noopener">ikew0ng/SwipeBackLayout</a> / <a href="https://github.com/daimajia/AndroidSwipeLayout" target="_blank" rel="noopener">daimajia/AndroidSwipeLayout</a></p>
+</blockquote>
+<p>不过，ViewDragHelper封装的是子控件的拖拽，而不是侧滑，它计算距离的基准是控件的top和left坐标，虽然可以将其中一个方向（横向或纵向）的拖动范围设置为0来模拟侧滑手势，但它不符合我们侧滑手势的抽象定义，无法解决侧滑时不是控件移动的效果。</p>
+<blockquote>
+<p>例如：MIUI系统侧滑返回效果及小米公司出品的App普遍使用的弹性拉伸效果等</p>
+</blockquote>
+<h2 id="别扯那些没用的，赶紧讲侧滑"><a href="#别扯那些没用的，赶紧讲侧滑" class="headerlink" title="别扯那些没用的，赶紧讲侧滑"></a>别扯那些没用的，赶紧讲侧滑</h2><p>既然侧滑已经被清晰地抽象出来了，同样是对触摸滑动事件的处理，我们完全可以借鉴ViewDragHelper的思想：将它对子控件的捕获和拖动，改成对侧滑方向的捕获和侧滑距离的计算，并将它的Callback改造成侧滑距离的消费者(<em>具体的侧滑效果就看消费者用哪种方式来消费掉这个侧滑距离</em>)。</p>
+<blockquote>
+<p>侧滑行为的2个核心要素：<br><br>侧滑方向、侧滑距离</p>
+</blockquote>
+<p>根据这个思路，我封装了一个智能的侧滑框架：<a href="https://github.com/luckybilly/SmartSwipe" target="_blank" rel="noopener">SmartSwipe</a>，可以解决你所(chui)有(niu)的(bi)侧滑需求。请大声说出它的slogan！</p>
+<h2 id="关于侧滑，有这一个就够了"><a href="#关于侧滑，有这一个就够了" class="headerlink" title="关于侧滑，有这一个就够了"></a>关于侧滑，有这一个就够了</h2><p>当然，这是吹牛逼的！</p>
+<p>框架只是封装了侧滑行为事件的捕获、分发及多点交替滑动的处理，具体的侧滑效果（消费侧滑距离的策略）需要你自己来实现。。。哎。。。等等，胸抬，先别走啊！还没说完呢，SmartSwipe中内置了十多种常见侧滑效果，有动图为证：</p>
+<h4 id="1-一行代码让页面动起来"><a href="#1-一行代码让页面动起来" class="headerlink" title="1. 一行代码让页面动起来"></a>1. 一行代码让页面动起来</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//仿iOS的弹性留白效果：</span></span><br><span class="line"><span class="comment">//侧滑时表现为弹性留白效果，结束后自动恢复</span></span><br><span class="line">SmartSwipe.wrap(view)</span><br><span class="line">    .addConsumer(<span class="keyword">new</span> SpaceConsumer())</span><br><span class="line">    .enableVertical(); <span class="comment">//工作方向：纵向</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://user-gold-cdn.xitu.io/2019/7/16/16bf97a90a2601de?w=313&amp;h=555&amp;f=gif&amp;s=675005" alt="弹性留白效果"></p>
+<h4 id="2-一行代码让页面具有弹性"><a href="#2-一行代码让页面具有弹性" class="headerlink" title="2. 一行代码让页面具有弹性"></a>2. 一行代码让页面具有弹性</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//仿MIUI的弹性拉伸效果：</span></span><br><span class="line"><span class="comment">//侧滑时表现为弹性拉伸效果，结束后自动恢复</span></span><br><span class="line">SmartSwipe.wrap(view)</span><br><span class="line">    .addConsumer(<span class="keyword">new</span> StretchConsumer())</span><br><span class="line">    .enableVertical(); <span class="comment">//工作方向：纵向</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://user-gold-cdn.xitu.io/2019/7/16/16bf9790056209d6?w=313&amp;h=555&amp;f=gif&amp;s=852919" alt="弹性拉伸效果"></p>
+<h4 id="3-一行代码添加滑动抽屉"><a href="#3-一行代码添加滑动抽屉" class="headerlink" title="3. 一行代码添加滑动抽屉"></a>3. 一行代码添加滑动抽屉</h4><p>抽屉显示在主view之上，类似于DrawerLayout</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">SmartSwipe.wrap(view)</span><br><span class="line">    .addConsumer(<span class="keyword">new</span> DrawerConsumer())    <span class="comment">//抽屉效果</span></span><br><span class="line">    <span class="comment">//可以设置横向(左右两侧)的抽屉为同一个view</span></span><br><span class="line">    <span class="comment">//也可以为不同方向分别设置不同的view</span></span><br><span class="line">    .setHorizontalDrawerView(menuLayout) </span><br><span class="line">    .setScrimColor(<span class="number">0x2F000000</span>) <span class="comment">//设置遮罩的颜色</span></span><br><span class="line">    .setShadowColor(<span class="number">0x80000000</span>)    <span class="comment">//设置边缘的阴影颜色</span></span><br><span class="line">    ;</span><br></pre></td></tr></table></figure>
+<p><img src="https://user-gold-cdn.xitu.io/2019/7/30/16c429627874c87e?w=313&amp;h=555&amp;f=gif&amp;s=1014400" alt="滑动抽屉"></p>
+<h4 id="4-一行代码添加带联动效果的滑动抽屉"><a href="#4-一行代码添加带联动效果的滑动抽屉" class="headerlink" title="4. 一行代码添加带联动效果的滑动抽屉"></a>4. 一行代码添加带联动效果的滑动抽屉</h4><p>抽屉显示在主view之下<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">SmartSwipe.wrap(view)</span><br><span class="line">    .addConsumer(<span class="keyword">new</span> SlidingConsumer())</span><br><span class="line">    .setHorizontalDrawerView(textView)</span><br><span class="line">    .setScrimColor(<span class="number">0x2F000000</span>)</span><br><span class="line">    <span class="comment">//设置联动系数</span></span><br><span class="line">    <span class="comment">//  0:不联动，视觉效果为：主体移动后显示下方的抽屉</span></span><br><span class="line">    <span class="comment">//  0~1: 半联动，视觉效果为：抽屉视图按照联动系数与主体之间存在相对移动效果</span></span><br><span class="line">    <span class="comment">//  1:全联动，视觉效果为：抽屉跟随主体一起移动(pixel by pixel)</span></span><br><span class="line">    .setRelativeMoveFactor(<span class="number">0.5F</span>) </span><br><span class="line">    ;</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://user-gold-cdn.xitu.io/2019/7/30/16c42a25e51da7df?w=313&amp;h=555&amp;f=gif&amp;s=1427592" alt="联动抽屉"></p>
+<h4 id="5-一行代码添加滑动透明效果"><a href="#5-一行代码添加滑动透明效果" class="headerlink" title="5. 一行代码添加滑动透明效果"></a>5. 一行代码添加滑动透明效果</h4><p>侧滑透明效果，侧滑后可显示被其遮挡的view，可用作侧滑删除，也可以用来制作封面效果<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//侧滑删除</span></span><br><span class="line">SmartSwipe.wrap(view)</span><br><span class="line">    .addConsumer(<span class="keyword">new</span> TranslucentSlidingConsumer())</span><br><span class="line">    .enableHorizontal() <span class="comment">//启用左右两侧侧滑</span></span><br><span class="line">    .addListener(<span class="keyword">new</span> SimpleSwipeListener()&#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onSwipeOpened</span><span class="params">(SmartSwipeWrapper wrapper, SwipeConsumer consumer, <span class="keyword">int</span> direction)</span> </span>&#123;</span><br><span class="line">            <span class="comment">//侧滑打开时，移除</span></span><br><span class="line">            ViewParent parent = wrapper.getParent();</span><br><span class="line">            <span class="keyword">if</span> (parent <span class="keyword">instanceof</span> ViewGroup) &#123;</span><br><span class="line">                ((ViewGroup) parent).removeView(wrapper);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//adapter.removeItem(getAdapterPosition());// 也可用作从recyclerView中移除该项</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">    ;</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://user-gold-cdn.xitu.io/2019/7/30/16c42a53722eec38?w=313&amp;h=555&amp;f=gif&amp;s=967235" alt="侧滑透明"></p>
+<h4 id="6-一行代码添加侧滑手势识别功能"><a href="#6-一行代码添加侧滑手势识别功能" class="headerlink" title="6. 一行代码添加侧滑手势识别功能"></a>6. 一行代码添加侧滑手势识别功能</h4><p>侧滑时，主view保持不动，手指释放时，识别滑动方向及速率，以确定是否执行对应的侧滑逻辑。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//demo：用StayConsumer来做activity侧滑返回</span></span><br><span class="line">SmartSwipe.wrap(<span class="keyword">this</span>)</span><br><span class="line">    .addConsumer(<span class="keyword">new</span> StayConsumer())</span><br><span class="line">    .enableAllDirections()</span><br><span class="line">    .addListener(<span class="keyword">new</span> SimpleSwipeListener()&#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onSwipeOpened</span><span class="params">(SmartSwipeWrapper wrapper, SwipeConsumer consumer, <span class="keyword">int</span> direction)</span> </span>&#123;</span><br><span class="line">            finish();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">    ;</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://user-gold-cdn.xitu.io/2019/7/30/16c42abb6f3d67b9?w=313&amp;h=555&amp;f=gif&amp;s=235041" alt="手势识别"></p>
+<h4 id="7-一行代码添加百叶窗效果"><a href="#7-一行代码添加百叶窗效果" class="headerlink" title="7. 一行代码添加百叶窗效果"></a>7. 一行代码添加百叶窗效果</h4><p>侧滑时主view像百叶窗一样打开，透明显示下层的视图。</p>
+<p>可用来制作封面、轮播图等<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//用ShuttersConsumer实现百叶窗侧滑删除</span></span><br><span class="line">SmartSwipe.wrap(view)</span><br><span class="line">    .addConsumer(<span class="keyword">new</span> ShuttersConsumer())</span><br><span class="line">    .enableHorizontal() <span class="comment">//启用左右两侧侧滑</span></span><br><span class="line">    .addListener(<span class="keyword">new</span> SimpleSwipeListener()&#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onSwipeOpened</span><span class="params">(SmartSwipeWrapper wrapper, SwipeConsumer consumer, <span class="keyword">int</span> direction)</span> </span>&#123;</span><br><span class="line">            <span class="comment">//侧滑打开时，移除</span></span><br><span class="line">            ViewParent parent = wrapper.getParent();</span><br><span class="line">            <span class="keyword">if</span> (parent <span class="keyword">instanceof</span> ViewGroup) &#123;</span><br><span class="line">                ((ViewGroup) parent).removeView(wrapper);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//adapter.removeItem(getAdapterPosition());// 也可用作从recyclerView中移除该项</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">    ;</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://user-gold-cdn.xitu.io/2019/7/30/16c42adb2afae744?w=313&amp;h=555&amp;f=gif&amp;s=277057" alt="百叶窗效果"></p>
+<h4 id="8-一行代码添加开门效果"><a href="#8-一行代码添加开门效果" class="headerlink" title="8. 一行代码添加开门效果"></a>8. 一行代码添加开门效果</h4><p>侧滑时，主view像开门一样从中间向两边(上下 或 左右)分开，透明显示它下层的视图</p>
+<p>可用来制作封面、轮播图等<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//用DoorConsumer实现百叶窗侧滑删除</span></span><br><span class="line">SmartSwipe.wrap(view)</span><br><span class="line">    .addConsumer(<span class="keyword">new</span> DoorConsumer())</span><br><span class="line">    .enableHorizontal() <span class="comment">//启用左右两侧侧滑</span></span><br><span class="line">    .addListener(<span class="keyword">new</span> SimpleSwipeListener()&#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onSwipeOpened</span><span class="params">(SmartSwipeWrapper wrapper, SwipeConsumer consumer, <span class="keyword">int</span> direction)</span> </span>&#123;</span><br><span class="line">            <span class="comment">//侧滑打开时，移除</span></span><br><span class="line">            ViewParent parent = wrapper.getParent();</span><br><span class="line">            <span class="keyword">if</span> (parent <span class="keyword">instanceof</span> ViewGroup) &#123;</span><br><span class="line">                ((ViewGroup) parent).removeView(wrapper);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//adapter.removeItem(getAdapterPosition());// 也可用作从recyclerView中移除该项</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">    ;</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://user-gold-cdn.xitu.io/2019/7/30/16c42b0733438844?w=313&amp;h=555&amp;f=gif&amp;s=287731" alt="开门效果"></p>
+<h4 id="9-一行代码添加贝塞尔曲线返回效果"><a href="#9-一行代码添加贝塞尔曲线返回效果" class="headerlink" title="9. 一行代码添加贝塞尔曲线返回效果"></a>9. 一行代码添加贝塞尔曲线返回效果</h4><p>侧滑时，在控件侧滑的边缘显示一个贝塞尔曲线的返回效果</p>
+<p>可用于activity返回、fragment返回，也可用于webview的返回/前进<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//activity侧滑返回</span></span><br><span class="line">SmartSwipe.wrap(<span class="keyword">this</span>)</span><br><span class="line">    .addConsumer(<span class="keyword">new</span> BezierBackConsumer())</span><br><span class="line">    .enableAllDirections()</span><br><span class="line">    .addListener(<span class="keyword">new</span> SimpleSwipeListener() &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onSwipeOpened</span><span class="params">(SmartSwipeWrapper wrapper, SwipeConsumer consumer, <span class="keyword">int</span> direction)</span> </span>&#123;</span><br><span class="line">            finish();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">    ;</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://user-gold-cdn.xitu.io/2019/7/30/16c42b361495aac3?w=313&amp;h=555&amp;f=gif&amp;s=343903" alt="贝塞尔曲线返回效果"></p>
+<h4 id="10-一行代码添加仿微信Activity联动侧滑返回效果"><a href="#10-一行代码添加仿微信Activity联动侧滑返回效果" class="headerlink" title="10. 一行代码添加仿微信Activity联动侧滑返回效果"></a>10. 一行代码添加仿微信Activity联动侧滑返回效果</h4><p>没错，专为activity侧滑返回而作的一种效果，带联动功能<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//activity侧滑返回</span></span><br><span class="line">SmartSwipe.wrap(<span class="keyword">this</span>)</span><br><span class="line">    .addConsumer(<span class="keyword">new</span> ActivitySlidingBackConsumer(<span class="keyword">this</span>))</span><br><span class="line">    <span class="comment">//设置联动系数</span></span><br><span class="line">    .setRelativeMoveFactor(<span class="number">0.5F</span>)</span><br><span class="line">    <span class="comment">//指定可侧滑返回的方向，如：enableLeft() 仅左侧可侧滑返回</span></span><br><span class="line">    .enableAllDirections() </span><br><span class="line">    ;</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://user-gold-cdn.xitu.io/2019/7/30/16c42b99cbc71bc1?w=313&amp;h=555&amp;f=gif&amp;s=926668" alt="仿微信Activity侧滑返回"></p>
+<h4 id="11-一行代码添加Activity百叶窗侧滑返回效果"><a href="#11-一行代码添加Activity百叶窗侧滑返回效果" class="headerlink" title="11. 一行代码添加Activity百叶窗侧滑返回效果"></a>11. 一行代码添加Activity百叶窗侧滑返回效果</h4><p>没错，也是专为activity侧滑返回而作的一种效果，透明显示前一个activity<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//activity侧滑返回</span></span><br><span class="line">SmartSwipe.wrap(<span class="keyword">this</span>)</span><br><span class="line">    .addConsumer(<span class="keyword">new</span> ActivityShuttersBackConsumer(<span class="keyword">this</span>))</span><br><span class="line">    .setScrimColor(<span class="number">0x7F000000</span>)</span><br><span class="line">    .enableAllDirections()</span><br><span class="line">    ;</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://user-gold-cdn.xitu.io/2019/7/30/16c42b99cc6f8fcd?w=313&amp;h=555&amp;f=gif&amp;s=923254" alt="Activity百叶窗返回"></p>
+<h4 id="12-一行代码添加Activity开门侧滑返回效果"><a href="#12-一行代码添加Activity开门侧滑返回效果" class="headerlink" title="12. 一行代码添加Activity开门侧滑返回效果"></a>12. 一行代码添加Activity开门侧滑返回效果</h4><p>没错，这还是一个专为activity侧滑返回而作的效果，透明显示前一个activity<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//activity侧滑返回</span></span><br><span class="line">SmartSwipe.wrap(<span class="keyword">this</span>)</span><br><span class="line">    .addConsumer(<span class="keyword">new</span> ActivitySlidingBackConsumer(<span class="keyword">this</span>))</span><br><span class="line">    .setRelativeMoveFactor(<span class="number">0.5F</span>)</span><br><span class="line">    .enableAllDirections()</span><br><span class="line">    ;</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://user-gold-cdn.xitu.io/2019/7/30/16c42bb09f2cc670?w=313&amp;h=555&amp;f=gif&amp;s=586993" alt="Activity开门返回"></p>
+<h2 id="怎么都是一行代码？还敢不敢再来点？"><a href="#怎么都是一行代码？还敢不敢再来点？" class="headerlink" title="怎么都是一行代码？还敢不敢再来点？"></a>怎么都是一行代码？还敢不敢再来点？</h2><p>SmartSwipe中绝大多数的使用都可以通过链式编程在一行代码内完成，API的设计风格如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">SmartSwipe.wrap(...)        <span class="comment">//view or Activity</span></span><br><span class="line">    .addConsumer(...)       <span class="comment">//添加consumer</span></span><br><span class="line">    .enableDirection(...)   <span class="comment">//指定consumer接收哪个方向的侧滑事件</span></span><br><span class="line">    .setXxx(...)            <span class="comment">//[可选]一些其它设置项</span></span><br><span class="line">    .addListener(...);      <span class="comment">//[可选]给consumer添加监听</span></span><br></pre></td></tr></table></figure></p>
+<p>除了基础的侧滑效果外，为了方便开发者使用，还封装了工具类：<a href="https://qibilly.com/SmartSwipe-tutorial/pages/SmartSwipeBack.html">SmartSwipeBack</a> 和 <a href="https://qibilly.com/SmartSwipe-tutorial/pages/SmartSwipeRefresh.html">SmartSwipeRefresh</a></p>
+<h4 id="一行代码实现全局Activity侧滑返回"><a href="#一行代码实现全局Activity侧滑返回" class="headerlink" title="一行代码实现全局Activity侧滑返回"></a>一行代码实现全局Activity侧滑返回</h4><ul>
+<li>全局只需一行代码即可搞定所有Activity侧滑返回</li>
+<li>可选样式：开门、百叶窗、仿微信、仿QQ及仿MIUI贝塞尔曲线</li>
+<li>无需透明主题</li>
+<li>无需继承某个特定的Activity</li>
+<li>不需要侵入xml布局文件</li>
+<li>也不需要侵入BaseActivity</li>
+<li>支持全屏侧滑和(/或)边缘侧滑返回</li>
+<li>支持 上/下/左/右 4个方向侧滑返回<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//仿手机QQ的手势滑动返回</span></span><br><span class="line">SmartSwipeBack.activityStayBack(application, <span class="keyword">null</span>);     </span><br><span class="line"><span class="comment">//仿微信带联动效果的透明侧滑返回</span></span><br><span class="line">SmartSwipeBack.activitySlidingBack(application, <span class="keyword">null</span>);  </span><br><span class="line"><span class="comment">//侧滑开门样式关闭activity</span></span><br><span class="line">SmartSwipeBack.activityDoorBack(application, <span class="keyword">null</span>);     </span><br><span class="line"><span class="comment">//侧滑百叶窗样式关闭activity</span></span><br><span class="line">SmartSwipeBack.activityShuttersBack(application, <span class="keyword">null</span>); </span><br><span class="line"><span class="comment">//仿小米MIUI系统的贝塞尔曲线返回效果</span></span><br><span class="line">SmartSwipeBack.activityBezierBack(application, <span class="keyword">null</span>);</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><img src="https://user-gold-cdn.xitu.io/2019/7/16/16bf97d44df0d9e1?w=1015&amp;h=332&amp;f=gif&amp;s=2139974" alt="全局侧滑返回效果"></p>
+<h4 id="一行代码添加下拉刷新功能"><a href="#一行代码添加下拉刷新功能" class="headerlink" title="一行代码添加下拉刷新功能"></a>一行代码添加下拉刷新功能</h4><p>可用于任意view<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//xxxMode第二个参数为false，表示工作方向为纵向：下拉刷新&amp;上拉加载更多</span></span><br><span class="line"><span class="comment">//如果第二个参数设置为true，则表示工作方向为横向：右拉刷新&amp;左拉加载更多</span></span><br><span class="line">SmartSwipeRefresh.drawerMode(view, <span class="keyword">false</span>).setDataLoader(loader);</span><br><span class="line">SmartSwipeRefresh.behindMode(view, <span class="keyword">false</span>).setDataLoader(loader);</span><br><span class="line">SmartSwipeRefresh.scaleMode(view, <span class="keyword">false</span>).setDataLoader(loader);</span><br><span class="line">SmartSwipeRefresh.translateMode(view, <span class="keyword">false</span>).setDataLoader(loader);</span><br></pre></td></tr></table></figure></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">样式</th>
+<th style="text-align:center">效果图</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">drawerMode</td>
+<td style="text-align:center"><img src="https://user-gold-cdn.xitu.io/2019/7/16/16bf97f1bd242aa9?w=314&amp;h=164&amp;f=gif&amp;s=30825" alt="drawerMode"></td>
+</tr>
+<tr>
+<td style="text-align:center">behindMode</td>
+<td style="text-align:center"><img src="https://user-gold-cdn.xitu.io/2019/7/16/16bf97f7feccce5a?w=314&amp;h=164&amp;f=gif&amp;s=88975" alt="behindMode"></td>
+</tr>
+<tr>
+<td style="text-align:center">scaleMode</td>
+<td style="text-align:center"><img src="https://user-gold-cdn.xitu.io/2019/7/16/16bf97fc3428d082?w=314&amp;h=164&amp;f=gif&amp;s=126827" alt="scaleMode"></td>
+</tr>
+<tr>
+<td style="text-align:center">translateMode</td>
+<td style="text-align:center"><img src="https://user-gold-cdn.xitu.io/2019/7/16/16bf9801217f3979?w=316&amp;h=157&amp;f=gif&amp;s=83454" alt="translateMode"></td>
+</tr>
+</tbody>
+</table>
+<p>header和footer可使用第三方炫酷的自定义view，如：基于<a href="https://github.com/Ifxcyr/ArrowDrawable" target="_blank" rel="noopener">Ifxcyr/ArrowDrawable</a>的<a href="https://github.com/luckybilly/SmartSwipe/blob/master/smart-swipe-refresh-ext/src/main/java/com/billy/android/swipe/ext/refresh/ArrowHeader.java" target="_blank" rel="noopener">ArrowHeader</a>，效果图如下：</p>
+<p><img src="https://user-gold-cdn.xitu.io/2019/7/30/16c42ca1a6f97e22?w=318&amp;h=278&amp;f=gif&amp;s=736500" alt="ArrowHeader"></p>
+<h2 id="看起来是蛮diao的，可是我要的侧滑效果你这里没有啊"><a href="#看起来是蛮diao的，可是我要的侧滑效果你这里没有啊" class="headerlink" title="看起来是蛮diǎo的，可是我要的侧滑效果你这里没有啊"></a>看起来是蛮diǎo的，可是我要的侧滑效果你这里没有啊</h2><p>这就需要自定义<a href="https://qibilly.com/SmartSwipe-tutorial/pages/SwipeConsumer.html">SwipeConsumer</a>了，步骤如下：</p>
+<ul>
+<li><ol>
+<li>新建一个类，继承SwipeConsumer</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>[可选]在构造方法中进行一些初始化（需要context对象才能初始化的属性，可以放在onAttachToWrapper方法中初始化）</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>[可选]如果有额外的捕获逻辑，可以重写父类的<code>tryAcceptMoving</code>和<code>tryAcceptSettling</code>方法</li>
+</ol>
+</li>
+<li><ol start="4">
+<li>[可选]重写onSwipeAccepted方法，由于此时已经确定捕获了侧滑事件，并确定好了侧滑的方向(mDirection)，可以为本次侧滑事件做一些初始化工作</li>
+</ol>
+</li>
+<li><ol start="5">
+<li>[可选]重写<code>clampDistanceHorizontal</code>及<code>clampDistanceHorizontal</code>方法，可在满足一定条件下才真正执行侧滑</li>
+</ol>
+</li>
+<li><ol start="6">
+<li>重写onDisplayDistanceChanged方法，执行具体的侧滑的UI效果呈现</li>
+</ol>
+</li>
+<li><ol start="7">
+<li>[可选]如果UI呈现效果中包含布局控件的移动，需要重写onLayout方法，在此方法中也要按照侧滑后的逻辑进行控件布局定位</li>
+</ol>
+</li>
+<li><ol start="8">
+<li>重写onDetachFromWrapper方法，还原现场，移除当前consumer的所有改动痕迹</li>
+</ol>
+</li>
+</ul>
+<p>以框架内置弹性拉伸效果StretchConsumer为例<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">根据侧滑距离，对contentView进行缩放和平移，从而实现弹性拉伸效果</span><br></pre></td></tr></table></figure></p>
+<p>代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StretchConsumer</span> <span class="keyword">extends</span> <span class="title">SwipeConsumer</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onDetachFromWrapper</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onDetachFromWrapper();</span><br><span class="line">        View contentView = mWrapper.getContentView();</span><br><span class="line">        <span class="keyword">if</span> (contentView != <span class="keyword">null</span>) &#123;</span><br><span class="line">            contentView.setScaleX(<span class="number">1</span>);</span><br><span class="line">            contentView.setScaleY(<span class="number">1</span>);</span><br><span class="line">            contentView.setTranslationX(<span class="number">0</span>);</span><br><span class="line">            contentView.setTranslationY(<span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onDisplayDistanceChanged</span><span class="params">(<span class="keyword">int</span> distanceXToDisplay, <span class="keyword">int</span> distanceYToDisplay, <span class="keyword">int</span> dx, <span class="keyword">int</span> dy)</span> </span>&#123;</span><br><span class="line">        View contentView = mWrapper.getContentView();</span><br><span class="line">        <span class="keyword">if</span> (contentView != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (distanceXToDisplay &gt;= <span class="number">0</span> &amp;&amp; isLeftEnable() || distanceXToDisplay &lt;= <span class="number">0</span> &amp;&amp; isRightEnable()) &#123;</span><br><span class="line">                contentView.setScaleX(<span class="number">1</span> + Math.abs((<span class="keyword">float</span>) distanceXToDisplay) / mWidth);</span><br><span class="line">                contentView.setTranslationX(distanceXToDisplay / <span class="number">2F</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (distanceYToDisplay &gt;= <span class="number">0</span> &amp;&amp; isTopEnable() || distanceYToDisplay &lt;= <span class="number">0</span> &amp;&amp; isBottomEnable()) &#123;</span><br><span class="line">                contentView.setScaleY(<span class="number">1</span> + Math.abs((<span class="keyword">float</span>) distanceYToDisplay) / mHeight);</span><br><span class="line">                contentView.setTranslationY(distanceYToDisplay / <span class="number">2F</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>以上就是实现弹性拉伸效果的全部代码，很简单，不是吗？</p>
+<h2 id="这样看来，也许还真能实现所有侧滑效果诶？"><a href="#这样看来，也许还真能实现所有侧滑效果诶？" class="headerlink" title="这样看来，也许还真能实现所有侧滑效果诶？"></a>这样看来，也许还真能实现所有侧滑效果诶？</h2><p>能实现所有侧滑效果只存在于理论上，肯定还需要不断地完善，开源出来也是希望能利用开源社区的力量来完善它，让android侧滑更简单！</p>
+<h2 id="怎么做到的呢？"><a href="#怎么做到的呢？" class="headerlink" title="怎么做到的呢？"></a>怎么做到的呢？</h2><p>SmartSwipe的大致封装思路如下：</p>
+<ul>
+<li>用一个ViewGroup将需要处理侧滑事件的控件View包裹起来，被包裹起来的控件作为它的<code>contentView</code>，可以为这个ViewGroup添加一些附属控件View（如：滑动抽屉）</li>
+<li>拦截这个ViewGroup的touch事件，并将touch事件转换为侧滑距离交给SwipeConsumer进行消费</li>
+<li>SwipeConsumer在消费侧滑事件的过程中，对<code>contentView</code>及附属控件的UI呈现（位置、缩放、透明等）进行合理的加工，从而实现各种侧滑的效果。</li>
+</ul>
+<p>先明确框架中几个关键类的角色定义：</p>
+<ul>
+<li>SmartSwipe: <ul>
+<li>框架入口类</li>
+<li>用于将一个view包裹起来并返回包裹它的SmartSwipeWrapper</li>
+</ul>
+</li>
+<li>SmartSwipeWrapper: <ul>
+<li>自定义控件，继承自ViewGroup，效率高于FrameLayout</li>
+<li>用于包裹需要添加侧滑效果的view，被它包裹的view称为它的<code>contentView</code></li>
+<li>有了它，开发者在使用时不再需要自定义ViewGroup了，用起来更方便</li>
+</ul>
+</li>
+<li>SwipeConsumer: <ul>
+<li>侧滑策略的基类</li>
+<li>完成一些公共逻辑，如：侧滑事件的捕获策略、侧滑距的离计算等</li>
+<li>公共属性的设置及对应的逻辑处理</li>
+</ul>
+</li>
+<li>SwipeListener: <ul>
+<li>侧滑生命周期监听类</li>
+<li>添加到SwipeConsumer中，各回调函数在SwipeConsumer对应的生命周期被触发</li>
+</ul>
+</li>
+<li>SwipeHelper: <ul>
+<li>根据ViewDragHelper修改而来</li>
+</ul>
+</li>
+</ul>
+<h4 id="1-将SmartSwipeWrapper、SwipeHelper和SwipeConsumer三者关联起来"><a href="#1-将SmartSwipeWrapper、SwipeHelper和SwipeConsumer三者关联起来" class="headerlink" title="1. 将SmartSwipeWrapper、SwipeHelper和SwipeConsumer三者关联起来"></a>1. 将SmartSwipeWrapper、SwipeHelper和SwipeConsumer三者关联起来</h4><p>类似于使用ViewDragHelper，在SmartSwipeWrapper中，使用SwipeHelper来处理touch事件<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SmartSwipeWrapper</span> <span class="keyword">extends</span> <span class="title">ViewGroup</span> </span>&#123;</span><br><span class="line">    <span class="keyword">protected</span> SwipeHelper mHelper;</span><br><span class="line">    <span class="comment">//省略代码若干...</span></span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onInterceptTouchEvent</span><span class="params">(MotionEvent ev)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> mHelper.shouldInterceptTouchEvent(ev);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onTouchEvent</span><span class="params">(MotionEvent event)</span> </span>&#123;</span><br><span class="line">        mHelper.processTouchEvent(event);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>SwipeHelper拦截到滑动事件后，需要交给SwipeConsumer来消费，所以，需要将SwipeConsumer与SwipeHelper关联起来（<em>SwipeConsumer代替了ViewDragHelper中Callback的角色</em>）<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SmartSwipeWrapper</span> <span class="keyword">extends</span> <span class="title">ViewGroup</span> </span>&#123;</span><br><span class="line">    <span class="keyword">protected</span> SwipeConsumer mConsumer;</span><br><span class="line">    <span class="keyword">protected</span> SwipeHelper mHelper;</span><br><span class="line">    <span class="comment">//省略代码若干...</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> &lt;T extends SwipeConsumer&gt; <span class="function">T <span class="title">addConsumer</span><span class="params">(T consumer)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (consumer != <span class="keyword">null</span>) &#123;</span><br><span class="line">            mConsumer = consumer;</span><br><span class="line">            mHelper = SwipeHelper.create(<span class="keyword">this</span>, consumer.getSensitivity(), consumer, consumer.getInterpolator());</span><br><span class="line">            <span class="comment">//省略代码若干...</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> consumer;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>于是，SmartSwipeWrapper、SwipeHelper 和 SwipeConsumer三者就建立起了关联</p>
+<h4 id="2-在SwipeHelper中拦截touch事件并"><a href="#2-在SwipeHelper中拦截touch事件并" class="headerlink" title="2. 在SwipeHelper中拦截touch事件并"></a>2. 在SwipeHelper中拦截touch事件并</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SwipeHelper</span> </span>&#123;</span><br><span class="line">    <span class="comment">//当前SwipeHelper关联的SwipeConsumer对象</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> SwipeConsumer mSwipeConsumer;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//当前X轴的侧滑距离</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> mClampedDistanceX;</span><br><span class="line">    <span class="comment">//当前Y轴的侧滑距离</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> mClampedDistanceY;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//省略代码若干...</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">shouldInterceptTouchEvent</span><span class="params">(MotionEvent ev)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">int</span> action = ev.getActionMasked();</span><br><span class="line">        <span class="comment">//省略代码若干...</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">switch</span> (action) &#123;</span><br><span class="line">            <span class="keyword">case</span> MotionEvent.ACTION_DOWN: &#123;</span><br><span class="line">                <span class="comment">//省略代码若干...</span></span><br><span class="line">                <span class="keyword">if</span> (mDragState == STATE_SETTLING || mDragState == STATE_NONE_TOUCH) &#123;</span><br><span class="line">                    trySwipe(pointerId, <span class="keyword">true</span>, x, y, <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">case</span> MotionEvent.ACTION_POINTER_DOWN: &#123;</span><br><span class="line">                <span class="comment">//省略代码若干...</span></span><br><span class="line">                <span class="keyword">if</span> (mDragState == STATE_SETTLING || mDragState == STATE_NONE_TOUCH) &#123;</span><br><span class="line">                    trySwipe(pointerId, <span class="keyword">true</span>, x, y, <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">case</span> MotionEvent.ACTION_MOVE: &#123;</span><br><span class="line">                <span class="comment">//省略代码若干...</span></span><br><span class="line">                <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; ev.getPointerCount(); i++) &#123;</span><br><span class="line">                    <span class="comment">//省略代码若干...</span></span><br><span class="line">                    <span class="keyword">if</span> (trySwipe(pointerId, <span class="keyword">false</span>, downX, downY, dx, dy)) &#123;</span><br><span class="line">                        <span class="keyword">break</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//省略代码若干...</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> mDragState == STATE_DRAGGING;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">processTouchEvent</span><span class="params">(MotionEvent ev)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">int</span> action = ev.getActionMasked();</span><br><span class="line">        <span class="comment">//省略代码若干...</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">switch</span> (action) &#123;</span><br><span class="line">            <span class="keyword">case</span> MotionEvent.ACTION_DOWN: &#123;</span><br><span class="line">                <span class="comment">//省略代码若干...</span></span><br><span class="line">                trySwipe(pointerId, mDragState == STATE_SETTLING || mDragState == STATE_NONE_TOUCH, x, y, <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">case</span> MotionEvent.ACTION_POINTER_DOWN: &#123;</span><br><span class="line">                <span class="comment">//省略代码若干...</span></span><br><span class="line">                trySwipe(pointerId, <span class="keyword">true</span>, x, y, <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">case</span> MotionEvent.ACTION_MOVE: &#123;</span><br><span class="line">                <span class="keyword">if</span> (mDragState == STATE_DRAGGING) &#123;</span><br><span class="line">                    <span class="comment">//省略代码若干...</span></span><br><span class="line">                    dragTo(mClampedDistanceX + idx, mClampedDistanceY + idy, idx, idy);</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; pointerCount; i++) &#123;</span><br><span class="line">                        <span class="comment">//省略代码若干...</span></span><br><span class="line">                        <span class="keyword">if</span> (trySwipe(pointerId, <span class="keyword">false</span>, downX, downY, dx, dy)) &#123;</span><br><span class="line">                            <span class="keyword">break</span>;</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                    saveLastMotion(ev);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">case</span> MotionEvent.ACTION_POINTER_UP: &#123;</span><br><span class="line">                <span class="keyword">final</span> <span class="keyword">int</span> pointerId = ev.getPointerId(actionIndex);</span><br><span class="line">                <span class="keyword">if</span> (mDragState == STATE_DRAGGING &amp;&amp; pointerId == mActivePointerId) &#123;</span><br><span class="line">                    <span class="comment">//省略代码若干...</span></span><br><span class="line">                    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; pointerCount; i++) &#123;</span><br><span class="line">                        <span class="comment">//省略代码若干...</span></span><br><span class="line">                        <span class="keyword">if</span> (trySwipe(id, <span class="keyword">true</span>, mInitialMotionX[id], mInitialMotionX[id], <span class="number">0</span>, <span class="number">0</span>)) &#123;</span><br><span class="line">                            newActivePointer = mActivePointerId;</span><br><span class="line">                            <span class="keyword">break</span>;</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="comment">//省略代码若干...</span></span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//省略代码若干...</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">trySwipe</span><span class="params">(<span class="keyword">int</span> pointerId, <span class="keyword">boolean</span> settling, <span class="keyword">float</span> downX, <span class="keyword">float</span> downY, <span class="keyword">float</span> dx, <span class="keyword">float</span> dy)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//省略代码若干...</span></span><br><span class="line">        <span class="keyword">boolean</span> swipe;</span><br><span class="line">        <span class="keyword">if</span> (settling) &#123;</span><br><span class="line">            <span class="comment">//释放后，动画播放时，手指再次出发侧滑，判断是否捕获</span></span><br><span class="line">            swipe = mSwipeConsumer.tryAcceptSettling(pointerId, downX, downY);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">//通过滑动位置及距离来决定是否捕获touch事件作为侧滑</span></span><br><span class="line">            swipe = mSwipeConsumer.tryAcceptMoving(pointerId, downX, downY, dx, dy);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (swipe) &#123;</span><br><span class="line">            <span class="comment">//省略代码若干...</span></span><br><span class="line">            </span><br><span class="line">            <span class="comment">//确定捕获成功，后续将由mSwipeConsumer来消费侧滑事件</span></span><br><span class="line">            <span class="comment">//可以在onSwipeAccepted方法中进行一些准备工作</span></span><br><span class="line">            mSwipeConsumer.onSwipeAccepted(pointerId, settling, initX, initY);</span><br><span class="line">            <span class="comment">//初始化侧滑距离</span></span><br><span class="line">            mClampedDistanceX = mSwipeConsumer.clampDistanceHorizontal(<span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">            mClampedDistanceY = mSwipeConsumer.clampDistanceVertical(<span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">            setDragState(STATE_DRAGGING);</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//省略代码若干...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>SwipeHelper的主要职能就是进行touch事件拦截，通过接管SmartSwipeWrapper的onInterceptTouchEvent和onTouchEvent，在<code>ACTION_DOWN</code>、<code>ACTION_MOVE</code>等touch事件触发时，通过trySwipe将touch事件的状态交给SwipeConsumer来决定是否捕获本次touch事件。</p>
+<p>SwipeConsumer决定捕获touch事件作为侧滑手势后，其onSwipeAccepted方法会被调用，在此处可以为本次侧滑做一些准备工作</p>
+<h4 id="3-由SwipeConsumer来决定是否消费以及如何消费touch事件"><a href="#3-由SwipeConsumer来决定是否消费以及如何消费touch事件" class="headerlink" title="3. 由SwipeConsumer来决定是否消费以及如何消费touch事件"></a>3. 由SwipeConsumer来决定是否消费以及如何消费touch事件</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">SwipeConsumer</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">int</span> mDirection;</span><br><span class="line">    <span class="comment">//省略代码若干...</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/** 在释放动画播放状态或者多指交替滑动状态判断是否捕获（是否消费本次滑动事件） */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">tryAcceptSettling</span><span class="params">(<span class="keyword">int</span> pointerId, <span class="keyword">float</span> downX, <span class="keyword">float</span> downY)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//省略代码若干...</span></span><br><span class="line">        <span class="keyword">return</span> isDirectionEnable(mDirection) &amp;&amp; !isDirectionLocked(mDirection);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** 静止状态下根据移动距离来判断是否捕获（是否消费本次滑动事件） */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">tryAcceptMoving</span><span class="params">(<span class="keyword">int</span> pointerId, <span class="keyword">float</span> downX, <span class="keyword">float</span> downY, <span class="keyword">float</span> dx, <span class="keyword">float</span> dy)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//省略代码若干...</span></span><br><span class="line">        <span class="keyword">int</span> dir = DIRECTION_NONE;</span><br><span class="line">        <span class="keyword">boolean</span> handle = <span class="keyword">false</span>;</span><br><span class="line">        <span class="keyword">if</span> (Math.abs(dx) &gt; Math.abs(dy)) &#123;</span><br><span class="line">            <span class="keyword">if</span> (dx &gt; <span class="number">0</span> &amp;&amp; isLeftEnable()) &#123;</span><br><span class="line">                dir = DIRECTION_LEFT;</span><br><span class="line">                handle = <span class="keyword">true</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (dx &lt; <span class="number">0</span> &amp;&amp; isRightEnable()) &#123;</span><br><span class="line">                dir = DIRECTION_RIGHT;</span><br><span class="line">                handle = <span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (dy &gt; <span class="number">0</span> &amp;&amp; isTopEnable()) &#123;</span><br><span class="line">                dir = DIRECTION_TOP;</span><br><span class="line">                handle = <span class="keyword">true</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (dy &lt; <span class="number">0</span> &amp;&amp; isBottomEnable()) &#123;</span><br><span class="line">                dir = DIRECTION_BOTTOM;</span><br><span class="line">                handle = <span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//省略代码若干...</span></span><br><span class="line">        <span class="keyword">if</span> (handle) &#123;</span><br><span class="line">            <span class="keyword">if</span> (isDirectionLocked(dir)) &#123;</span><br><span class="line">                handle = <span class="keyword">false</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                mDirection = dir;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> handle;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>SwipeConsumer根据自身的设置（侧滑方向是否启用、是否被锁定等设定）及touch事件的坐标和方向来决定是否捕获本次touch事件作为侧滑事件来进行消费。</p>
+<p>接下来看看SwipeConsumer是如何消费侧滑距离的</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">SwipeConsumer</span> </span>&#123;</span><br><span class="line">    <span class="comment">//省略代码若干...</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">//消费侧滑距离</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onSwipeDistanceChanged</span><span class="params">(<span class="keyword">int</span> clampedDistanceX, <span class="keyword">int</span> clampedDistanceY, <span class="keyword">int</span> dx, <span class="keyword">int</span> dy)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//省略代码若干...</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment">//侧滑距离确实发生了变化</span></span><br><span class="line">        <span class="keyword">if</span> (clampedDistanceX != mCurSwipeDistanceX || clampedDistanceY != mCurSwipeDistanceY) &#123;</span><br><span class="line">            <span class="comment">//记录实际侧滑的距离</span></span><br><span class="line">            mCurSwipeDistanceX = clampedDistanceX;</span><br><span class="line">            mCurSwipeDistanceY = clampedDistanceY;</span><br><span class="line">            <span class="comment">//省略代码若干...</span></span><br><span class="line">            </span><br><span class="line">            <span class="comment">//计算侧滑进度： 当前侧滑距离 / 最大侧滑距离</span></span><br><span class="line">            <span class="keyword">switch</span> (mDirection) &#123;</span><br><span class="line">                <span class="keyword">case</span> DIRECTION_LEFT: <span class="keyword">case</span> DIRECTION_RIGHT:</span><br><span class="line">                    mProgress = Math.abs((<span class="keyword">float</span>) mCurSwipeDistanceX / mSwipeOpenDistance);</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                <span class="keyword">case</span> DIRECTION_TOP: <span class="keyword">case</span> DIRECTION_BOTTOM:</span><br><span class="line">                    mProgress = Math.abs((<span class="keyword">float</span>) mCurSwipeDistanceY / mSwipeOpenDistance);</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                <span class="keyword">default</span>:</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> ((mDirection &amp; DIRECTION_HORIZONTAL) &gt; <span class="number">0</span>) &#123; <span class="comment">//横向侧滑</span></span><br><span class="line">                <span class="keyword">int</span> realDistanceX = clampedDistanceX;</span><br><span class="line">                <span class="keyword">if</span> (mSwipeDistanceCalculator != <span class="keyword">null</span>) &#123; <span class="comment">//设置了侧滑距离计算器</span></span><br><span class="line">                    <span class="comment">//用侧滑距离计算器对当前侧滑距离进行加工</span></span><br><span class="line">                    realDistanceX = mSwipeDistanceCalculator.calculateSwipeDistance(clampedDistanceX, mProgress);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="comment">//计算出用于UI展示的侧滑距离以及delta值</span></span><br><span class="line">                dx = realDistanceX - mCurDisplayDistanceX;</span><br><span class="line">                dy = <span class="number">0</span>;</span><br><span class="line">                mCurDisplayDistanceX = realDistanceX;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> ((mDirection &amp; DIRECTION_VERTICAL) &gt; <span class="number">0</span>) &#123;</span><br><span class="line">                <span class="keyword">int</span> realDistanceY = clampedDistanceY;</span><br><span class="line">                <span class="keyword">if</span> (mSwipeDistanceCalculator != <span class="keyword">null</span>) &#123;</span><br><span class="line">                    realDistanceY = mSwipeDistanceCalculator.calculateSwipeDistance(clampedDistanceY, mProgress);</span><br><span class="line">                &#125;</span><br><span class="line">                dx = <span class="number">0</span>;</span><br><span class="line">                dy = realDistanceY - mCurDisplayDistanceY;</span><br><span class="line">                mCurDisplayDistanceY = realDistanceY;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//将加工后的侧滑距离用于UI展示，该方法为抽象方法，在子类中实现</span></span><br><span class="line">            onDisplayDistanceChanged(mCurDisplayDistanceX, mCurDisplayDistanceY, dx, dy);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//省略代码若干...</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 定义了一个抽象方法</span></span><br><span class="line"><span class="comment">     * 子类根据加工后的侧滑距离来进行UI展示</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">onDisplayDistanceChanged</span><span class="params">(<span class="keyword">int</span> distanceXToDisplay, <span class="keyword">int</span> distanceYToDisplay, <span class="keyword">int</span> dx, <span class="keyword">int</span> dy)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>子类中实现<code>onDisplayDistanceChanged</code>抽象方法，在这个方法中根据侧滑距离来进行UI展示即可。</p>
+<p>通过以上分析可知：侧滑的<strong>定性</strong>（能否及是否捕获）、<strong>定向</strong>（捕获的事件所触发的侧滑方向）和<strong>定量</strong>（事件捕获之后在侧滑方向上移动的距离）的工作都在SwipeConsumer这个基类中完成了，具体的侧滑效果只需在子类实现的<code>onDisplayDistanceChanged</code>方法中完成即可。</p>
+<p>然而，很多侧滑效果需要在控件的layout和draw的层面做些修改</p>
+<h4 id="4-SwipeConsumer的onLayout、onDraw和dispatchDraw"><a href="#4-SwipeConsumer的onLayout、onDraw和dispatchDraw" class="headerlink" title="4. SwipeConsumer的onLayout、onDraw和dispatchDraw"></a>4. SwipeConsumer的onLayout、onDraw和dispatchDraw</h4><p>SmartSwipeWrapper默认状态下它只有1个子控件：<code>contentView</code>，如果侧滑效果需要添加其它子控件（例如：滑动抽屉），则由具体的侧滑策略类（SwipeConsumer的子类）来完成layout；同理，SwipeConsumer也可以接受到draw相关的回调</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SmartSwipeWrapper</span> <span class="keyword">extends</span> <span class="title">ViewGroup</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">protected</span> SwipeConsumer mConsumer;</span><br><span class="line">    <span class="keyword">protected</span> View mContentView;</span><br><span class="line">    <span class="comment">//省略代码若干...</span></span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">dispatchDraw</span><span class="params">(Canvas canvas)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.dispatchDraw(canvas);</span><br><span class="line">        <span class="keyword">if</span> (mConsumer != <span class="keyword">null</span>) &#123;</span><br><span class="line">            mConsumer.dispatchDraw(canvas);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onDraw</span><span class="params">(Canvas canvas)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onDraw(canvas);</span><br><span class="line">        <span class="keyword">if</span> (mConsumer != <span class="keyword">null</span>) &#123;</span><br><span class="line">            mConsumer.onDraw(canvas);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onMeasure</span><span class="params">(<span class="keyword">int</span> widthMeasureSpec, <span class="keyword">int</span> heightMeasureSpec)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//省略代码若干...</span></span><br><span class="line">        <span class="keyword">if</span> (mConsumer != <span class="keyword">null</span>) &#123;</span><br><span class="line">            mConsumer.onMeasure(widthMeasureSpec, heightMeasureSpec);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onLayout</span><span class="params">(<span class="keyword">boolean</span> changed, <span class="keyword">int</span> left, <span class="keyword">int</span> top, <span class="keyword">int</span> right, <span class="keyword">int</span> bottom)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">boolean</span> layoutByConsumer = <span class="keyword">false</span>;</span><br><span class="line">        <span class="keyword">if</span> (mConsumer != <span class="keyword">null</span>) &#123;</span><br><span class="line">            layoutByConsumer = mConsumer.onLayout(changed, left, top, right, bottom);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (!layoutByConsumer) &#123;</span><br><span class="line">            <span class="comment">//默认的布局方式：只布局contentView即可</span></span><br><span class="line">            <span class="keyword">if</span> (mContentView != <span class="keyword">null</span>) &#123;</span><br><span class="line">                mContentView.layout(<span class="number">0</span>, <span class="number">0</span>, mContentView.getMeasuredWidth(), mContentView.getMeasuredHeight());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="你讲累了，我也看累了，是时候总结一下了"><a href="#你讲累了，我也看累了，是时候总结一下了" class="headerlink" title="你讲累了，我也看累了，是时候总结一下了"></a>你讲累了，我也看累了，是时候总结一下了</h2><p>SmartSwipe是一个侧滑处理框架，而非某种具体的侧滑效果，虽然它内部提供了十多种常见的侧滑效果。</p>
+<p>我们也可以用它来实现更多更复杂的侧滑效果。 也可以用这些效果来实现一些很有意思的功能（例如：demo中用不同的侧滑效果来制作封面、侧滑删除、下拉刷新等）</p>
+<p>至此，SmartSwipe框架的介绍、功能演示以及核心工作流程已介绍完毕。由于篇幅有限，介绍的比较简略，可以按照下方的连接地址查看源码及采用gitbook形式精心编写而成的文档教程：</p>
+<p>源码： <a href="https://github.com/luckybilly/SmartSwipe" target="_blank" rel="noopener">https://github.com/luckybilly/SmartSwipe</a> </p>
+<p>文档： <a href="https://luckybilly.github.io/SmartSwipe-tutorial/" target="_blank" rel="noopener">https://luckybilly.github.io/SmartSwipe-tutorial/</a> (采用gitbook形式精心编写而成)</p>
+<p>Demo下载: <a href="https://github.com/luckybilly/SmartSwipe/raw/master/app-release.apk" target="_blank" rel="noopener">https://github.com/luckybilly/SmartSwipe/raw/master/app-release.apk</a></p>
+<p>最后：从我的github主页中也许能发现更多你感兴趣的项目哦 :)  <a href="https://github.com/luckybilly" target="_blank" rel="noopener">https://github.com/luckybilly</a></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+      <div>
+        <div id="reward-container">
+  <div>请作者喝咖啡~</div>
+  <button id="reward-button" disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+
+    
+      
+      
+        
+      
+      <div style="display: inline-block">
+        <img src="/images/shoukuan_wechat.png" alt="齐翊 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+      
+      
+        
+      
+      <div style="display: inline-block">
+        <img src="/images/shoukuan_alipay.png" alt="齐翊 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/侧滑/" rel="tag"># 侧滑</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/posts/os_gloading.html" rel="next" title="我们经常用的Loading动画居然还有这种姿势">
+                <i class="fa fa-chevron-left"></i> 我们经常用的Loading动画居然还有这种姿势
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://avatars3.githubusercontent.com/u/4155835?s=460&v=4" alt="齐翊">
+            
+              <p class="site-author-name" itemprop="name">齐翊</p>
+              <div class="site-description motion-element" itemprop="description">Android组件化 开源框架 CC/SmartSwipe/Gloading/PreLoader/AutoRegister...</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">14</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">9</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/luckybilly" title="GitHub &rarr; https://github.com/luckybilly" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:qiyilike@163.com" title="E-Mail &rarr; mailto:qiyilike@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://twitter.com/lucky_billy_05" title="Twitter &rarr; https://twitter.com/lucky_billy_05" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://juejin.im/user/5a0af10c6fb9a045186a423f/posts" title="掘金 &rarr; https://juejin.im/user/5a0af10c6fb9a045186a423f/posts" rel="noopener" target="_blank"><i class="fa fa-fw fa-spinner"></i>掘金</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一个框架解决所有侧滑需求？你确定不是在开玩笑？"><span class="nav-number">2.</span> <span class="nav-text">一个框架解决所有侧滑需求？你确定不是在开玩笑？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#说的那么玄乎，到底咋弄？"><span class="nav-number">3.</span> <span class="nav-text">说的那么玄乎，到底咋弄？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#别扯那些没用的，赶紧讲侧滑"><span class="nav-number">4.</span> <span class="nav-text">别扯那些没用的，赶紧讲侧滑</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于侧滑，有这一个就够了"><span class="nav-number">5.</span> <span class="nav-text">关于侧滑，有这一个就够了</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-一行代码让页面动起来"><span class="nav-number">5.0.1.</span> <span class="nav-text">1. 一行代码让页面动起来</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-一行代码让页面具有弹性"><span class="nav-number">5.0.2.</span> <span class="nav-text">2. 一行代码让页面具有弹性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-一行代码添加滑动抽屉"><span class="nav-number">5.0.3.</span> <span class="nav-text">3. 一行代码添加滑动抽屉</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-一行代码添加带联动效果的滑动抽屉"><span class="nav-number">5.0.4.</span> <span class="nav-text">4. 一行代码添加带联动效果的滑动抽屉</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-一行代码添加滑动透明效果"><span class="nav-number">5.0.5.</span> <span class="nav-text">5. 一行代码添加滑动透明效果</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-一行代码添加侧滑手势识别功能"><span class="nav-number">5.0.6.</span> <span class="nav-text">6. 一行代码添加侧滑手势识别功能</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-一行代码添加百叶窗效果"><span class="nav-number">5.0.7.</span> <span class="nav-text">7. 一行代码添加百叶窗效果</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#8-一行代码添加开门效果"><span class="nav-number">5.0.8.</span> <span class="nav-text">8. 一行代码添加开门效果</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#9-一行代码添加贝塞尔曲线返回效果"><span class="nav-number">5.0.9.</span> <span class="nav-text">9. 一行代码添加贝塞尔曲线返回效果</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#10-一行代码添加仿微信Activity联动侧滑返回效果"><span class="nav-number">5.0.10.</span> <span class="nav-text">10. 一行代码添加仿微信Activity联动侧滑返回效果</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#11-一行代码添加Activity百叶窗侧滑返回效果"><span class="nav-number">5.0.11.</span> <span class="nav-text">11. 一行代码添加Activity百叶窗侧滑返回效果</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#12-一行代码添加Activity开门侧滑返回效果"><span class="nav-number">5.0.12.</span> <span class="nav-text">12. 一行代码添加Activity开门侧滑返回效果</span></a></li></ol></li></ol><li class="nav-item nav-level-2"><a class="nav-link" href="#怎么都是一行代码？还敢不敢再来点？"><span class="nav-number">6.</span> <span class="nav-text">怎么都是一行代码？还敢不敢再来点？</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#一行代码实现全局Activity侧滑返回"><span class="nav-number">6.0.1.</span> <span class="nav-text">一行代码实现全局Activity侧滑返回</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#一行代码添加下拉刷新功能"><span class="nav-number">6.0.2.</span> <span class="nav-text">一行代码添加下拉刷新功能</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#看起来是蛮diao的，可是我要的侧滑效果你这里没有啊"><span class="nav-number">7.</span> <span class="nav-text">看起来是蛮diǎo的，可是我要的侧滑效果你这里没有啊</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#这样看来，也许还真能实现所有侧滑效果诶？"><span class="nav-number">8.</span> <span class="nav-text">这样看来，也许还真能实现所有侧滑效果诶？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#怎么做到的呢？"><span class="nav-number">9.</span> <span class="nav-text">怎么做到的呢？</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-将SmartSwipeWrapper、SwipeHelper和SwipeConsumer三者关联起来"><span class="nav-number">9.0.1.</span> <span class="nav-text">1. 将SmartSwipeWrapper、SwipeHelper和SwipeConsumer三者关联起来</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-在SwipeHelper中拦截touch事件并"><span class="nav-number">9.0.2.</span> <span class="nav-text">2. 在SwipeHelper中拦截touch事件并</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-由SwipeConsumer来决定是否消费以及如何消费touch事件"><span class="nav-number">9.0.3.</span> <span class="nav-text">3. 由SwipeConsumer来决定是否消费以及如何消费touch事件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-SwipeConsumer的onLayout、onDraw和dispatchDraw"><span class="nav-number">9.0.4.</span> <span class="nav-text">4. SwipeConsumer的onLayout、onDraw和dispatchDraw</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#你讲累了，我也看累了，是时候总结一下了"><span class="nav-number">10.</span> <span class="nav-text">你讲累了，我也看累了，是时候总结一下了</span></a></li></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">齐翊</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+  <script>
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=66402348";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+<script type="text/javascript">
+var cnzz_s_tag =document.createElement('script');
+
+cnzz_s_tag.type ='text/javascript';
+
+cnzz_s_tag.async =true;
+
+cnzz_s_tag.charset= 'utf-8';
+
+cnzz_s_tag.src ='//w.cnzz.com/c.php?id=1277380255&async=1';
+
+var root_s = document.getElementsByTagName('script')[0];
+
+root_s.parentNode.insertBefore(cnzz_s_tag,root_s);
+
+</script>
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.0"></script>
+
+  <script src="/js/motion.js?v=7.1.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.0"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.0"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.0"></script>
+<script src="/js/post-details.js?v=7.1.0"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.0"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+    <!-- LOCAL: You can save these files to your site and update links -->
+
+  
+  <script src="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/gitment.browser.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/default.css">
+<!-- END LOCAL -->
+
+<script>
+  function renderGitment() {
+    var gitment = new Gitment({
+      id: window.location.pathname,
+      owner: 'luckybilly',
+      repo: 'luckybilly.github.io',
+      
+      oauth: {
+      
+      
+        client_secret: '8c3ab2fab44d17832cef8807a6424e687a547e13',
+      
+        client_id: '91f7f5b19d003a84ea17'
+      }
+    });
+    gitment.render('gitment-container');
+  }
+
+  
+    renderGitment();
+  
+</script>
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+  
+  <script src="/lib/bookmark/bookmark.min.js?v=1.0"></script>
+  <script>
+  
+    bookmark.scrollToMark('auto', "#更多");
+  
+  </script>
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

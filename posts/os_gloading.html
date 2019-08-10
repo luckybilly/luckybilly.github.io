@@ -112,7 +112,7 @@
 <meta property="og:image" content="https://github.com/luckybilly/Gloading/raw/master/image/en_wrap_scroll_view.gif">
 <meta property="og:image" content="https://github.com/luckybilly/Gloading/raw/master/image/en_wrap_grid_view.gif">
 <meta property="og:image" content="https://github.com/luckybilly/Gloading/raw/master/image/en_wrap_recycler_view.gif">
-<meta property="og:updated_time" content="2019-04-30T03:47:31.000Z">
+<meta property="og:updated_time" content="2019-08-10T09:09:16.939Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="我们经常用的Loading动画居然还有这种姿势">
 <meta name="twitter:description" content="Gloading效果演示为Activity添加加载状态   加载成功 加载失败点击重试 加载成功无数据 个别页面使用特殊的Loading视图            为View添加加载状态   单个View 多个View 用于GridView 用于RecyclerView并且不显示文字            背景Loading动画几乎每个Android App中都有。 一般在需要用户等待的场景，显示">
@@ -376,24 +376,12 @@
                 
               
 
-              <time title="创建时间：2019-03-23 12:18:21" itemprop="dateCreated datePublished" datetime="2019-03-23T12:18:21+08:00">2019-03-23</time>
+              <time title="创建时间：2019-08-10 16:51:01 / 修改时间：17:09:16" itemprop="dateCreated datePublished" datetime="2019-08-10T16:51:01+08:00">2019-08-10</time>
             
 
             
               
 
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-04-30 11:47:31" itemprop="dateModified" datetime="2019-04-30T11:47:31+08:00">2019-04-30</time>
               
             
           </span>
@@ -433,6 +421,13 @@
           
           
 
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
           
 
           
@@ -558,7 +553,7 @@
 <figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">compile <span class="string">'com.billy.android:gloading:1.0.0'</span></span><br></pre></td></tr></table></figure>
 <p>2、 创建<code>Adapter</code>，在<code>getView</code>方法中实现创建各种状态视图（加载中、加载失败、空数据等）的逻辑</p>
 <p>Gloading不侵入UI布局，完全由用户自定义。示例如下：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GlobalAdapter</span> <span class="keyword">implements</span> <span class="title">Gloading</span>.<span class="title">Adapter</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> View <span class="title">getView</span><span class="params">(Gloading.Holder holder, View convertView, <span class="keyword">int</span> status)</span> </span>&#123;</span><br><span class="line">        GlobalLoadingStatusView loadingStatusView = <span class="keyword">null</span>;</span><br><span class="line">        <span class="comment">//convertView为可重用的布局</span></span><br><span class="line">        <span class="comment">//Holder中缓存了各状态下对应的View</span></span><br><span class="line">        <span class="comment">//	如果status对应的View为null，则convertView为上一个状态的View</span></span><br><span class="line">        <span class="comment">//	如果上一个状态的View也为null，则convertView为null</span></span><br><span class="line">        <span class="keyword">if</span> (convertView != <span class="keyword">null</span> &amp;&amp; convertView <span class="keyword">instanceof</span> GlobalLoadingStatusView) &#123;</span><br><span class="line">            loadingStatusView = (GlobalLoadingStatusView) convertView;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (loadingStatusView == <span class="keyword">null</span>) &#123;</span><br><span class="line">            loadingStatusView = <span class="keyword">new</span> GlobalLoadingStatusView(holder.getContext(), holder.getRetryTask());</span><br><span class="line">        &#125;</span><br><span class="line">        loadingStatusView.setStatus(status);</span><br><span class="line">        <span class="keyword">return</span> loadingStatusView;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">GlobalLoadingStatusView</span> <span class="keyword">extends</span> <span class="title">RelativeLayout</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">GlobalLoadingStatusView</span><span class="params">(Context context, Runnable retryTask)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">super</span>(context);</span><br><span class="line">            <span class="comment">//初始化LoadingView</span></span><br><span class="line">            <span class="comment">//如果需要支持点击重试，在适当的时机给对应的控件添加点击事件</span></span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setStatus</span><span class="params">(<span class="keyword">int</span> status)</span> </span>&#123;</span><br><span class="line">            <span class="comment">//设置当前的加载状态：加载中、加载失败、空数据等</span></span><br><span class="line">            <span class="comment">//其中，加载失败可判断当前是否联网，可现实无网络的状态</span></span><br><span class="line">            <span class="comment">//		属于加载失败状态下的一个分支,可自行决定是否实现</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GlobalAdapter</span> <span class="keyword">implements</span> <span class="title">Gloading</span>.<span class="title">Adapter</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> View <span class="title">getView</span><span class="params">(Gloading.Holder holder, View convertView, <span class="keyword">int</span> status)</span> </span>&#123;</span><br><span class="line">        GlobalLoadingStatusView loadingStatusView = <span class="keyword">null</span>;</span><br><span class="line">        <span class="comment">//convertView为可重用的布局</span></span><br><span class="line">        <span class="comment">//Holder中缓存了各状态下对应的View</span></span><br><span class="line">        <span class="comment">//  如果status对应的View为null，则convertView为上一个状态的View</span></span><br><span class="line">        <span class="comment">//  如果上一个状态的View也为null，则convertView为null</span></span><br><span class="line">        <span class="keyword">if</span> (convertView != <span class="keyword">null</span> &amp;&amp; convertView <span class="keyword">instanceof</span> GlobalLoadingStatusView) &#123;</span><br><span class="line">            loadingStatusView = (GlobalLoadingStatusView) convertView;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (loadingStatusView == <span class="keyword">null</span>) &#123;</span><br><span class="line">            loadingStatusView = <span class="keyword">new</span> GlobalLoadingStatusView(holder.getContext(), holder.getRetryTask());</span><br><span class="line">        &#125;</span><br><span class="line">        loadingStatusView.setStatus(status);</span><br><span class="line">        <span class="keyword">return</span> loadingStatusView;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">GlobalLoadingStatusView</span> <span class="keyword">extends</span> <span class="title">RelativeLayout</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">GlobalLoadingStatusView</span><span class="params">(Context context, Runnable retryTask)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">super</span>(context);</span><br><span class="line">            <span class="comment">//初始化LoadingView</span></span><br><span class="line">            <span class="comment">//如果需要支持点击重试，在适当的时机给对应的控件添加点击事件</span></span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setStatus</span><span class="params">(<span class="keyword">int</span> status)</span> </span>&#123;</span><br><span class="line">            <span class="comment">//设置当前的加载状态：加载中、加载失败、空数据等</span></span><br><span class="line">            <span class="comment">//其中，加载失败可判断当前是否联网，可现实无网络的状态</span></span><br><span class="line">            <span class="comment">//      属于加载失败状态下的一个分支,可自行决定是否实现</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>3、 初始化<code>Gloading</code>的默认<code>Adapter</code></p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Gloading.initDefault(<span class="keyword">new</span> GlobalAdapter());</span><br></pre></td></tr></table></figure>
 <p><strong>注：可以用<a href="https://github.com/luckybilly/AutoRegister" target="_blank" rel="noopener">AutoRegister</a>在Gloading类装载进虚拟机时自动完成初始化注册，无需在app层执行注册，耦合度更低</strong></p>
@@ -585,7 +580,7 @@
 <ul>
 <li>修改根目录build.gradle，添加对AutoRegister的依赖</li>
 </ul>
-<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">buildscript &#123;</span><br><span class="line">	<span class="comment">//...</span></span><br><span class="line">    dependencies &#123;</span><br><span class="line">    	<span class="comment">//...</span></span><br><span class="line">    	classpath <span class="string">'com.billy.android:autoregister:使用最新版'</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">buildscript &#123;</span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">    dependencies &#123;</span><br><span class="line">        <span class="comment">//...</span></span><br><span class="line">        classpath <span class="string">'com.billy.android:autoregister:使用最新版'</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <ul>
 <li>修改主application module下的build.gradle，添加如下代码即可实现Adapter的自动注册</li>
 </ul>
@@ -661,8 +656,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/posts/os_smart_swipe.html" rel="next" title="Android侧滑原来可以这么优雅">
-                <i class="fa fa-chevron-left"></i> Android侧滑原来可以这么优雅
+              <a href="/posts/python_properties.html" rel="next" title="Python读写properties文件">
+                <i class="fa fa-chevron-left"></i> Python读写properties文件
               </a>
             
           </div>
@@ -671,8 +666,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/posts/os_autoregister.html" rel="prev" title="AutoRegister:Android模块解耦利器">
-                AutoRegister:Android模块解耦利器 <i class="fa fa-chevron-right"></i>
+              <a href="/posts/os_smartswipe.html" rel="prev" title="Android侧滑原来可以这么优雅">
+                Android侧滑原来可以这么优雅 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -945,6 +940,32 @@
 
 
         
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
 
 
 
