@@ -1678,6 +1678,203 @@ Fragment子类：路由库根据字符串从映射表中获取对应的Fr
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://qibilly.com/posts/cc_practice_3.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="齐翊">
+      <meta itemprop="description" content="Android组件化 开源框架 CC/SmartSwipe/Gloading/PreLoader/AutoRegister...">
+      <meta itemprop="image" content="https://avatars3.githubusercontent.com/u/4155835?s=460&v=4">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Billy">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/posts/cc_practice_3.html" class="post-title-link" itemprop="url">CC框架实践(3): 让jsBridge更优雅</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-01-30 16:30:03" itemprop="dateCreated datePublished" datetime="2019-01-30T16:30:03+08:00">2019-01-30</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-04-30 11:35:27" itemprop="dateModified" datetime="2019-04-30T11:35:27+08:00">2019-04-30</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Android/开源项目/" itemprop="url" rel="index"><span itemprop="name">开源项目</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>
+              前言jsBridge是作为js和java之间通信的桥梁，本身它的职责只是完成通信。
+本文不是介绍js与java通信过程的实现，你可以使用第三方库（如：JsBridge），也可以自己来实现，或者用addJavascriptInterface，都可以。本文的侧重点是如何让我们的jsBridge不那么臃肿，实现得更优雅，更利于维护。
+但在实际封装过程中，会发现需要我们需要解决很多耦合的问题：
+
+js调用的功能在其他module中，如何调用到这些功能，如何向jsbridge注册这些功能？
+jsbridge依赖了太多module，怎么解耦？
+当js调用的功能是打开其它页面获取该页面处理后的结果并回调给js，怎么破？ onResume? startActivityForResult? 一个常见的场景是：打开登录界面，登录成功后将用户信息回调给js。你是不是想过这样做？
+jsBridge中封装一个Act
+              ...
+            </p>
+          <!--noindex-->
+          
+            <div class="post-button text-center">
+              <a class="btn" href="/posts/cc_practice_3.html#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://qibilly.com/posts/cc_practice_4.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1827,203 +2024,6 @@ Fragment子类：路由库根据字符串从映射表中获取对应的Fr
           
             <div class="post-button text-center">
               <a class="btn" href="/posts/cc_practice_4.html#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://qibilly.com/posts/cc_practice_3.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="齐翊">
-      <meta itemprop="description" content="Android组件化 开源框架 CC/SmartSwipe/Gloading/PreLoader/AutoRegister...">
-      <meta itemprop="image" content="https://avatars3.githubusercontent.com/u/4155835?s=460&v=4">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Billy">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/posts/cc_practice_3.html" class="post-title-link" itemprop="url">CC框架实践(3): 让jsBridge更优雅</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-01-30 16:30:03" itemprop="dateCreated datePublished" datetime="2019-01-30T16:30:03+08:00">2019-01-30</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-04-30 11:35:27" itemprop="dateModified" datetime="2019-04-30T11:35:27+08:00">2019-04-30</time>
-              
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a></span>
-
-                
-                
-                  ，
-                
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Android/开源项目/" itemprop="url" rel="index"><span itemprop="name">开源项目</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>
-              前言jsBridge是作为js和java之间通信的桥梁，本身它的职责只是完成通信。
-本文不是介绍js与java通信过程的实现，你可以使用第三方库（如：JsBridge），也可以自己来实现，或者用addJavascriptInterface，都可以。本文的侧重点是如何让我们的jsBridge不那么臃肿，实现得更优雅，更利于维护。
-但在实际封装过程中，会发现需要我们需要解决很多耦合的问题：
-
-js调用的功能在其他module中，如何调用到这些功能，如何向jsbridge注册这些功能？
-jsbridge依赖了太多module，怎么解耦？
-当js调用的功能是打开其它页面获取该页面处理后的结果并回调给js，怎么破？ onResume? startActivityForResult? 一个常见的场景是：打开登录界面，登录成功后将用户信息回调给js。你是不是想过这样做？
-jsBridge中封装一个Act
-              ...
-            </p>
-          <!--noindex-->
-          
-            <div class="post-button text-center">
-              <a class="btn" href="/posts/cc_practice_3.html#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
